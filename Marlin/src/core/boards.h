@@ -1,4 +1,9 @@
 /**
+ * Marlin2ForPipetBot Robot Firmware
+ * Copyright (C) 2018-2019 DerAndere [https://github.com/DerAndere1/Marlin/tree/Marlin2ForPipetBot]
+ *
+ * Based on:
+ *
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -141,6 +146,7 @@
 #define BOARD_STB_11            64    // STB V1.1
 #define BOARD_AZTEEG_X1         65    // Azteeg X1
 #define BOARD_ANET_10           69    // Anet 1.0 (Melzi clone)
+#define BOARD_DERANDERE_PB_1   691   // Repurposed Anet 1.0 (Melzi clone)
 
 //
 // Other ATmega644P, ATmega644, ATmega1284P

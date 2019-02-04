@@ -1,26 +1,21 @@
 # Marlin 3D Printer Firmware
+ 
+Additional documentation can be found at the 
+[Marlin2forPipetBot repository at https://github.com](https://github.com/DerAndere1/Marlin/tree/Marlin2forPipetBot) 
+or on the [PipetBot-A8 project homepage](https://it-by-derandere.blogspot.com/p/pipetbot-a8.html) 
+that is part of the Blog [IT! by DerAndere](https://it-by-derandere.blogspot.com/). 
+Please test this firmware and let us know if it misbehaves in any way. 
+Volunteers are standing by!
 
-[![Build Status](https://travis-ci.org/MarlinFirmware/Marlin.svg?branch=RCBugFix)](https://travis-ci.org/MarlinFirmware/Marlin)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/2224/badge.svg)](https://scan.coverity.com/projects/2224)
-
-<img align="top" width=175 src="buildroot/share/pixmaps/logo/marlin-250.png" />
-
-Additional documentation can be found at the [Marlin Home Page](http://marlinfw.org/).
-Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
-
-## Marlin 2.0 Bugfix Branch
+## Marlin2ForPipetBot Branch
 
 __Not for production use. Use with caution!__
 
-Marlin 2.0 takes this popular RepRap firmware to the next level with support for much faster 32-bit processor boards.
+Marlin2forPipetBot is a modified branch of the Marlin fork by DerAndere (forked from Marlin 2.0). This branch is for use with cartesian robots (also known as lab robots, liquid handling robots or pipetting robots).
 
-This branch is for patches to the latest 2.0.x release version. Periodically this branch will form the basis for the next minor 2.0.x release.
+## Building Marlin2ForPipetBot
 
-Download earlier versions of Marlin on the [Releases page](https://github.com/MarlinFirmware/Marlin/releases).
-
-## Building Marlin 2.0
-
-To build Marlin 2.0 you'll need [Arduino IDE 1.9](https://www.arduino.cc/en/main/software) or [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide). We've posted detailed instructions on how to [build Marlin 2.0 for ARM](http://marlinfw.org/docs/basics/install_rearm.html).
+To build Marlin2ForPipetBot you'll need [Arduino IDE 1.9](https://www.arduino.cc/en/main/software) or [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide). We've posted detailed instructions on how to [build Marlin 2.0 for ARM](http://marlinfw.org/docs/basics/install_arm.html).
 
 ## Hardware Abstraction Layer (HAL)
 
@@ -49,13 +44,12 @@ Marlin 2.0 adds a new abstraction layer so that Marlin can build and run on 32-b
 
 ## Submitting Patches
 
-Proposed patches should be submitted as a Pull Request against the ([bugfix-2.0.x](https://github.com/MarlinFirmware/Marlin/tree/bugfix-2.0.x)) branch.
+Proposed patches should be submitted as a Pull Request against the ([Marlin2ForPipetBot](https://github.com/DerAndere1/Marlin/tree/Marlin2forPipetBot)) branch.
 
-- This branch is for fixing bugs and integrating any new features for the duration of the Marlin 2.0.x life-cycle.
-- Follow the [Coding Standards](http://marlinfw.org/docs/development/coding_standards.html) to gain points with the maintainers.
-- Please submit your questions and concerns to the [Issue Queue](https://github.com/MarlinFirmware/Marlin/issues).
+- This branch is for optimizations for use with the PipetBot-A8 by DerAndere.
+- Please submit your questions and concerns to the Issue Queue.
 
-### [RepRap.org Wiki Page](http://reprap.org/wiki/Marlin)
+### [PipetBot-A8 project homepage](https://it-by-derandere.blogspot.com/p/pipetbot-a8.html)
 
 ## Credits
 
@@ -68,8 +62,12 @@ The current Marlin dev team consists of:
  - João Brazio [[@jbrazio](https://github.com/jbrazio)] - Brazil
  - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands &nbsp; [![Flattr Erik](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/MarlinFirmware/Marlin&title=Marlin&language=&tags=github&category=software)
 
+Marlin2forPipetBot is a modified branch of a Marlin firmware fork by DerAndere. 
+This Marlin fork is modified by:
+DerAndere [[@DerAndere1](https://github.com/DerAndere1)] - English, German
+
 ## License
 
-Marlin is published under the [GPL license](/LICENSE) because we believe in open development. The GPL comes with both rights and obligations. Whether you use Marlin firmware as the driver for your open or closed-source product, you must keep Marlin open, and you must provide your compatible Marlin source code to end users upon request. The most straightforward way to comply with the Marlin license is to make a fork of Marlin on Github, perform your modifications, and direct users to your modified fork.
+Marlin2ForPipetBot is published under the [GPL license](https://github.com/DerAndere1/Marlin/blob/Marlin2ForPipetBot/LICENSE) because we believe in open development. The GPL comes with both rights and obligations. Whether you use Marlin firmware as the driver for your open or closed-source product, you must keep Marlin open, and you must provide your compatible Marlin source code to end users upon request. The most straightforward way to comply with the Marlin license is to make a fork of Marlin on Github, perform your modifications, and direct users to your modified fork.
 
 While we can't prevent the use of this code in products (3D printers, CNC, etc.) that are closed source or crippled by a patent, we would prefer that you choose another firmware or, better yet, make your own.

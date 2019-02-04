@@ -1,4 +1,9 @@
 /**
+ * Marlin2ForPipetBot Robot Firmware
+ * Copyright (C) 2018-2019 DerAndere [https://github.com/DerAndere1/Marlin/tree/Marlin2ForPipetBot]
+ *
+ * Based on:
+ *
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -249,6 +254,26 @@ void setup_endstop_interrupts( void ) {
       // Not all used endstop/probe -pins can raise interrupts. Please deactivate ENDSTOP_INTERRUPTS or change the pin configuration!
       static_assert(digitalPinToPCICR(Z_MIN_PROBE_PIN) != NULL, "Z_MIN_PROBE_PIN is not interrupt-capable");
       pciSetup(Z_MIN_PROBE_PIN);
+    #endif
+  #endif
+
+  #if HAS_E_MAX
+    #if (digitalPinToInterrupt(E_MAX_PIN) != NOT_AN_INTERRUPT) // if pin has an external interrupt
+      attachInterrupt(digitalPinToInterrupt(E_MAX_PIN), endstop_ISR, CHANGE); // assign it
+    #else
+      // Not all used endstop/probe -pins can raise interrupts. Please deactivate ENDSTOP_INTERRUPTS or change the pin configuration!
+      static_assert(digitalPinToPCICR(E_MAX_PIN) != NULL, "E_MAX_PIN is not interrupt-capable"); // if pin has no pin change interrupt - error
+      pciSetup(E_MAX_PIN);                                                            // assign it
+    #endif
+  #endif
+
+  #if HAS_E_MIN
+    #if (digitalPinToInterrupt(E_MIN_PIN) != NOT_AN_INTERRUPT)
+      attachInterrupt(digitalPinToInterrupt(E_MIN_PIN), endstop_ISR, CHANGE);
+    #else
+      // Not all used endstop/probe -pins can raise interrupts. Please deactivate ENDSTOP_INTERRUPTS or change the pin configuration!
+      static_assert(digitalPinToPCICR(E_MIN_PIN) != NULL, "E_MIN_PIN is not interrupt-capable");
+      pciSetup(E_MIN_PIN);
     #endif
   #endif
 

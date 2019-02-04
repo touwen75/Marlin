@@ -1,4 +1,9 @@
 /**
+ * Marlin2ForPipetBot Robot Firmware
+ * Copyright (C) 2018-2019 DerAndere [https://github.com/DerAndere1/Marlin/tree/Marlin2ForPipetBot]
+ *
+ * Based on:
+ *
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -319,8 +324,12 @@ class Stepper {
       static uint32_t acc_step_rate; // needed for deceleration start point
     #endif
 
-    static volatile int32_t endstops_trigsteps[XYZ];
-
+    #if ENABLED(E_AXIS_HOMING)
+      static volatile int32_t endstops_trigsteps[XYZE];
+    #else
+      static volatile int32_t endstops_trigsteps[XYZ];
+    #endif
+    
     //
     // Positions of stepper motors, in step units
     //
