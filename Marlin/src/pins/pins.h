@@ -798,6 +798,24 @@
   #endif
 #endif
 
+//E_AXIS_HOMING feature: Copyright (C) 2019 DerAndere. See https://github.com/DerAndere1/Marlin/tree/Marlin2ForPipetBot
+#if ENABLED(E_AXIS_HOMING)
+  #ifdef E_HOME_DIR
+    #if E_HOME_DIR < 0
+      #define E_MIN_PIN E_STOP_PIN
+      #define E_MAX_PIN -1
+    #else
+      #define E_MIN_PIN -1
+      #define E_MAX_PIN E_STOP_PIN
+    #endif
+  #endif
+#else
+  #define E_MIN_PIN -1
+  #define E_MAX_PIN -1
+  #undef E_HOME_DIR
+  #define E_HOME_DIR 0
+#endif // ENABLED(E_AXIS_HOMING)
+
 //
 // Disable unused endstop / probe pins
 //
@@ -821,6 +839,11 @@
   #define Z_MAX_PIN          -1
 #endif
 
+#if DISABLED(USE_EMAX_PLUG)
+  #undef E_MAX_PIN
+  #define E_MAX_PIN          -1
+#endif
+
 #if DISABLED(USE_XMIN_PLUG)
   #undef X_MIN_PIN
   #define X_MIN_PIN          -1
@@ -834,6 +857,11 @@
 #if DISABLED(USE_ZMIN_PLUG)
   #undef Z_MIN_PIN
   #define Z_MIN_PIN          -1
+#endif
+
+#if DISABLED(USE_EMIN_PLUG)
+  #undef E_MIN_PIN
+  #define E_MIN_PIN          -1
 #endif
 
 #ifndef LCD_PINS_D4
