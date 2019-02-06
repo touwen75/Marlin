@@ -274,6 +274,8 @@
   #include "pins_OMCA.h"              // ATmega644P, ATmega644                      env:sanguino_atmega644p
 #elif MB(ANET_10)
   #include "pins_ANET_10.h"           // ATmega1284P                                env:sanguino_atmega1284p
+#elif MB(DERANDERE_PB_1)
+  #include "pins_DERANDERE_PB_1.h"    // ATmega1284P                                env:sanguino_atmega1284p
 #elif MB(SETHI)
   #include "pins_SETHI.h"             // ATmega644P, ATmega644, ATmega1284P         env:sanguino_atmega644p env:sanguino_atmega1284p
 
