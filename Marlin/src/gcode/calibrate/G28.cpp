@@ -388,8 +388,9 @@ void GcodeSuite::G28(const bool always_home_all) {
       } // home_all || homeZ
     #endif // Z_HOME_DIR < 0
 
-      // Home E
-    if (home_all || homeE) {
+    #if ENABLED(E_AXIS_HOMING)
+    // Home E
+      if (home_all || homeE) {
 
       #if ENABLED(DUAL_X_CARRIAGE)
 
@@ -397,25 +398,15 @@ void GcodeSuite::G28(const bool always_home_all) {
         active_extruder = 1;
         homeaxis(E_AXIS);
 
-        // Remember this extruder's position for later tool change
-        inactive_extruder_x_pos = current_position[X_AXIS];
-
         // Home the 1st (left) extruder
         active_extruder = 0;
-        homeaxis(E_AXIS);
-
-        // Consider the active extruder to be parked
-        COPY(raised_parked_position, current_position);
-        delayed_move_time = 0;
-        active_extruder_parked = true;
-
-      #else // !DUAL_X_CARRIAGE
-
-        homeaxis(E_AXIS);
 
       #endif
-      } // home_all || homeE
 
+        homeaxis(E_AXIS);
+
+      } // home_all || homeE
+    #endif // ENABLED(E_AXIS_HOMING)
     sync_plan_position();
 
   #endif // !DELTA (G28)

@@ -812,10 +812,8 @@
     #endif
   #endif
 #else
-  #define E_MIN_PIN -1
-  #define E_MAX_PIN -1
-  #undef E_HOME_DIR
-  #define E_HOME_DIR 0
+  #undef E_MIN_PIN -1
+  #undef E_MAX_PIN -1
 #endif // ENABLED(E_AXIS_HOMING)
 
 //

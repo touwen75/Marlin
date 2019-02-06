@@ -1002,7 +1002,7 @@
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
   #define MIN_SOFTWARE_ENDSTOP_Z
-  //#define MIN_SOFTWARE_ENDSTOP_E // uncomment when E_AXIS_HOMING is enabled
+  #define MIN_SOFTWARE_ENDSTOP_E
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
@@ -1011,7 +1011,7 @@
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
   #define MAX_SOFTWARE_ENDSTOP_Z
-  //#define MAX_SOFTWARE_ENDSTOP_E // uncomment when E_AXIS_HOMING is enabled
+  #define MAX_SOFTWARE_ENDSTOP_E
 #endif
 
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS) || ENABLED(MAX_SOFTWARE_ENDSTOPS)

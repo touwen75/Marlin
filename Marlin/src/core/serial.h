@@ -208,11 +208,11 @@ void serialprint_onoff(const bool onoff);
 void serialprintln_onoff(const bool onoff);
 
 #if ENABLED(DEBUG_LEVELING_FEATURE)
-  #if ENABLED(E_AXIS_HOMING)
-    void print_xyz(PGM_P const prefix, PGM_P const suffix, const float x, const float y, const float z, const float e);
-  #else
-    void print_xyz(PGM_P const prefix, PGM_P const suffix, const float x, const float y, const float z);
-  #endif
+  void print_xyz(PGM_P const prefix, PGM_P const suffix, const float x, const float y, const float z
+    #if ENABLED(E_AXIS_HOMING)
+      , const float e
+    #endif
+  );
   void print_xyz(PGM_P const prefix, PGM_P const suffix, const float xyz[]);
   #define DEBUG_POS(SUFFIX,VAR) do { print_xyz(PSTR("  " STRINGIFY(VAR) "="), PSTR(" : " SUFFIX "\n"), VAR); } while(0)
 #endif
