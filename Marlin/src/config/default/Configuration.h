@@ -605,7 +605,6 @@
 #define Y_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define Z_MIN_PROBE_ENDSTOP_INVERTING false  // set to true to invert the logic of the probe.
-
 #define E_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define E_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 
@@ -987,7 +986,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 240
+#define Z_MAX_POS 200
 #if ENABLED(E_AXIS_HOMING)
   #define E_MIN_POS 0 
   #define E_MAX_POS 100 

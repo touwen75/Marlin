@@ -50,7 +50,7 @@ Endstops endstops;
 // private:
 
 bool Endstops::enabled, Endstops::enabled_globally; // Initialized by settings.load()
-volatile uint16_t Endstops::hit_state;
+volatile Endstops::hitstate_t Endstops::hit_state;
 
 Endstops::esbits_t Endstops::live_state = 0;
 
@@ -233,12 +233,10 @@ void Endstops::init() {
     #endif
   #endif
 
-
   #if HAS_E_MIN
     #if ENABLED(ENDSTOPPULLUP_EMIN)
       SET_INPUT_PULLUP(E_MIN_PIN);
     #else
-      // SET_INPUT(E_MIN_PIN);
       SET_INPUT_PULLUP(E_MIN_PIN);
     #endif
   #endif
@@ -247,7 +245,6 @@ void Endstops::init() {
     #if ENABLED(ENDSTOPPULLUP_EMAX)
       SET_INPUT_PULLUP(E_MAX_PIN);
     #else
-      // SET_INPUT(E_MAX_PIN);
       SET_INPUT_PULLUP(E_MAX_PIN);
     #endif
   #endif
@@ -338,10 +335,14 @@ void Endstops::resync() {
 #endif
 
 void Endstops::event_handler() {
-  static uint16_t prev_hit_state; // = 0
+  static hitstate_t prev_hit_state; // = 0
   if (hit_state && hit_state != prev_hit_state) {
     #if ENABLED(ULTRA_LCD)
-      char chrX = ' ', chrY = ' ', chrZ = ' ', chrE = ' ', chrP = ' ';
+      char chrX = ' ', chrY = ' ', chrZ = ' ', chrP = ' '
+        #if ENABLED(E_AXIS_HOMING)
+          , chrE = ' '
+        #endif
+      ;
       #define _SET_STOP_CHAR(A,C) (chr## A = C)
     #else
       #define _SET_STOP_CHAR(A,C) ;
@@ -351,23 +352,15 @@ void Endstops::event_handler() {
       SERIAL_ECHOPAIR(" " STRINGIFY(A) ":", planner.triggered_position_mm(_AXIS(A))); \
       _SET_STOP_CHAR(A,C); }while(0)
 
-    #define _ENDSTOP_HIT_TEST(A,C) \
-      if (TEST(hit_state, A ##_MIN) || TEST(hit_state, A ##_MAX)) \
-        _ENDSTOP_HIT_ECHO(A,C)
+    #define ENDSTOP_HIT_TEST(A,C) if (hit_state & (_BV(A ##_MIN) | _BV(A ##_MAX))) _ENDSTOP_HIT_ECHO(A,C)
 
-    #define ENDSTOP_HIT_TEST_X() _ENDSTOP_HIT_TEST(X,'X')
-    #define ENDSTOP_HIT_TEST_Y() _ENDSTOP_HIT_TEST(Y,'Y')
-    #define ENDSTOP_HIT_TEST_Z() _ENDSTOP_HIT_TEST(Z,'Z')
-    #if HAS_E_MIN
-      #define ENDSTOP_HIT_TEST_E() _ENDSTOP_HIT_TEST(E,'E')
-    #endif
     SERIAL_ECHO_START();
     SERIAL_ECHOPGM(MSG_ENDSTOPS_HIT);
-    ENDSTOP_HIT_TEST_X();
-    ENDSTOP_HIT_TEST_Y();
-    ENDSTOP_HIT_TEST_Z();
+    ENDSTOP_HIT_TEST(X,'X');
+    ENDSTOP_HIT_TEST(Y,'Y');
+    ENDSTOP_HIT_TEST(Z,'Z');
     #if ENABLED(E_AXIS_HOMING)
-      ENDSTOP_HIT_TEST_E();
+      ENDSTOP_HIT_TEST(E,'E');
     #endif
     #if ENABLED(Z_MIN_PROBE_ENDSTOP)
       #define P_AXIS Z_AXIS
@@ -435,7 +428,6 @@ void _O2 Endstops::M119() {
   #if HAS_E_MAX
     ES_REPORT(E_MAX);
   #endif
-
   #if HAS_Z_MIN
     ES_REPORT(Z_MIN);
   #endif
@@ -536,7 +528,6 @@ void Endstops::update() {
   #else
     #define Z_AXIS_HEAD Z_AXIS
   #endif
-
   #if ENABLED(E_AXIS_HOMING)
     #if CORE_IS_XY || CORE_IS_XZ
       #define E_AXIS_HEAD E_HEAD

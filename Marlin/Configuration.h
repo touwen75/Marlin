@@ -605,7 +605,6 @@
 #define Y_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define Z_MIN_PROBE_ENDSTOP_INVERTING false  // set to true to invert the logic of the probe.
-
 #define E_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define E_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 
@@ -1008,7 +1007,7 @@
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
   #define MIN_SOFTWARE_ENDSTOP_Z
-  //#define MIN_SOFTWARE_ENDSTOP_E // uncomment when E_AXIS_HOMING is enabled
+  #define MIN_SOFTWARE_ENDSTOP_E
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
@@ -1017,7 +1016,7 @@
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
   #define MAX_SOFTWARE_ENDSTOP_Z
-  //#define MAX_SOFTWARE_ENDSTOP_E // uncomment when E_AXIS_HOMING is enabled
+  #define MAX_SOFTWARE_ENDSTOP_E
 #endif
 
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS) || ENABLED(MAX_SOFTWARE_ENDSTOPS)
@@ -1288,6 +1287,7 @@
 #if ENABLED(E_AXIS_HOMING)
   #define HOMING_FEEDRATE_E  (4*60)
 #endif
+
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
 
