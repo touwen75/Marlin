@@ -35,7 +35,11 @@
   #include "../../module/stepper.h"
 #endif
 
+<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 extern xyze_pos_t destination;
+=======
+extern float destination[NUM_AXIS];
+>>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
 
 #if ENABLED(VARIABLE_G0_FEEDRATE)
   feedRate_t fast_move_feedrate = MMM_TO_MMS(G0_FEEDRATE);

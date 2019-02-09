@@ -36,7 +36,17 @@
 
 // Axis homed and known-position states
 extern uint8_t axis_homed, axis_known_position;
-constexpr uint8_t xyz_bits = _BV(X_AXIS) | _BV(Y_AXIS) | _BV(Z_AXIS);
+constexpr uint8_t xyz_bits = (_BV(X_AXIS) | _BV(Y_AXIS) | _BV(Z_AXIS)
+  #if NON_E_AXES > 3
+    | _BV(I_AXIS)
+    #if NON_E_AXES > 4
+      | _BV(J_AXIS)
+      #if NON_E_AXES > 5
+        | _BV(K_AXIS)
+      #endif
+    #endif
+  #endif
+);
 FORCE_INLINE bool no_axes_homed() { return !axis_homed; }
 FORCE_INLINE bool all_axes_homed() { return (axis_homed & xyz_bits) == xyz_bits; }
 FORCE_INLINE bool all_axes_known() { return (axis_known_position & xyz_bits) == xyz_bits; }
@@ -63,7 +73,7 @@ extern xyze_pos_t current_position,  // High-level current tool position
 
 // G60/G61 Position Save and Return
 #if SAVED_POSITIONS
-  extern uint8_t saved_slots[(SAVED_POSITIONS + 7) >> 3];
+  extern uint8_t saved_slots[(SAVED_POSITIONS + 7) >> 3]; // TODO: Add support for NON_E_AXES > 3. Maybe >> NON_E_AXES
   extern xyz_pos_t stored_position[SAVED_POSITIONS];
 #endif
 
@@ -92,7 +102,7 @@ extern xyz_pos_t cartes;
  * Feed rates are often configured with mm/m
  * but the planner and stepper like mm/s units.
  */
-extern const feedRate_t homing_feedrate_mm_s[XYZ];
+extern const feedRate_t homing_feedrate_mm_s[NON_E_AXES];
 FORCE_INLINE feedRate_t homing_feedrate(const AxisEnum a) { return pgm_read_float(&homing_feedrate_mm_s[a]); }
 feedRate_t get_homing_bump_feedrate(const AxisEnum axis);
 
@@ -233,8 +243,19 @@ void restore_feedrate_and_scaling();
 // Homing
 //
 
-uint8_t axes_need_homing(uint8_t axis_bits=0x07);
-bool axis_unhomed_error(uint8_t axis_bits=0x07);
+#if NON_E_AXES == 4
+  uint8_t axes_need_homing(uint8_t axis_bits=0x0F); // 0x0F = 00001111 = all four axes
+  bool axis_unhomed_error(uint8_t axis_bits=0x0F); // 0x0F = 00001111 = all four axes
+#elif NON_E_AXES == 5
+  uint8_t axes_need_homing(uint8_t axis_bits=0x1F); // 0x1F = 00011111 = all five axes
+  bool axis_unhomed_error(uint8_t axis_bits=0x1F); // 0x1F = 00011111 = all five axes
+#elif NON_E_AXES == 6
+  uint8_t axes_need_homing(uint8_t axis_bits=0x3F); // 0x3F = 00111111 = all six axes
+  bool axis_unhomed_error(uint8_t axis_bits=0x3F); // 0x3F = 00111111 = all six axes
+#else  // 0x07 = 00000111 = all three axes
+  uint8_t axes_need_homing(uint8_t axis_bits=0x07);
+  bool axis_unhomed_error(uint8_t axis_bits=0x07);
+#endif
 
 #if ENABLED(NO_MOTION_BEFORE_HOMING)
   #define MOTION_CONDITIONS (IsRunning() && !axis_unhomed_error())
@@ -291,6 +312,18 @@ void homeaxis(const AxisEnum axis);
 #define RAW_Y_POSITION(POS)     LOGICAL_TO_NATIVE(POS, Y_AXIS)
 #define RAW_Z_POSITION(POS)     LOGICAL_TO_NATIVE(POS, Z_AXIS)
 
+#if defined NON_E_AXES > 3
+  #define LOGICAL_I_POSITION(POS) NATIVE_TO_LOGICAL(POS, I_AXIS)
+  #define RAW_I_POSITION(POS)     LOGICAL_TO_NATIVE(POS, I_AXIS)
+  #if defined NON_E_AXES > 4
+    #define LOGICAL_J_POSITION(POS) NATIVE_TO_LOGICAL(POS, J_AXIS)
+    #define RAW_J_POSITION(POS)     LOGICAL_TO_NATIVE(POS, J_AXIS)
+    #if defined NON_E_AXES > 5
+      #define LOGICAL_K_POSITION(POS) NATIVE_TO_LOGICAL(POS, K_AXIS)
+      #define RAW_K_POSITION(POS)     LOGICAL_TO_NATIVE(POS, K_AXIS)
+    #endif
+  #endif
+#endif
 /**
  * position_is_reachable family of functions
  */

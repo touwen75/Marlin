@@ -1563,6 +1563,16 @@ void Stepper::pulse_phase_isr() {
     #if HAS_Z_STEP
       PULSE_PREP(Z);
     #endif
+    #if HAS_I_STEP
+      PULSE_PREP(I);
+    #endif
+    #if HAS_J_STEP
+      PULSE_PREP(J);
+    #endif
+    #if HAS_K_STEP
+      PULSE_PREP(K);
+    #endif
+
 
     #if EITHER(LIN_ADVANCE, MIXING_EXTRUDER)
       delta_error.e += advance_dividend.e;
@@ -1597,6 +1607,15 @@ void Stepper::pulse_phase_isr() {
     #if HAS_Z_STEP
       PULSE_START(Z);
     #endif
+    #if HAS_I_STEP
+      PULSE_START(I);
+    #endif
+    #if HAS_J_STEP
+      PULSE_START(J);
+    #endif
+    #if HAS_K_STEP
+      PULSE_START(K);
+    #endif
 
     #if DISABLED(LIN_ADVANCE)
       #if ENABLED(MIXING_EXTRUDER)
@@ -1625,6 +1644,15 @@ void Stepper::pulse_phase_isr() {
     #endif
     #if HAS_Z_STEP
       PULSE_STOP(Z);
+    #endif
+    #if HAS_I_STEP
+      PULSE_STOP(I);
+    #endif
+    #if HAS_J_STEP
+      PULSE_STOP(J);
+    #endif
+    #if HAS_K_STEP
+      PULSE_STOP(K);
     #endif
 
     #if DISABLED(LIN_ADVANCE)
@@ -2286,7 +2314,16 @@ void Stepper::init() {
     #endif
     AXIS_INIT(Z, Z);
   #endif
-
+  #if HAS_I_STEP
+    AXIS_INIT(I, I);
+  #endif
+  #if HAS_J_STEP
+    AXIS_INIT(J, J);
+  #endif
+  #if HAS_K_STEP
+    AXIS_INIT(K, K);
+  #endif
+  
   #if E_STEPPERS > 0 && HAS_E0_STEP
     E_AXIS_INIT(0);
   #endif
@@ -2322,7 +2359,17 @@ void Stepper::init() {
   last_direction_bits = 0
     | (INVERT_X_DIR ? _BV(X_AXIS) : 0)
     | (INVERT_Y_DIR ? _BV(Y_AXIS) : 0)
-    | (INVERT_Z_DIR ? _BV(Z_AXIS) : 0);
+    | (INVERT_Z_DIR ? _BV(Z_AXIS) : 0)
+    #if NON_E_AXES > 3
+      | (INVERT_I_DIR ? _BV(I_AXIS) : 0)
+      #if NON_E_AXES > 4
+        | (INVERT_J_DIR ? _BV(J_AXIS) : 0)
+        #if NON_E_AXES > 5
+        | (INVERT_K_DIR ? _BV(K_AXIS) : 0)
+        #endif
+      #endif
+    #endif
+    ;
 
   set_directions();
 
@@ -2458,6 +2505,15 @@ void Stepper::report_a_position(const xyz_long_t &pos) {
     SERIAL_ECHOLNPAIR(" C:", pos.z);
   #else
     SERIAL_ECHOLNPAIR_P(SP_Z_LBL, pos.z);
+  #endif
+  #if NON_E_AXES > 3
+    SERIAL_ECHOLNPAIR_P(SP_I_LBL, pos.i);
+    #if NON_E_AXES > 4
+      SERIAL_ECHOLNPAIR_P(SP_J_LBL, pos.j);
+      #if NON_E_AXES > 5
+        SERIAL_ECHOLNPAIR_P(SP_K_LBL, pos.k);
+      #endif
+    #endif
   #endif
 }
 
@@ -2610,14 +2666,41 @@ void Stepper::report_positions() {
           ENABLE_AXIS_X();
           ENABLE_AXIS_Y();
           ENABLE_AXIS_Z();
-
+          #if NON_E_AXES > 3
+            ENABLE_AXIS_I();
+            #if NON_E_AXES > 3
+              ENABLE_AXIS_J();
+              #if NON_E_AXES > 3
+                ENABLE_AXIS_K();
+              #endif 
+            #endif
+          #endif
           DIR_WAIT_BEFORE();
 
-          const xyz_byte_t old_dir = { X_DIR_READ(), Y_DIR_READ(), Z_DIR_READ() };
+          const xyz_byte_t old_dir = { X_DIR_READ(), Y_DIR_READ(), Z_DIR_READ() 
+            #if NON_E_AXES > 3
+              I_DIR_READ()
+              #if NON_E_AXES > 3
+                J_DIR_READ()
+                #if NON_E_AXES > 3
+                  K_DIR_READ()
+                #endif
+              #endif
+            #endif
+          };
 
           X_DIR_WRITE(INVERT_X_DIR ^ z_direction);
           Y_DIR_WRITE(INVERT_Y_DIR ^ z_direction);
           Z_DIR_WRITE(INVERT_Z_DIR ^ z_direction);
+          #if NON_E_AXES > 3
+            I_DIR_WRITE(INVERT_I_DIR ^ z_direction);
+            #if NON_E_AXES > 3
+              J_DIR_WRITE(INVERT_J_DIR ^ z_direction);
+              #if NON_E_AXES > 3
+                K_DIR_WRITE(INVERT_K_DIR ^ z_direction);
+              #endif
+            #endif
+          #endif
 
           DIR_WAIT_AFTER();
 
@@ -2626,12 +2709,30 @@ void Stepper::report_positions() {
           X_STEP_WRITE(!INVERT_X_STEP_PIN);
           Y_STEP_WRITE(!INVERT_Y_STEP_PIN);
           Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
+          #if NON_E_AXES > 3
+            I_STEP_WRITE(!INVERT_I_STEP_PIN);
+            #if NON_E_AXES > 4
+              J_STEP_WRITE(!INVERT_J_STEP_PIN);
+              #if NON_E_AXES > 5
+                K_STEP_WRITE(!INVERT_K_STEP_PIN);
+              #endif
+            #endif
+          #endif
 
           _PULSE_WAIT();
 
           X_STEP_WRITE(INVERT_X_STEP_PIN);
           Y_STEP_WRITE(INVERT_Y_STEP_PIN);
           Z_STEP_WRITE(INVERT_Z_STEP_PIN);
+          #if NON_E_AXES > 3
+            I_STEP_WRITE(INVERT_I_STEP_PIN);
+            #if NON_E_AXES > 4
+              J_STEP_WRITE(INVERT_J_STEP_PIN);
+              #if NON_E_AXES > 5
+                K_STEP_WRITE(INVERT_K_STEP_PIN);
+              #endif
+            #endif
+          #endif
 
           // Restore direction bits
           EXTRA_DIR_WAIT_BEFORE();
@@ -2639,12 +2740,37 @@ void Stepper::report_positions() {
           X_DIR_WRITE(old_dir.x);
           Y_DIR_WRITE(old_dir.y);
           Z_DIR_WRITE(old_dir.z);
+          #if NON_E_AXES > 3
+            I_DIR_WRITE(old_dir.i);
+            #if NON_E_AXES > 4
+              J_DIR_WRITE(old_dir.j);
+              #if NON_E_AXES > 5
+                K_DIR_WRITE(old_dir.k);
+              #endif
+            #endif
+          #endif
 
           EXTRA_DIR_WAIT_AFTER();
 
         #endif
 
       } break;
+
+      #if NON_E_AXES > 3
+        case I_AXIS:
+          BABYSTEP_AXIS(I, 0, direction);
+          break;
+        #if NON_E_AXES > 4
+          case J_AXIS:
+            BABYSTEP_AXIS(J, 0, direction);
+            break;
+          #if NON_E_AXES > 5
+            case K_AXIS:
+              BABYSTEP_AXIS(K, 0, direction);
+              break;
+          #endif // NON_E_AXES > 5
+        #endif // NON_E_AXES > 4
+      #endif // NON_E_AXES > 3
 
       default: break;
     }
@@ -2865,6 +2991,27 @@ void Stepper::report_positions() {
         SET_OUTPUT(Z4_MS3_PIN);
       #endif
     #endif
+    #if HAS_I_MICROSTEPS
+      SET_OUTPUT(I_MS1_PIN);
+      SET_OUTPUT(I_MS2_PIN);
+      #if PIN_EXISTS(I_MS3)
+        SET_OUTPUT(I_MS3_PIN);
+      #endif
+    #endif
+    #if HAS_J_MICROSTEPS
+      SET_OUTPUT(J_MS1_PIN);
+      SET_OUTPUT(J_MS2_PIN);
+      #if PIN_EXISTS(J_MS3)
+        SET_OUTPUT(J_MS3_PIN);
+      #endif
+    #endif
+    #if HAS_K_MICROSTEPS
+      SET_OUTPUT(K_MS1_PIN);
+      SET_OUTPUT(K_MS2_PIN);
+      #if PIN_EXISTS(K_MS3)
+        SET_OUTPUT(K_MS3_PIN);
+      #endif
+    #endif
     #if HAS_E0_MICROSTEPS
       SET_OUTPUT(E0_MS1_PIN);
       SET_OUTPUT(E0_MS2_PIN);
@@ -3051,6 +3198,15 @@ void Stepper::report_positions() {
       #if HAS_E7_MICROSTEPS
         case 10: WRITE(E7_MS2_PIN, ms2); break;
       #endif
+      #if HAS_I_MICROSTEPS
+        case 11: WRITE(I_MS2_PIN, ms2); break
+      #endif
+      #if HAS_J_MICROSTEPS
+        case 12: WRITE(J_MS2_PIN, ms2); break
+      #endif
+      #if HAS_K_MICROSTEPS
+        case 13: WRITE(K_MS2_PIN, ms2); break
+      #endif
     }
     if (ms3 >= 0) switch (driver) {
       #if HAS_X_MICROSTEPS || HAS_X2_MICROSTEPS
@@ -3113,6 +3269,15 @@ void Stepper::report_positions() {
       #if HAS_E7_MICROSTEPS && PIN_EXISTS(E7_MS3)
         case 10: WRITE(E7_MS3_PIN, ms3); break;
       #endif
+      #if HAS_I_MICROSTEPS && PIN_EXISTS(I_MS3)
+        case 11: WRITE(I_MS3_PIN, ms3); break;
+      #endif
+      #if HAS_J_MICROSTEPS && PIN_EXISTS(J_MS3)
+        case 12: WRITE(J_MS3_PIN, ms3); break;
+      #endif
+      #if HAS_K_MICROSTEPS && PIN_EXISTS(K_MS3)
+        case 13: WRITE(K_MS3_PIN, ms3); break;
+      #endif
     }
   }
 
@@ -3172,6 +3337,30 @@ void Stepper::report_positions() {
           , '0' + READ(Z_MS3_PIN)
         #endif
       );
+    #endif
+    #if HAS_I_MICROSTEPS
+      SERIAL_ECHOPGM("I: ");
+      SERIAL_CHAR('0' + READ(I_MS1_PIN), '0' + READ(I_MS2_PIN)
+      #if PIN_EXISTS(I_MS3)
+        , '0' + READ(I_MS3_PIN)
+      #endif
+      );
+    #endif
+    #if HAS_J_MICROSTEPS
+      SERIAL_ECHOPGM("J: ");
+      SERIAL_CHAR('0' + READ(J_MS1_PIN), '0' + READ(J_MS2_PIN)
+      #if PIN_EXISTS(J_MS3)
+        , '0' + READ(J_MS3_PIN)
+      );
+      #endif
+    #endif
+    #if HAS_K_MICROSTEPS
+      SERIAL_ECHOPGM("K: ");
+      SERIAL_CHAR('0' + READ(K_MS1_PIN), '0' + READ(K_MS2_PIN)
+      #if PIN_EXISTS(K_MS3)
+          , '0' + READ(K_MS3_PIN)
+      );
+      #endif
     #endif
     #if HAS_E0_MICROSTEPS
       SERIAL_ECHOPGM("E0: ");
