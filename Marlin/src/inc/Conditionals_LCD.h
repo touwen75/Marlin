@@ -549,3 +549,9 @@
 #ifndef INVERT_E_DIR
   #define INVERT_E_DIR false
 #endif
+
+#if ENABLED(E_AXIS_HOMING)
+  #define LINEAR_AXES XYZE
+#else
+  #define LINEAR_AXES XYZ
+#endif

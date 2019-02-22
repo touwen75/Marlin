@@ -896,8 +896,6 @@
 #define HAS_Y_MAX HAS_STOP_TEST(Y,MAX)
 #define HAS_Z_MIN HAS_STOP_TEST(Z,MIN)
 #define HAS_Z_MAX HAS_STOP_TEST(Z,MAX)
-#define HAS_E_MIN HAS_STOP_TEST(E,MIN)
-#define HAS_E_MAX HAS_STOP_TEST(E,MAX)
 #define HAS_X2_MIN (PIN_EXISTS(X2_MIN))
 #define HAS_X2_MAX (PIN_EXISTS(X2_MAX))
 #define HAS_Y2_MIN (PIN_EXISTS(Y2_MIN))
@@ -907,6 +905,8 @@
 #define HAS_Z3_MIN (PIN_EXISTS(Z3_MIN))
 #define HAS_Z3_MAX (PIN_EXISTS(Z3_MAX))
 #define HAS_Z_MIN_PROBE_PIN (PIN_EXISTS(Z_MIN_PROBE))
+#define HAS_E_MIN HAS_STOP_TEST(E,MIN)
+#define HAS_E_MAX HAS_STOP_TEST(E,MAX)
 
 // ADC Temp Sensors (Thermistor or Thermocouple with amplifier ADC interface)
 #define HAS_ADC_TEST(P) (PIN_EXISTS(TEMP_##P) && TEMP_SENSOR_##P != 0 && DISABLED(HEATER_##P##_USES_MAX6675))

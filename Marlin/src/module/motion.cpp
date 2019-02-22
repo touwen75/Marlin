@@ -116,7 +116,7 @@ float feedrate_mm_s = MMM_TO_MMS(1500.0f);
 
 int16_t feedrate_percentage = 100;
 
-// Homing feedrate is const progmem - compare to constexpr in the header 
+// Homing feedrate is const progmem - compare to constexpr in the header
 const float homing_feedrate_mm_s[LINEAR_AXES] PROGMEM = {
   #if ENABLED(DELTA)
     MMM_TO_MMS(HOMING_FEEDRATE_Z), MMM_TO_MMS(HOMING_FEEDRATE_Z)
