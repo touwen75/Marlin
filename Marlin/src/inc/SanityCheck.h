@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
@@ -240,7 +240,7 @@
   #error "Remove DELTA_PROBEABLE_RADIUS and use MIN_PROBE_EDGE to inset the probe area instead."
 #elif defined(UBL_MESH_INSET)
   #error "UBL_MESH_INSET is now just MESH_INSET. Please update your configuration."
-#elif defined(UBL_MESH_MIN_X) || defined(UBL_MESH_MIN_Y) || defined(UBL_MESH_MAX_X)  || defined(UBL_MESH_MAX_Y)
+#elif defined(UBL_MESH_MIN_X) || defined(UBL_MESH_MIN_Y) || defined(UBL_MESH_MAX_X) || defined(UBL_MESH_MAX_Y)
   #error "UBL_MESH_(MIN|MAX)_[XY] is now just MESH_(MIN|MAX)_[XY]. Please update your configuration."
 #elif defined(ABL_PROBE_PT_1_X) || defined(ABL_PROBE_PT_1_Y) || defined(ABL_PROBE_PT_2_X) || defined(ABL_PROBE_PT_2_Y) || defined(ABL_PROBE_PT_3_X) || defined(ABL_PROBE_PT_3_Y)
   #error "ABL_PROBE_PT_[123]_[XY] is now PROBE_PT_[123]_[XY]. Please update your configuration."
@@ -602,7 +602,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
 /**
  * Filament Runout needs one or more pins and either SD Support or Auto print start detection
  */
-#if ENABLED(FILAMENT_RUNOUT_SENSOR)
+#if HAS_FILAMENT_SENSOR
   #if !PIN_EXISTS(FIL_RUNOUT)
     #error "FILAMENT_RUNOUT_SENSOR requires FIL_RUNOUT_PIN."
   #elif NUM_RUNOUT_SENSORS > E_STEPPERS
@@ -811,7 +811,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
 #endif
 
 /**
- * Parking Extruder requirements
+ * (Magnetic) Parking Extruder requirements
  */
 #if ENABLED(PARKING_EXTRUDER)
   #if ENABLED(DUAL_X_CARRIAGE)
@@ -820,6 +820,8 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
     #error "PARKING_EXTRUDER and SINGLENOZZLE are incompatible."
   #elif ENABLED(EXT_SOLENOID)
     #error "PARKING_EXTRUDER and EXT_SOLENOID are incompatible. (Pins are used twice.)"
+  #elif ENABLED(MAGNETIC_PARKING_EXTRUDER)
+    #error "Enable only one of PARKING_EXTRUDER and MAGNETIC_PARKING_EXTRUDER."
   #elif EXTRUDERS != 2
     #error "PARKING_EXTRUDER requires exactly 2 EXTRUDERS."
   #elif !PIN_EXISTS(SOL0) || !PIN_EXISTS(SOL1)
@@ -834,6 +836,22 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
     #error "PARKING_EXTRUDER_SOLENOIDS_PINS_ACTIVE must be defined as HIGH or LOW."
   #elif !defined(PARKING_EXTRUDER_SOLENOIDS_DELAY) || !WITHIN(PARKING_EXTRUDER_SOLENOIDS_DELAY, 0, 2000)
     #error "PARKING_EXTRUDER_SOLENOIDS_DELAY must be between 0 and 2000 (ms)."
+  #endif
+#elif ENABLED(MAGNETIC_PARKING_EXTRUDER)
+  #if ENABLED(DUAL_X_CARRIAGE)
+    #error "MAGNETIC_PARKING_EXTRUDER and DUAL_X_CARRIAGE are incompatible."
+  #elif ENABLED(SINGLENOZZLE)
+    #error "MAGNETIC_PARKING_EXTRUDER and SINGLENOZZLE are incompatible."
+  #elif ENABLED(EXT_SOLENOID)
+    #error "MAGNETIC_PARKING_EXTRUDER and EXT_SOLENOID are incompatible. (Pins are used twice.)"
+  #elif EXTRUDERS != 2
+    #error "MAGNETIC_PARKING_EXTRUDER requires exactly 2 EXTRUDERS."
+  #elif !defined(PARKING_EXTRUDER_PARKING_X)
+    #error "MAGNETIC_PARKING_EXTRUDER requires PARKING_EXTRUDER_PARKING_X."
+  #elif !defined(TOOLCHANGE_ZRAISE)
+    #error "MAGNETIC_PARKING_EXTRUDER requires TOOLCHANGE_ZRAISE."
+  #elif TOOLCHANGE_ZRAISE < 0
+    #error "TOOLCHANGE_ZRAISE must be 0 or higher."
   #endif
 #endif
 
@@ -1936,11 +1954,11 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
 #if ENABLED(HYBRID_THRESHOLD) && !STEALTHCHOP_ENABLED
   #error "Enable STEALTHCHOP_(XY|Z|E) to use HYBRID_THRESHOLD."
 #elif ENABLED(SENSORLESS_HOMING) && !HAS_STALLGUARD
-  #error "SENSORLESS_HOMING requires TMC2130 stepper drivers."
+  #error "SENSORLESS_HOMING requires TMC2130 or TMC2160 or TMC5160 stepper drivers."
 #elif ENABLED(SENSORLESS_PROBING) && !HAS_STALLGUARD
   #error "SENSORLESS_PROBING requires TMC2130 stepper drivers."
 #elif STEALTHCHOP_ENABLED && !HAS_STEALTHCHOP
-  #error "STEALTHCHOP requires TMC2130 or TMC2208 stepper drivers."
+  #error "STEALTHCHOP requires TMC2130 or TMC2160 or TMC2208 or TMC5160 stepper drivers."
 #endif
 
 #if ENABLED(DELTA) && (ENABLED(STEALTHCHOP_XY) != ENABLED(STEALTHCHOP_Z))
@@ -2082,6 +2100,27 @@ static_assert(sanity_arr_3[0] > 0 && sanity_arr_3[1] > 0 && sanity_arr_3[2] > 0
   #error "BACKLASH_COMPENSATION is incompatible with CORE kinematics."
 #endif
 
+#if ENABLED(GRADIENT_MIX) && MIXING_VIRTUAL_TOOLS < 2
+  #error "GRADIENT_MIX requires 2 or more MIXING_VIRTUAL_TOOLS."
+#endif
+
+/**
+ * Photo G-code requirements
+ */
+#if ENABLED(PHOTO_GCODE)
+  #if (PIN_EXISTS(CHDK) + PIN_EXISTS(PHOTOGRAPH_PIN) + defined(PHOTO_SWITCH_POSITION)) > 1
+    #error "Please define only one of CHDK_PIN, PHOTOGRAPH_PIN, or PHOTO_SWITCH_POSITION."
+  #elif defined(PHOTO_SWITCH_POSITION) && !defined(PHOTO_POSITION)
+    #error "PHOTO_SWITCH_POSITION requires PHOTO_POSITION. Please update your Configuration_adv.h."
+  #elif PIN_EXISTS(CHDK) && defined(CHDK_DELAY)
+    #error "CHDK_DELAY has been replaced by PHOTO_SWITCH_MS. Please update your Configuration_adv.h."
+  #elif PIN_EXISTS(CHDK) && !defined(PHOTO_SWITCH_MS)
+    #error "PHOTO_SWITCH_MS is required with CHDK_PIN. Please update your Configuration_adv.h."
+  #elif defined(PHOTO_RETRACT_MM)
+    static_assert(PHOTO_RETRACT_MM + 0 >= 0, "PHOTO_RETRACT_MM must be >= 0.");
+  #endif
+#endif
+
 /**
  * Prusa MMU2 requirements
  */
@@ -2092,5 +2131,18 @@ static_assert(sanity_arr_3[0] > 0 && sanity_arr_3[1] > 0 && sanity_arr_3[2] > 0
     #error "PRUSA_MMU2 requires EXTRUDERS = 5."
   #elif DISABLED(ADVANCED_PAUSE_FEATURE)
     static_assert(NULL == strstr(MMU2_FILAMENT_RUNOUT_SCRIPT, "M600"), "ADVANCED_PAUSE_FEATURE is required to use M600 with PRUSA_MMU2.");
+  #endif
+#endif
+
+/**
+ * Advanced PRINTCOUNTER settings
+ */
+#if ENABLED(PRINTCOUNTER)
+  #if defined(SERVICE_INTERVAL_1) != defined(SERVICE_NAME_1)
+    #error "Both SERVICE_NAME_1 and SERVICE_INTERVAL_1 are required."
+  #elif defined(SERVICE_INTERVAL_2) != defined(SERVICE_NAME_2)
+    #error "Both SERVICE_NAME_2 and SERVICE_INTERVAL_2 are required."
+  #elif defined(SERVICE_INTERVAL_3) != defined(SERVICE_NAME_3)
+    #error "Both SERVICE_NAME_3 and SERVICE_INTERVAL_3 are required."
   #endif
 #endif

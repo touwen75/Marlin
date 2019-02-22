@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
@@ -215,6 +215,16 @@ void Endstops::init() {
       SET_INPUT_PULLDOWN(Z3_MAX_PIN);
     #else
       SET_INPUT(Z3_MAX_PIN);
+    #endif
+  #endif
+
+  #if HAS_CALIBRATION_PIN
+    #if ENABLED(CALIBRATION_PIN_PULLUP)
+      SET_INPUT_PULLUP(CALIBRATION_PIN);
+    #elif ENABLED(CALIBRATION_PIN_PULLDOWN)
+      SET_INPUT_PULLDOWN(CALIBRATION_PIN);
+    #else
+      SET_INPUT(CALIBRATION_PIN);
     #endif
   #endif
 
@@ -444,7 +454,7 @@ void _O2 Endstops::M119() {
   #if ENABLED(Z_MIN_PROBE_ENDSTOP)
     print_es_state(READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE));
   #endif
-  #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+  #if HAS_FILAMENT_SENSOR
     #if NUM_RUNOUT_SENSORS == 1
       print_es_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, PSTR(MSG_FILAMENT_RUNOUT_SENSOR));
     #else
