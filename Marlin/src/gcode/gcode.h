@@ -154,6 +154,7 @@
  * M163 - Set a single proportion for a mixing extruder. (Requires MIXING_EXTRUDER)
  * M164 - Commit the mix and save to a virtual tool (current, or as specified by 'S'). (Requires MIXING_EXTRUDER)
  * M165 - Set the mix for the mixing extruder (and current virtual tool) with parameters ABCDHI. (Requires MIXING_EXTRUDER and DIRECT_MIXING_IN_G1)
+ * M166 - Set the Gradient Mix for the mixing extruder. (Requires GRADIENT_MIX)
  * M190 - Sxxx Wait for bed current temp to reach target temp. ** Waits only when heating! **
  *        Rxxx Wait for bed current temp to reach target temp. ** Waits for heating or cooling. **
  * M200 - Set filament diameter, D<diameter>, setting E axis units to cubic. (Use S0 to revert to linear units.)
@@ -248,6 +249,7 @@
  * M914 - Set StallGuard sensitivity. (Requires SENSORLESS_HOMING or SENSORLESS_PROBING)
  * M917 - L6470 tuning: Find minimum current thresholds
  * M918 - L6470 tuning: Increase speed until max or error
+ * M951 - Set Magnetic Parking Extruder parameters. (Requires MAGNETIC_PARKING_EXTRUDER)
  *
  * M360 - SCARA calibration: Move to cal-position ThetaA (0 deg calibration)
  * M361 - SCARA calibration: Move to cal-position ThetaB (90 deg calibration - steps per degree)
@@ -440,6 +442,10 @@ private:
 
   static void G92();
 
+  #if ENABLED(CALIBRATION_GCODE)
+    static void G425();
+  #endif
+
   #if HAS_RESUME_CONTINUE
     static void M0_M1();
   #endif
@@ -592,6 +598,9 @@ private:
     static void M164();
     #if ENABLED(DIRECT_MIXING_IN_G1)
       static void M165();
+    #endif
+    #if ENABLED(GRADIENT_MIX)
+      static void M166();
     #endif
   #endif
 
@@ -845,6 +854,10 @@ private:
 
   #if ENABLED(SDSUPPORT)
     static void M928();
+  #endif
+
+  #if ENABLED(MAGNETIC_PARKING_EXTRUDER)
+    static void M951();
   #endif
 
   static void M999();
