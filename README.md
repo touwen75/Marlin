@@ -1,7 +1,7 @@
 # Marlin 3D Printer Firmware
  
 Additional documentation can be found at the 
-[Marlin2forPipetBot repository at https://github.com](https://github.com/DerAndere1/Marlin/tree/Marlin2forPipetBot) 
+[Marlin2forPipetBot repository at https://github.com](https://github.com/DerAndere1/Marlin/tree/Marlin2ForPipetBot) 
 or on the [PipetBot-A8 project homepage](https://it-by-derandere.blogspot.com/p/pipetbot-a8.html) 
 that is part of the Blog [IT! by DerAndere](https://it-by-derandere.blogspot.com/). 
 Please test this firmware and let us know if it misbehaves in any way. 
@@ -46,8 +46,8 @@ Marlin 2.0 adds a new abstraction layer so that Marlin can build and run on 32-b
 
 Proposed patches should be submitted as a Pull Request against the ([Marlin2ForPipetBot](https://github.com/DerAndere1/Marlin/tree/Marlin2forPipetBot)) branch.
 
-- This branch is for optimizations for use with the PipetBot-A8 by DerAndere.
-- Please submit your questions and concerns to the Issue Queue.
+- This branch is for use with the PipetBot-A8 by DerAndere.
+- Please submit your questions and concerns to the [Issue Queue](https://github.com/DerAndere1/Marlin).
 
 ### [PipetBot-A8 project homepage](https://it-by-derandere.blogspot.com/p/pipetbot-a8.html)
 
@@ -62,9 +62,9 @@ The current Marlin dev team consists of:
  - João Brazio [[@jbrazio](https://github.com/jbrazio)] - Brazil
  - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands &nbsp; [![Flattr Erik](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/MarlinFirmware/Marlin&title=Marlin&language=&tags=github&category=software)
 
-Marlin2forPipetBot is a modified branch of a Marlin firmware fork by DerAndere. 
+Marlin2ForPipetBot is a modified branch of a Marlin firmware fork by DerAndere. 
 This Marlin fork is modified by:
-DerAndere [[@DerAndere1](https://github.com/DerAndere1)] - English, German
+DerAndere [[@DerAndere1](https://github.com/DerAndere1)] - Germany
 
 ## License
 
