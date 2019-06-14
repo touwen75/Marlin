@@ -145,9 +145,8 @@ const float homing_feedrate_mm_s[LINEAR_AXES] PROGMEM = {
   #else
     MMM_TO_MMS(HOMING_FEEDRATE_XY), MMM_TO_MMS(HOMING_FEEDRATE_XY)
   #endif
-  , MMM_TO_MMS(HOMING_FEEDRATE_Z)
   #if ENABLED(E_AXIS_HOMING)  
-    , MMM_TO_MMS(HOMING_FEEDRATE_E)
+    , MMM_TO_MMS(HOMING_FEEDRATE_E),
   #endif
   MMM_TO_MMS(HOMING_FEEDRATE_Z)
 };
@@ -204,8 +203,9 @@ void report_current_position() {
   SERIAL_ECHOPAIR("X:", LOGICAL_X_POSITION(current_position[X_AXIS]));
   SERIAL_ECHOPAIR(" Y:", LOGICAL_Y_POSITION(current_position[Y_AXIS]));
   SERIAL_ECHOPAIR(" Z:", LOGICAL_Z_POSITION(current_position[Z_AXIS]));
-  SERIAL_ECHOPAIR(" E:", LOGICAL_E_POSITION(current_position[E_AXIS]));
-
+  #if ENABLED(E_AXIS_HOMING)
+    SERIAL_ECHOPAIR(" E:", LOGICAL_E_POSITION(current_position[E_AXIS]));
+  #endif
   stepper.report_positions();
 
   #if IS_SCARA
