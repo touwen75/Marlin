@@ -368,7 +368,7 @@ void Endstops::event_handler() {
     #define ENDSTOP_HIT_TEST_X() _ENDSTOP_HIT_TEST(X,'X')
     #define ENDSTOP_HIT_TEST_Y() _ENDSTOP_HIT_TEST(Y,'Y')
     #define ENDSTOP_HIT_TEST_Z() _ENDSTOP_HIT_TEST(Z,'Z')
-    #if ENABLED(Z_MIN_PROBE_ENDSTOP)
+    #if ENABLED(E_AXIS_HOMING)
       #define ENDSTOP_HIT_TEST_E() _ENDSTOP_HIT_TEST(E,'E')
     #endif
     
@@ -391,7 +391,8 @@ void Endstops::event_handler() {
       #if ENABLED(E_AXIS_HOMING)
         ui.status_printf_P(0, PSTR(MSG_LCD_ENDSTOPS " %c %c %c %c %c"), chrX, chrY, chrZ, chrE, chrP);
       #else
-      ui.status_printf_P(0, PSTR(MSG_LCD_ENDSTOPS " %c %c %c %c"), chrX, chrY, chrZ, chrP);
+        ui.status_printf_P(0, PSTR(MSG_LCD_ENDSTOPS " %c %c %c %c"), chrX, chrY, chrZ, chrP);
+      #endif
     #endif
 
     #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)
