@@ -70,8 +70,8 @@
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../core/debug_out.h"
 
-#define XYZ_CONSTS(type, array, CONFIG) const PROGMEM type array##_P[XYZ] = { X_##CONFIG, Y_##CONFIG, Z_##CONFIG }
-
+#define XYZ_CONSTS(type, array, CONFIG) const PROGMEM type array##_P[LINEAR_AXES] = \
+                                          ARRAY_N(LINEAR_AXES, X_##CONFIG, Y_##CONFIG, Z_##CONFIG, E_##CONFIG)
 XYZ_CONSTS(float, base_min_pos,   MIN_POS);
 XYZ_CONSTS(float, base_max_pos,   MAX_POS);
 XYZ_CONSTS(float, base_home_pos,  HOME_POS);
@@ -139,11 +139,15 @@ float feedrate_mm_s = MMM_TO_MMS(1500.0f);
 int16_t feedrate_percentage = 100;
 
 // Homing feedrate is const progmem - compare to constexpr in the header
-const float homing_feedrate_mm_s[XYZ] PROGMEM = {
+const float homing_feedrate_mm_s[LINEAR_AXES] PROGMEM = {
   #if ENABLED(DELTA)
-    MMM_TO_MMS(HOMING_FEEDRATE_Z), MMM_TO_MMS(HOMING_FEEDRATE_Z),
+    MMM_TO_MMS(HOMING_FEEDRATE_Z), MMM_TO_MMS(HOMING_FEEDRATE_Z)
   #else
-    MMM_TO_MMS(HOMING_FEEDRATE_XY), MMM_TO_MMS(HOMING_FEEDRATE_XY),
+    MMM_TO_MMS(HOMING_FEEDRATE_XY), MMM_TO_MMS(HOMING_FEEDRATE_XY)
+  #endif
+  , MMM_TO_MMS(HOMING_FEEDRATE_Z)
+  #if ENABLED(E_AXIS_HOMING)  
+    , MMM_TO_MMS(HOMING_FEEDRATE_E)
   #endif
   MMM_TO_MMS(HOMING_FEEDRATE_Z)
 };
@@ -177,16 +181,16 @@ float cartes[XYZ];
  */
 #if HAS_POSITION_SHIFT
   // The distance that XYZ has been offset by G92. Reset by G28.
-  float position_shift[XYZ] = { 0 };
+  float position_shift[LINEAR_AXES] = { 0 };
 #endif
 #if HAS_HOME_OFFSET
   // This offset is added to the configured home position.
   // Set by M206, M428, or menu item. Saved to EEPROM.
-  float home_offset[XYZ] = { 0 };
+  float home_offset[LINEAR_AXES] = { 0 };
 #endif
 #if HAS_HOME_OFFSET && HAS_POSITION_SHIFT
   // The above two are combined to save on computes
-  float workspace_offset[XYZ] = { 0 };
+  float workspace_offset[LINEAR_AXES] = { 0 };
 #endif
 
 #if HAS_ABL_NOT_UBL
@@ -327,7 +331,11 @@ void buffer_line_to_destination(const float fr_mm_s) {
  * Plan a move to (X, Y, Z) and set the current_position
  */
 void do_blocking_move_to(const float rx, const float ry, const float rz, const float &fr_mm_s/*=0.0*/) {
-  if (DEBUGGING(LEVELING)) DEBUG_XYZ(">>> do_blocking_move_to", rx, ry, rz);
+  if (DEBUGGING(LEVELING)) DEBUG_XYZ(">>> do_blocking_move_to", rx, ry, rz
+    #if ENABLED(E_AXIS_HOMING)
+      , 0
+    #endif
+  );
 
   const float z_feedrate  = fr_mm_s ? fr_mm_s : homing_feedrate(Z_AXIS),
               xy_feedrate = fr_mm_s ? fr_mm_s : XY_PROBE_FEEDRATE_MM_S;
@@ -451,7 +459,7 @@ void clean_up_after_endstop_or_probe_move() {
   bool soft_endstops_enabled = true;
 
   // Software Endstops are based on the configured limits.
-  axis_limits_t soft_endstop[XYZ] = { { X_MIN_BED, X_MAX_BED }, { Y_MIN_BED, Y_MAX_BED }, { Z_MIN_POS, Z_MAX_POS } };
+  axis_limits_t soft_endstop[LINEAR_AXES] = ARRAY_N({ X_MIN_BED, X_MAX_BED }, { Y_MIN_BED, Y_MAX_BED }, { Z_MIN_POS, Z_MAX_POS }, { E_MIN_POS, E_MAX_POS });
 
   /**
    * Software endstops can be used to monitor the open end of
@@ -1026,26 +1034,51 @@ void prepare_move_to_destination() {
   set_current_from_destination();
 }
 
-bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool z/*=true*/) {
+bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool z/*=true*/
+  #if ENABLED(E_AXIS_HOMING)
+    , const bool e/*=true*/
+  #endif
+){
   #if ENABLED(HOME_AFTER_DEACTIVATE)
     const bool xx = x && !TEST(axis_known_position, X_AXIS),
                yy = y && !TEST(axis_known_position, Y_AXIS),
                zz = z && !TEST(axis_known_position, Z_AXIS);
+               #if ENABLED(E_AXIS_HOMING)
+                 const bool ee = e && !TEST(axis_known_position, E_AXIS);
+               #endif
+  
   #else
     const bool xx = x && !TEST(axis_homed, X_AXIS),
                yy = y && !TEST(axis_homed, Y_AXIS),
                zz = z && !TEST(axis_homed, Z_AXIS);
+               #if ENABLED(E_AXIS_HOMING)
+                 const bool ee = e && !TEST(axis_homed, E_AXIS);
+               #endif
+
   #endif
-  if (xx || yy || zz) {
+
+
+  if (xx || yy || zz
+    #if ENABLED(E_AXIS_HOMING)
+      || ee
+    #endif
+      ) {
     SERIAL_ECHO_START();
     SERIAL_ECHOPGM(MSG_HOME " ");
     if (xx) SERIAL_CHAR('X');
     if (yy) SERIAL_CHAR('Y');
     if (zz) SERIAL_CHAR('Z');
+    #if ENABLED(E_AXIS_HOMING)
+      if (ee) SERIAL_CHAR('E');
+    #endif
     SERIAL_ECHOLNPGM(" " MSG_FIRST);
 
     #if EITHER(ULTRA_LCD, EXTENSIBLE_UI)
-      ui.status_printf_P(0, PSTR(MSG_HOME " %s%s%s " MSG_FIRST), xx ? MSG_X : "", yy ? MSG_Y : "", zz ? MSG_Z : "");
+      #if ENABLED(E_AXIS_HOMING)
+        ui.status_printf_P(0, PSTR(MSG_HOME " %s%s%s%s " MSG_FIRST), xx ? MSG_X : "", yy ? MSG_Y : "", zz ? MSG_Z : "", ee ? MSG_E : "");
+      #else
+        ui.status_printf_P(0, PSTR(MSG_HOME " %s%s%s " MSG_FIRST), xx ? MSG_X : "", yy ? MSG_Y : "", zz ? MSG_Z : "");
+      #endif
     #endif
     return true;
   }

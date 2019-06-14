@@ -321,7 +321,7 @@ class Stepper {
       static uint32_t acc_step_rate; // needed for deceleration start point
     #endif
 
-    static volatile int32_t endstops_trigsteps[XYZ];
+    static volatile int32_t endstops_trigsteps[LINEAR_AXES];
 
     //
     // Positions of stepper motors, in step units

@@ -179,6 +179,7 @@
  *  X   Home to the X endstop
  *  Y   Home to the Y endstop
  *  Z   Home to the Z endstop
+ *  E   Home to the E endstop
  *
  */
 void GcodeSuite::G28(const bool always_home_all) {
@@ -261,7 +262,13 @@ void GcodeSuite::G28(const bool always_home_all) {
   #else // NOT DELTA
 
     const bool homeX = parser.seen('X'), homeY = parser.seen('Y'), homeZ = parser.seen('Z'),
-               home_all = always_home_all || (homeX == homeY && homeX == homeZ),
+               #if ENABLED(E_AXIS_HOMING)
+                 homeE = parser.seen('E'),
+                 home_all = always_home_all || (homeX == homeY && homeX == homeZ && homeX == homeE),
+                 doE = home_all || homeE,
+               #else
+                 home_all = always_home_all || (homeX == homeY && homeX == homeZ),
+               #endif
                doX = home_all || homeX, doY = home_all || homeY, doZ = home_all || homeZ;
 
     set_destination_from_current();
@@ -279,7 +286,11 @@ void GcodeSuite::G28(const bool always_home_all) {
           (parser.seenval('R') ? parser.value_linear_units() : Z_HOMING_HEIGHT)
     );
 
-    if (z_homing_height && (doX || doY)) {
+    if (z_homing_height && (doX || doY
+      #if ENABLED(E_AXIS_HOMING)
+        || doE
+      #endif
+    )) {
       // Raise Z before homing any other axes and z is not already high enough (never lower z)
       destination[Z_AXIS] = z_homing_height;
       if (destination[Z_AXIS] > current_position[Z_AXIS]) {
@@ -361,6 +372,22 @@ void GcodeSuite::G28(const bool always_home_all) {
       } // doZ
     #endif // Z_HOME_DIR < 0
 
+    #if ENABLED(E_AXIS_HOMING)
+    // Home E
+      if (doE) {
+// TODO: Test E_HOMING is compatible with multiple E-steppers
+//        #if EXTRUDERS > 1 
+//          active_extruder = 1;
+//          homeaxis(E_AXIS);
+//          #if EXTRUDERS > 2
+//            active_extruder = 2;
+//            homeaxis(E_AXIS);
+//            active_extruder = 0;
+//          #endif
+//        #endif
+        homeaxis(E_AXIS);
+      } // doE
+    #endif // ENABLED(E_AXIS_HOMING)
     sync_plan_position();
 
   #endif // !DELTA (G28)
@@ -405,8 +432,17 @@ void GcodeSuite::G28(const bool always_home_all) {
     const float backoff_x = doX ? ABS(endstop_backoff[X_AXIS]) * (X_HOME_DIR) : 0,
                 backoff_y = doY ? ABS(endstop_backoff[Y_AXIS]) * (Y_HOME_DIR) : 0,
                 backoff_z = doZ ? ABS(endstop_backoff[Z_AXIS]) * (Z_HOME_DIR) : 0;
+    #ifdef HOMING_BACKOFF_MM_E
+      constexpr float endstop_backoff_E = HOMING_BACKOFF_MM_E;
+      const float backoff_e = doE ? ABS(endstop_backoff_E) * (Y_HOME_DIR) : 0,
+    
+   
     if (backoff_z) do_blocking_move_to_z(current_position[Z_AXIS] - backoff_z);
     if (backoff_x || backoff_y) do_blocking_move_to_xy(current_position[X_AXIS] - backoff_x, current_position[Y_AXIS] - backoff_y);
+// TODO: Test if backof_e is needs to be tested and if do_blocking_move_to_xy() is the correct funcion  
+//    #if ENABLED(E_AXIS_HOMING)
+//      if (backoff_e) do_blocking_move_to_xy(current_position[X_AXIS] - backoff_x, current_position[Y_AXIS] - backoff_y, current_position[E_AXIS] - backoff_e);
+//    #endif
   #endif
   endstops.not_homing();
 

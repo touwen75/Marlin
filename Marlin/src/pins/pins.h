@@ -280,6 +280,8 @@
   #include "pins_OMCA.h"              // ATmega644P, ATmega644                      env:sanguino_atmega644p
 #elif MB(ANET_10)
   #include "pins_ANET_10.h"           // ATmega1284P                                env:sanguino_atmega1284p
+#elif MB(DERANDERE_PB_1)
+  #include "pins_DERANDERE_PB_1.h"    // ATmega1284P                                env:sanguino_atmega1284p
 #elif MB(SETHI)
   #include "pins_SETHI.h"             // ATmega644P, ATmega644, ATmega1284P         env:sanguino_atmega644p env:sanguino_atmega1284p
 
@@ -825,6 +827,22 @@
   #endif
 #endif
 
+//E_AXIS_HOMING feature: Copyright (C) 2019 DerAndere. See https://github.com/DerAndere1/Marlin/tree/Marlin2ForPipetBot
+#if ENABLED(E_AXIS_HOMING)
+  #ifdef E_HOME_DIR
+    #if E_HOME_DIR < 0
+      #define E_MIN_PIN E_STOP_PIN
+      #define E_MAX_PIN -1
+    #else
+      #define E_MIN_PIN -1
+      #define E_MAX_PIN E_STOP_PIN
+    #endif
+  #endif
+#else
+  #undef E_MIN_PIN -1
+  #undef E_MAX_PIN -1
+#endif // ENABLED(E_AXIS_HOMING)
+
 //
 // Disable unused endstop / probe pins
 //
@@ -848,6 +866,11 @@
   #define Z_MAX_PIN          -1
 #endif
 
+#if DISABLED(USE_EMAX_PLUG)
+  #undef E_MAX_PIN
+  #define E_MAX_PIN          -1
+#endif
+
 #if DISABLED(USE_XMIN_PLUG)
   #undef X_MIN_PIN
   #define X_MIN_PIN          -1
@@ -861,6 +884,11 @@
 #if DISABLED(USE_ZMIN_PLUG)
   #undef Z_MIN_PIN
   #define Z_MIN_PIN          -1
+#endif
+
+#if DISABLED(USE_EMIN_PLUG)
+  #undef E_MIN_PIN
+  #define E_MIN_PIN          -1
 #endif
 
 #ifndef LCD_PINS_D4

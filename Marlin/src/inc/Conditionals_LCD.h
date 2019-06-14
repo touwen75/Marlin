@@ -556,6 +556,12 @@
   #define INVERT_E_DIR false
 #endif
 
+#if ENABLED(E_AXIS_HOMING)
+  #define LINEAR_AXES XYZE
+#else
+  #define LINEAR_AXES XYZ
+#endif
+
 #if ENABLED(HOST_ACTION_COMMANDS)
   #ifndef ACTION_ON_PAUSE
     #define ACTION_ON_PAUSE   "pause"
