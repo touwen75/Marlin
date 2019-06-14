@@ -435,7 +435,7 @@ void GcodeSuite::G28(const bool always_home_all) {
     #ifdef HOMING_BACKOFF_MM_E
       constexpr float endstop_backoff_E = HOMING_BACKOFF_MM_E;
       const float backoff_e = doE ? ABS(endstop_backoff_E) * (Y_HOME_DIR) : 0,
-    
+    #endif
    
     if (backoff_z) do_blocking_move_to_z(current_position[Z_AXIS] - backoff_z);
     if (backoff_x || backoff_y) do_blocking_move_to_xy(current_position[X_AXIS] - backoff_x, current_position[Y_AXIS] - backoff_y);
