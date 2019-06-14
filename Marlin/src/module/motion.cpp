@@ -145,10 +145,10 @@ const float homing_feedrate_mm_s[LINEAR_AXES] PROGMEM = {
   #else
     MMM_TO_MMS(HOMING_FEEDRATE_XY), MMM_TO_MMS(HOMING_FEEDRATE_XY)
   #endif
+  , MMM_TO_MMS(HOMING_FEEDRATE_Z)
   #if ENABLED(E_AXIS_HOMING)  
-    , MMM_TO_MMS(HOMING_FEEDRATE_E),
+    , MMM_TO_MMS(HOMING_FEEDRATE_E)
   #endif
-  MMM_TO_MMS(HOMING_FEEDRATE_Z)
 };
 
 // Cartesian conversion result goes here:
