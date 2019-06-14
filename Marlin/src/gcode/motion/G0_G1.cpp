@@ -52,7 +52,11 @@ void GcodeSuite::G0_G1(
 
   if (IsRunning()
     #if ENABLED(NO_MOTION_BEFORE_HOMING)
-      && !axis_unhomed_error(parser.seen('X'), parser.seen('Y'), parser.seen('Z'))
+      && !axis_unhomed_error(parser.seen('X'), parser.seen('Y'), parser.seen('Z')
+      #if ENABLED(E_AXIS_HOMING)
+        , parser.seen('E')
+      #endif
+      )
     #endif
   ) {
 

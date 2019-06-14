@@ -1047,16 +1047,16 @@ bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool
     const bool xx = x && !TEST(axis_known_position, X_AXIS),
                yy = y && !TEST(axis_known_position, Y_AXIS),
                zz = z && !TEST(axis_known_position, Z_AXIS);
-               #if ENABLED(E_AXIS_HOMING)
-                 const bool ee = e && !TEST(axis_known_position, E_AXIS);
-               #endif
+    #if ENABLED(E_AXIS_HOMING)
+      const bool ee = e && !TEST(axis_known_position, E_AXIS);
+    #endif
   
   #else
     const bool xx = x && !TEST(axis_homed, X_AXIS),
                yy = y && !TEST(axis_homed, Y_AXIS),
                zz = z && !TEST(axis_homed, Z_AXIS);
-               #if ENABLED(E_AXIS_HOMING)
-                 const bool ee = e && !TEST(axis_homed, E_AXIS);
+    #if ENABLED(E_AXIS_HOMING)
+      const bool ee = e && !TEST(axis_homed, E_AXIS);
                #endif
 
   #endif
