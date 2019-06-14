@@ -74,13 +74,6 @@ class Endstops {
       typedef uint8_t esbits_t;
     #endif
 
-    #if ENABLED(E_AXIS_HOMING)
-      typedef uint16_t hitstate_t;
-    #else
-      typedef uint8_t hitstate_t;
-    #endif
-
-
   private:
     static bool enabled, enabled_globally;
     static esbits_t live_state;
