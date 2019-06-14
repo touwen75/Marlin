@@ -204,7 +204,7 @@ void report_current_position() {
   SERIAL_ECHOPAIR("X:", LOGICAL_X_POSITION(current_position[X_AXIS]));
   SERIAL_ECHOPAIR(" Y:", LOGICAL_Y_POSITION(current_position[Y_AXIS]));
   SERIAL_ECHOPAIR(" Z:", LOGICAL_Z_POSITION(current_position[Z_AXIS]));
-  SERIAL_ECHOPAIR(" E:", current_position[E_AXIS]);
+  SERIAL_ECHOPAIR(" E:", LOGICAL_E_POSITION(current_position[E_AXIS]));
 
   stepper.report_positions();
 

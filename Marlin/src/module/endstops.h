@@ -73,15 +73,16 @@ class Endstops {
     #else
       typedef uint8_t esbits_t;
     #endif
-
-  private:
-    static bool enabled, enabled_globally;
-    static esbits_t live_state;
     #if ENABLED(E_AXIS_HOMING)
       typedef uint16_t hitstate_t;
     #else
       typedef uint8_t hitstate_t;
     #endif
+
+  private:
+    static bool enabled, enabled_globally;
+    static esbits_t live_state;
+
 
     static volatile hitstate_t hit_state;      // Use X_MIN, Y_MIN, Z_MIN and Z_MIN_PROBE as BIT index
 
