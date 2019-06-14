@@ -839,8 +839,8 @@
     #endif
   #endif
 #else
-  #undef E_MIN_PIN -1
-  #undef E_MAX_PIN -1
+  #undef E_MIN_PIN
+  #undef E_MAX_PIN
 #endif // ENABLED(E_AXIS_HOMING)
 
 //
