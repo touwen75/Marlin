@@ -197,7 +197,7 @@ void clean_up_after_endstop_or_probe_move();
 // Homing
 //
 
-#if ENABLED(E_HOMING)
+#if ENABLED(E_AXIS_HOMING)
   bool axis_unhomed_error(const bool x=true, const bool y=true, const bool z=true);
 #else
   bool axis_unhomed_error(const bool x=true, const bool y=true, const bool z=true, const bool e=true);

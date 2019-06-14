@@ -1057,8 +1057,7 @@ bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool
                zz = z && !TEST(axis_homed, Z_AXIS);
     #if ENABLED(E_AXIS_HOMING)
       const bool ee = e && !TEST(axis_homed, E_AXIS);
-               #endif
-
+    #endif
   #endif
 
 
