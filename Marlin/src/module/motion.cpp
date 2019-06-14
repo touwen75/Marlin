@@ -99,7 +99,7 @@ bool relative_mode; // = false;
  *   Used by 'line_to_current_position' to do a move after changing it.
  *   Used by 'sync_plan_position' to update 'planner.position'.
  */
-float current_position[XYZE] = { X_HOME_POS, Y_HOME_POS, Z_HOME_POS };
+float current_position[LINEAR_AXES] = ARRAY_N(LINEAR_AXES, X_HOME_POS, Y_HOME_POS, Z_HOME_POS, E_HOME_POS);
 
 /**
  * Cartesian Destination
@@ -1038,11 +1038,11 @@ void prepare_move_to_destination() {
   set_current_from_destination();
 }
 
-bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool z/*=true*/
-  #if ENABLED(E_AXIS_HOMING)
-    , const bool e/*=true*/
-  #endif
-){
+#if ENABLED(E_AXIS_HOMING)
+  bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool z/*=true*/, const bool e/*=true*/){
+#else
+  bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool z/*=true*/){
+#endif
   #if ENABLED(HOME_AFTER_DEACTIVATE)
     const bool xx = x && !TEST(axis_known_position, X_AXIS),
                yy = y && !TEST(axis_known_position, Y_AXIS),
