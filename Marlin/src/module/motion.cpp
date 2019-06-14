@@ -459,7 +459,11 @@ void clean_up_after_endstop_or_probe_move() {
   bool soft_endstops_enabled = true;
 
   // Software Endstops are based on the configured limits.
-  axis_limits_t soft_endstop[LINEAR_AXES] = ARRAY_N({ X_MIN_BED, X_MAX_BED }, { Y_MIN_BED, Y_MAX_BED }, { Z_MIN_POS, Z_MAX_POS }, { E_MIN_POS, E_MAX_POS });
+#if ENABLED(E_AXIS_HOMING)
+  axis_limits_t soft_endstop[LINEAR_AXES] = {{ X_MIN_BED, X_MAX_BED }, { Y_MIN_BED, Y_MAX_BED }, { Z_MIN_POS, Z_MAX_POS }, { E_MIN_POS, E_MAX_POS }};
+#else
+  axis_limits_t soft_endstop[LINEAR_AXES] = {{ X_MIN_BED, X_MAX_BED }, { Y_MIN_BED, Y_MAX_BED }, { Z_MIN_POS, Z_MAX_POS }};
+#endif
 
   /**
    * Software endstops can be used to monitor the open end of
