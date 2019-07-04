@@ -733,7 +733,7 @@
 
 // @section motion
 
-#define AXIS_RELATIVE_MODES ARRAY_N(NON_E_AXES + 1, false, false, false, false, false, false, false }
+#define AXIS_RELATIVE_MODES ARRAY_N(NUM_AXIS, false, false, false, false, false, false, false)
 
 // Add a Duplicate option for well-separated conjoined nozzles
 //#define MULTI_NOZZLE_DUPLICATION

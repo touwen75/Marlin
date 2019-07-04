@@ -394,6 +394,19 @@ xyze_int8_t Stepper::count_direction{0};
   #define Z_APPLY_STEP(v,Q) Z_STEP_WRITE(v)
 #endif
 
+#if NON_E_AXES > 3
+  #define I_APPLY_DIR(v,Q) I_DIR_WRITE(v)
+  #define I_APPLY_STEP(v,Q) I_STEP_WRITE(v)
+  #if NON_E_AXES > 4
+    #define J_APPLY_DIR(v,Q) J_DIR_WRITE(v)
+    #define J_APPLY_STEP(v,Q) J_STEP_WRITE(v)
+    #if NON_E_AXES > 5
+      #define K_APPLY_DIR(v,Q) K_DIR_WRITE(v)
+      #define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+    #endif
+  #endif
+#endif
+
 #if DISABLED(MIXING_EXTRUDER)
   #define E_APPLY_STEP(v,Q) E_STEP_WRITE(stepper_extruder, v)
 #endif
@@ -461,6 +474,19 @@ void Stepper::set_directions() {
   #if HAS_Z_DIR
     SET_STEP_DIR(Z); // C
   #endif
+
+#if HAS_I_DIR
+  SET_STEP_DIR(I); // I
+#endif
+
+#if HAS_J_DIR
+  SET_STEP_DIR(J); // J
+#endif
+
+#if HAS_K_DIR
+  SET_STEP_DIR(K); // K
+#endif
+
 
   #if DISABLED(LIN_ADVANCE)
     #if ENABLED(MIXING_EXTRUDER)
@@ -1882,6 +1908,15 @@ uint32_t Stepper::block_phase_isr() {
       if (X_MOVE_TEST) SBI(axis_bits, A_AXIS);
       if (Y_MOVE_TEST) SBI(axis_bits, B_AXIS);
       if (Z_MOVE_TEST) SBI(axis_bits, C_AXIS);
+      #if NON_E_AXES > 3
+        if (I_MOVE_TEST) SBI(axis_bits, I_AXIS);
+        #if NON_E_AXES > 4
+          if (J_MOVE_TEST) SBI(axis_bits, J_AXIS);
+          #if NON_E_AXES > 5
+            if (K_MOVE_TEST) SBI(axis_bits, K_AXIS);
+          #endif
+        #endif
+      #endif
       //if (!!current_block->steps.e) SBI(axis_bits, E_AXIS);
       //if (!!current_block->steps.a) SBI(axis_bits, X_HEAD);
       //if (!!current_block->steps.b) SBI(axis_bits, Y_HEAD);
@@ -2390,7 +2425,17 @@ void Stepper::init() {
  * This allows get_axis_position_mm to correctly
  * derive the current XYZ position later on.
  */
-void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c, const int32_t &e) {
+void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
+  #if NON_E_AXES > 3
+    , const int32_t &i
+    #if NON_E_AXES > 4
+      , const int32_t &j
+      #if NON_E_AXES > 5
+        , const int32_t &k
+      #endif
+    #endif
+  #endif
+  , const int32_t &e) {
   #if CORE_IS_XY
     // corexy positioning
     // these equations follow the form of the dA and dB equations on http://www.corexy.com/theory.html
@@ -2403,7 +2448,17 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
     count_position.set(a, b + c, CORESIGN(b - c));
   #else
     // default non-h-bot planning
-    count_position.set(a, b, c);
+    count_position.set(a, b, c
+    #if NON_E_AXES > 3
+    , i
+      #if NON_E_AXES > 4
+        , j
+        #if NON_E_AXES > 5
+          , k
+        #endif
+      #endif
+    #endif
+    );
   #endif
   count_position.e = e;
 }

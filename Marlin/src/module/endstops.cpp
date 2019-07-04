@@ -53,7 +53,7 @@ Endstops endstops;
 // private:
 
 bool Endstops::enabled, Endstops::enabled_globally; // Initialized by settings.load()
-volatile uint8_t Endstops::hit_state;
+volatile Endstops::hitstate_t Endstops::hit_state;
 
 Endstops::esbits_t Endstops::live_state = 0;
 
@@ -486,6 +486,8 @@ void Endstops::event_handler() {
     SERIAL_EOL();
 
     #if HAS_SPI_LCD
+    ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrI, chrJ, chrP);
+    /* 
       ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c
       #if NON_E_AXES > 3
         %c
@@ -507,6 +509,7 @@ void Endstops::event_handler() {
         #endif
       #endif 
       , chrP);
+    */
     #endif
 
     #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)

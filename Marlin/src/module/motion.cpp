@@ -151,11 +151,11 @@ int16_t feedrate_percentage = 100;
 // Homing feedrate is const progmem - compare to constexpr in the header
 const feedRate_t homing_feedrate_mm_s[XYZ] PROGMEM = {
   #if ENABLED(DELTA)
-    MMM_TO_MMS(HOMING_FEEDRATE_Z), MMM_TO_MMS(HOMING_FEEDRATE_Z),
+    MMM_TO_MMS(HOMING_FEEDRATE_Z), MMM_TO_MMS(HOMING_FEEDRATE_Z)
   #else
-    MMM_TO_MMS(HOMING_FEEDRATE_XY), MMM_TO_MMS(HOMING_FEEDRATE_XY),
+    MMM_TO_MMS(HOMING_FEEDRATE_XY), MMM_TO_MMS(HOMING_FEEDRATE_XY)
   #endif
-  MMM_TO_MMS(HOMING_FEEDRATE_Z)
+  , MMM_TO_MMS(HOMING_FEEDRATE_Z)
   #if NON_E_AXES > 3
     , MMM_TO_MMS(HOMING_FEEDRATE_I)
     #if NON_E_AXES > 4
@@ -1152,11 +1152,11 @@ bool axis_unhomed_error(uint8_t axis_bits/*=0x07*/) {
       TEST(axis_bits, Y_AXIS) ? "Y" : "",
       TEST(axis_bits, Z_AXIS) ? "Z" : ""
       #if NON_E_AXES > 3
-        TEST(axis_bits, I_AXIS) ? "I" : ""
+        , TEST(axis_bits, I_AXIS) ? "I" : ""
         #if NON_E_AXES > 4
-          TEST(axis_bits, J_AXIS) ? "J" : ""
+          , TEST(axis_bits, J_AXIS) ? "J" : ""
           #if NON_E_AXES > 5
-            TEST(axis_bits, K_AXIS) ? "K" : ""
+            , TEST(axis_bits, K_AXIS) ? "K" : ""
           #endif
         #endif
       #endif

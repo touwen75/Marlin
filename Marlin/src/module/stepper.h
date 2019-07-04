@@ -151,7 +151,7 @@
   #define ISR_Z_STEPPER_CYCLES       0UL
 #endif
 //#if NON_E_AXES > 3
-  #ifdef HAS_I_STEP
+  #if HAS_I_STEP
     #define ISR_START_I_STEPPER_CYCLES ISR_START_STEPPER_CYCLES
     #define ISR_I_STEPPER_CYCLES       ISR_STEPPER_CYCLES
   #else
@@ -159,7 +159,7 @@
     #define ISR_I_STEPPER_CYCLES       0UL
   #endif
 //  #if NON_E_AXES > 4
-    #ifdef HAS_J_STEP
+    #if HAS_J_STEP
       #define ISR_START_J_STEPPER_CYCLES ISR_START_STEPPER_CYCLES
       #define ISR_J_STEPPER_CYCLES       ISR_STEPPER_CYCLES
     #else
@@ -167,7 +167,7 @@
       #define ISR_J_STEPPER_CYCLES       0UL
     #endif
 //    #if NON_E_AXES > 5
-      #ifdef HAS_K_STEP
+      #if HAS_K_STEP
         #define ISR_START_K_STEPPER_CYCLES ISR_START_STEPPER_CYCLES
         #define ISR_K_STEPPER_CYCLES       ISR_STEPPER_CYCLES
       #else
@@ -188,34 +188,19 @@
   #define ISR_MIXING_STEPPER_CYCLES  0UL
 #endif
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
-=======
-// Calculate the minimum time to start all stepper pulses in the ISR loop
-  #if NON_E_AXES > 3
-    #define MIN_ISR_START_LOOP_CYCLES (ISR_START_X_STEPPER_CYCLES + ISR_START_Y_STEPPER_CYCLES + ISR_START_Z_STEPPER_CYCLES + ISR_START_I_STEPPER_CYCLES + ISR_START_E_STEPPER_CYCLES + ISR_START_MIXING_STEPPER_CYCLES)
-    #if NON_E_AXES > 4
-    #define MIN_ISR_START_LOOP_CYCLES (ISR_START_X_STEPPER_CYCLES + ISR_START_Y_STEPPER_CYCLES + ISR_START_Z_STEPPER_CYCLES + ISR_START_I_STEPPER_CYCLES + ISR_START_J_STEPPER_CYCLES + ISR_START_E_STEPPER_CYCLES + ISR_START_MIXING_STEPPER_CYCLES)
-      #if NON_E_AXES > 5
-    #define MIN_ISR_START_LOOP_CYCLES (ISR_START_X_STEPPER_CYCLES + ISR_START_Y_STEPPER_CYCLES + ISR_START_Z_STEPPER_CYCLES + ISR_START_I_STEPPER_CYCLES + ISR_START_J_STEPPER_CYCLES + ISR_START_K_STEPPER_CYCLES + ISR_START_E_STEPPER_CYCLES + ISR_START_MIXING_STEPPER_CYCLES)
-      #endif
-    #endif
-  #else
-    #define MIN_ISR_START_LOOP_CYCLES (ISR_START_X_STEPPER_CYCLES + ISR_START_Y_STEPPER_CYCLES + ISR_START_Z_STEPPER_CYCLES + ISR_START_E_STEPPER_CYCLES + ISR_START_MIXING_STEPPER_CYCLES)
-  #endif
-
->>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
 // And the total minimum loop time, not including the base
+#define MIN_ISR_LOOP_CYCLES (ISR_X_STEPPER_CYCLES + ISR_Y_STEPPER_CYCLES + ISR_Z_STEPPER_CYCLES 
   #if NON_E_AXES > 3
-    #define MIN_ISR_LOOP_CYCLES (ISR_X_STEPPER_CYCLES + ISR_Y_STEPPER_CYCLES + ISR_Z_STEPPER_CYCLES + ISR_I_STEPPER_CYCLES + ISR_E_STEPPER_CYCLES + ISR_MIXING_STEPPER_CYCLES)
+    + ISR_I_STEPPER_CYCLES 
     #if NON_E_AXES > 4
-      #define MIN_ISR_LOOP_CYCLES (ISR_X_STEPPER_CYCLES + ISR_Y_STEPPER_CYCLES + ISR_Z_STEPPER_CYCLES + ISR_I_STEPPER_CYCLES + ISR_J_STEPPER_CYCLES + ISR_E_STEPPER_CYCLES + ISR_MIXING_STEPPER_CYCLES)
+      + ISR_J_STEPPER_CYCLES
       #if NON_E_AXES > 5
-        #define MIN_ISR_LOOP_CYCLES (ISR_X_STEPPER_CYCLES + ISR_Y_STEPPER_CYCLES + ISR_Z_STEPPER_CYCLES + ISR_I_STEPPER_CYCLES + ISR_J_STEPPER_CYCLES + ISR_K_STEPPER_CYCLES + ISR_E_STEPPER_CYCLES + ISR_MIXING_STEPPER_CYCLES)
+        + ISR_K_STEPPER_CYCLES
       #endif
     #endif
-  #else
-    #define MIN_ISR_LOOP_CYCLES (ISR_X_STEPPER_CYCLES + ISR_Y_STEPPER_CYCLES + ISR_Z_STEPPER_CYCLES + ISR_E_STEPPER_CYCLES + ISR_MIXING_STEPPER_CYCLES)
   #endif
+  + ISR_E_STEPPER_CYCLES + ISR_MIXING_STEPPER_CYCLES)
+
 // Calculate the minimum MPU cycles needed per pulse to enforce, limited to the max stepper rate
 #define _MIN_STEPPER_PULSE_CYCLES(N) _MAX(uint32_t((F_CPU) / (MAXIMUM_STEPPER_RATE)), ((F_CPU) / 500000UL) * (N))
 #if MINIMUM_STEPPER_PULSE
@@ -300,7 +285,7 @@ class Stepper {
       #ifndef PWM_MOTOR_CURRENT
         #define PWM_MOTOR_CURRENT DEFAULT_PWM_MOTOR_CURRENT
       #endif
-      static uint32_t motor_current_setting[3];
+      static uint32_t motor_current_setting[3]; // TODO: longer array if NON_E_AXES > 3
       static bool initialized;
     #endif
 
@@ -347,15 +332,9 @@ class Stepper {
     #endif
 
     // Delta error variables for the Bresenham line tracer
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
     static xyze_long_t delta_error;
     static xyze_ulong_t advance_dividend;
     static uint32_t advance_divisor,
-=======
-    static int32_t delta_error[NUM_AXIS];
-    static uint32_t advance_dividend[NUM_AXIS],
-                    advance_divisor,
->>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
                     step_events_completed,  // The number of step events executed in the current block
                     accelerate_until,       // The point from where we need to stop acceleration
                     decelerate_after,       // The point from where we need to start decelerating
@@ -397,14 +376,10 @@ class Stepper {
       static uint32_t acc_step_rate; // needed for deceleration start point
     #endif
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
     //
     // Exact steps at which an endstop was triggered
     //
     static xyz_long_t endstops_trigsteps;
-=======
-    static volatile int32_t endstops_trigsteps[NON_E_AXES];
->>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
 
     //
     // Positions of stepper motors, in step units
@@ -541,66 +516,12 @@ class Stepper {
       static void refresh_motor_power();
     #endif
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
-=======
-    // Set the current position in steps
-    static inline void set_position(const int32_t &a, const int32_t &b, const int32_t &c
-      #if NON_E_AXES > 3
-        , const int32_t &i
-        #if NON_E_AXES > 4
-          , const int32_t &j
-          #if NON_E_AXES > 5
-            , const int32_t &k
-          #endif
-        #endif
-      #endif
-      , const int32_t &e) {
-      planner.synchronize();
-      const bool was_enabled = STEPPER_ISR_ENABLED();
-      if (was_enabled) DISABLE_STEPPER_DRIVER_INTERRUPT();
-      _set_position(a, b, c
-        #if NON_E_AXES > 3
-          , i
-          #if NON_E_AXES > 4
-            , j
-            #if NON_E_AXES > 5
-              , k
-            #endif
-          #endif
-        #endif
-      , e);
-      if (was_enabled) ENABLE_STEPPER_DRIVER_INTERRUPT();
-    }
-
-    static inline void set_position(const AxisEnum a, const int32_t &v) {
-      planner.synchronize();
-
-      #ifdef __AVR__
-        // Protect the access to the position. Only required for AVR, as
-        //  any 32bit CPU offers atomic access to 32bit variables
-        const bool was_enabled = STEPPER_ISR_ENABLED();
-        if (was_enabled) DISABLE_STEPPER_DRIVER_INTERRUPT();
-      #endif
-
-      count_position[a] = v;
-
-      #ifdef __AVR__
-        // Reenable Stepper ISR
-        if (was_enabled) ENABLE_STEPPER_DRIVER_INTERRUPT();
-      #endif
-    }
-
->>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
     // Set direction bits for all steppers
     static void set_directions();
 
   private:
 
     // Set the current position in steps
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
-    static void _set_position(const int32_t &a, const int32_t &b, const int32_t &c, const int32_t &e);
-    FORCE_INLINE static void _set_position(const abce_long_t &spos) { _set_position(spos.a, spos.b, spos.c, spos.e); }
-=======
     static void _set_position(const int32_t &a, const int32_t &b, const int32_t &c
       #if NON_E_AXES > 3
         , const int32_t &i
@@ -612,7 +533,7 @@ class Stepper {
         #endif
       #endif
       , const int32_t &e);
->>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
+    FORCE_INLINE static void _set_position(const abce_long_t &spos) { _set_position(spos.a, spos.b, spos.c, spos.e); }
 
     FORCE_INLINE static uint32_t calc_timer_interval(uint32_t step_rate, uint8_t* loops) {
       uint32_t timer;

@@ -50,9 +50,15 @@
  * options for G2/G3 arc generation. In future these options may be GCode tunable.
  */
 void plan_arc(
+<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
   const xyze_pos_t &cart,   // Destination position
   const ab_float_t &offset, // Center of rotation relative to current_position
   const uint8_t clockwise   // Clockwise?
+=======
+  const float (&cart)[NUM_AXIS],  // Destination position
+  const float (&offset)[2],   // Center of rotation relative to current_position
+  const uint8_t clockwise     // Clockwise?
+>>>>>>> 6a8645b merge axis to my DEV
 ) {
   #if ENABLED(CNC_WORKSPACE_PLANES)
     AxisEnum p_axis, q_axis, l_axis;
@@ -144,7 +150,11 @@ void plan_arc(
    * This is important when there are successive arc motions.
    */
   // Vector rotation matrix values
+<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
   xyze_pos_t raw;
+=======
+  float raw[NUM_AXIS];
+>>>>>>> 6a8645b merge axis to my DEV
   const float theta_per_segment = angular_travel / segments,
               linear_per_segment = linear_travel / segments,
               extruder_per_segment = extruder_travel / segments,
