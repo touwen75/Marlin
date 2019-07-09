@@ -2431,7 +2431,26 @@ void MarlinSettings::reset() {
     #ifndef DEFAULT_ZJERK
       #define DEFAULT_ZJERK 0
     #endif
-    planner.max_jerk.set(DEFAULT_XJERK, DEFAULT_YJERK, DEFAULT_ZJERK);
+    #ifndef DEFAULT_IJERK
+      #define DEFAULT_IJERK 0
+    #endif
+    #ifndef DEFAULT_JJERK
+      #define DEFAULT_JJERK 0
+    #endif
+    #ifndef DEFAULT_KJERK
+      #define DEFAULT_KJERK 0
+    #endif
+    planner.max_jerk.set(DEFAULT_XJERK, DEFAULT_YJERK, DEFAULT_ZJERK
+    #if NON_E_AXES > 3
+      , DEFAULT_IJERK
+      #if NON_E_AXES > 4
+        , DEFAULT_JJERK
+        #if NON_E_AXES > 5
+          , DEFAULT_KJERK
+        #endif
+      #endif
+    #endif
+    );
     #if HAS_CLASSIC_E_JERK
       planner.max_jerk.e = DEFAULT_EJERK;
     #endif
@@ -2900,6 +2919,15 @@ void MarlinSettings::reset() {
         PSTR("  M203 X"), LINEAR_UNIT(planner.settings.max_feedrate_mm_s[X_AXIS])
       , SP_Y_STR, LINEAR_UNIT(planner.settings.max_feedrate_mm_s[Y_AXIS])
       , SP_Z_STR, LINEAR_UNIT(planner.settings.max_feedrate_mm_s[Z_AXIS])
+      #if NON_E_AXES > 3
+        , SP_I_STR, LINEAR_UNIT(planner.settings.max_feedrate_mm_s[I_AXIS])
+        #if NON_E_AXES > 4
+          , SP_J_STR, LINEAR_UNIT(planner.settings.max_feedrate_mm_s[J_AXIS])
+          #if NON_E_AXES > 5
+            , SP_K_STR, LINEAR_UNIT(planner.settings.max_feedrate_mm_s[K_AXIS])
+          #endif
+        #endif
+      #endif
       #if DISABLED(DISTINCT_E_FACTORS)
         , SP_E_STR, VOLUMETRIC_UNIT(planner.settings.max_feedrate_mm_s[E_AXIS])
       #endif
@@ -2920,6 +2948,15 @@ void MarlinSettings::reset() {
         PSTR("  M201 X"), LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[X_AXIS])
       , SP_Y_STR, LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[Y_AXIS])
       , SP_Z_STR, LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[Z_AXIS])
+      #if NON_E_AXES > 3
+        , SP_I_STR, LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[I_AXIS])
+        #if NON_E_AXES > 4
+          , SP_J_STR, LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[J_AXIS])
+          #if NON_E_AXES > 5
+            , SP_K_STR, LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[K_AXIS])
+          #endif
+        #endif
+      #endif
       #if DISABLED(DISTINCT_E_FACTORS)
         , SP_E_STR, VOLUMETRIC_UNIT(planner.settings.max_acceleration_mm_per_s2[E_AXIS])
       #endif
@@ -2965,6 +3002,16 @@ void MarlinSettings::reset() {
         , SP_X_STR, LINEAR_UNIT(planner.max_jerk.x)
         , SP_Y_STR, LINEAR_UNIT(planner.max_jerk.y)
         , SP_Z_STR, LINEAR_UNIT(planner.max_jerk.z)
+        #if NON_E_AXES > 3
+        , SP_I_STR, LINEAR_UNIT(planner.max_jerk.i)
+        #if NON_E_AXES > 4
+          , SP_J_STR, LINEAR_UNIT(planner.max_jerk.j)
+          #if NON_E_AXES > 5
+            , SP_K_STR, LINEAR_UNIT(planner.max_jerk.k)
+          #endif
+        #endif
+      #endif
+        
         #if HAS_CLASSIC_E_JERK
           , SP_E_STR, LINEAR_UNIT(planner.max_jerk.e)
         #endif
@@ -2979,6 +3026,16 @@ void MarlinSettings::reset() {
             PSTR("  M206 X"), LINEAR_UNIT(home_offset.x)
           , SP_Y_STR, LINEAR_UNIT(home_offset.y)
           , SP_Z_STR
+          #if NON_E_AXES > 3
+            , SP_I_STR, LINEAR_UNIT(home_offset.i)
+            #if NON_E_AXES > 4
+              , SP_J_STR, LINEAR_UNIT(home_offset.j)
+              #if NON_E_AXES > 5
+                , SP_K_STR, LINEAR_UNIT(home_offset.k)
+              #endif
+            #endif
+          #endif
+
         #else
           PSTR("  M206 Z")
         #endif

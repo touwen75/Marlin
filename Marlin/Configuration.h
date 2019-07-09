@@ -162,14 +162,8 @@
   #define MOTHERBOARD BOARD_RAMPS_14_EFB
 #endif
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 // Name displayed in the LCD "Ready" message and Info menu
 //#define CUSTOM_MACHINE_NAME "3D Printer"
-=======
-// Optional custom name for your RepStrap or other custom machine
-// Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME ""
->>>>>>> 6a8645b merge axis to my DEV
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like http://www.uuidgenerator.net/version4
@@ -177,13 +171,8 @@
 
 // This defines the number of axes that are not used for extruders (axes that benefit from endstops and homing).
 // This must be set to 3 also if one or more of the positioning axes are driven by multiple stepper motors. Only increase 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 // for robots with additional axes (tools apart from extruders that are driven by stepper motors)
 #define NON_E_AXES 3
-=======
-// for robots with additional axes (tools apart from extruders that are driven by stepper motors) 
-#define NON_E_AXES 5
->>>>>>> 6a8645b merge axis to my DEV
 
 // @section extruder
 
@@ -715,7 +704,6 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -729,21 +717,6 @@
 #define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
-=======
-#define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define I_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define J_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define K_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define I_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define J_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define K_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the probe.
->>>>>>> 6a8645b merge axis to my DEV
 
 /**
  * Stepper Drivers
@@ -769,6 +742,8 @@
 //#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
+//#define I_DRIVER_TYPE  A4988
+//#define J_DRIVER_TYPE  A4988
 //#define E0_DRIVER_TYPE A4988
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
@@ -819,26 +794,17 @@
 /**
  * Default Axis Steps Per Unit (steps/mm)
  * Override with M92
- *                                      X, Y, Z, E0 [, E1[, E2...]]
+ *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-//default calibration for module 50
-#ifdef MODULE_50
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 31.49, 52.49, 52.49, 477.87, 477.87, 1000} //e axis in ML  
-  #define DEFAULT_MAX_FEEDRATE          { 250, 250, 250, 12, 12, 250 }  //X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2[, E3[, E4[, E5]]]]]
-  #define DEFAULT_MAX_ACCELERATION      { 500, 500, 500, 9, 9, 500 }
-#endif
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 400, 400}  
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
-=======
->>>>>>> 6a8645b merge axis to my DEV
+#define DEFAULT_MAX_FEEDRATE          { 250, 250, 8, 250 }
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
   #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 50 } // ...or, set your own edit limits
@@ -851,19 +817,6 @@
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
 #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
-=======
-
-//default calibration for module 20
-#ifdef MODULE_20
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 31.49, 52.49, 52.49 , 912.35, 912.35, 1000} //e axis in ML 
-  #define DEFAULT_MAX_FEEDRATE          { 250, 250, 250 , 12, 12, 250 }
-  #define DEFAULT_MAX_ACCELERATION      { 500, 500, 500, 9, 9, 500 }
-
-  //X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2[, E3[, E4[, E5]]]]]
-#endif
-
-
->>>>>>> 6a8645b merge axis to my DEV
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -890,23 +843,17 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 //#define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK 10.0
   #define DEFAULT_YJERK 10.0
-=======
-#if DISABLED(JUNCTION_DEVIATION)
-  #define DEFAULT_XJERK 2.0
-  #define DEFAULT_YJERK 2.0
->>>>>>> 6a8645b merge axis to my DEV
   #define DEFAULT_ZJERK  0.3
   #if NON_E_AXES > 3
-    #define DEFAULT_IJERK  1.0
+    #define DEFAULT_IJERK  0.3
     #if NON_E_AXES > 4
-      #define DEFAULT_JJERK  1.0
+      #define DEFAULT_JJERK  0.3
       #if NON_E_AXES > 5
-        #define DEFAULT_KJERK  1.0
+        #define DEFAULT_KJERK  0.3
       #endif
     #endif
   #endif
@@ -1550,23 +1497,11 @@
 #define HOMING_FEEDRATE_XY (50*60)
 #define HOMING_FEEDRATE_Z  (4*60)
 #if NON_E_AXES > 3
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
   #define HOMING_FEEDRATE_I (4*60)
-=======
-  #define HOMING_FEEDRATE_I (2.5*60)
->>>>>>> 6a8645b merge axis to my DEV
   #if NON_E_AXES > 4
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
     #define HOMING_FEEDRATE_J (4*60)
-=======
-    #define HOMING_FEEDRATE_J (2.5*60)
->>>>>>> 6a8645b merge axis to my DEV
     #if NON_E_AXES > 5
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
       #define HOMING_FEEDRATE_K (4*60)
-=======
-      #define HOMING_FEEDRATE_K (2.5*60)
->>>>>>> 6a8645b merge axis to my DEV
     #endif
   #endif
 #endif
