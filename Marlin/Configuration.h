@@ -68,35 +68,11 @@
 // config/examples/SCARA and customize for your machine.
 //
 
-//select machine model by the differences
-#define MODULE_50
-//#define MODULE_20
-
-
-
-#ifdef MODULE_50
-  #define VERSION "2.0.1 /50" 
-#endif
-
-#ifdef MODULE_20
-  #define VERSION "2.0.1 /20" 
-#endif
-
 // @section info
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-=======
-// User-specified version info of this build to display in [Pronterface, etc] terminal window during
-// startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
-// build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "Gabriel S. Beraldo" // Who made the changes.
-#define SHOW_BOOTSCREEN
-#define STRING_SPLASH_LINE1 "" // will be shown during bootup in line 1
-#define STRING_SPLASH_LINE2 VERSION         // will be shown during bootup in line 2
->>>>>>> 6a8645b merge axis to my DEV
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -115,13 +91,8 @@
 // Show the bitmap in Marlin/_Bootscreen.h on startup.
 //#define SHOW_CUSTOM_BOOTSCREEN
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 // Show the bitmap in Marlin/_Statusscreen.h on the status screen.
 //#define CUSTOM_STATUS_SCREEN_IMAGE
-=======
-// Enable to show the bitmap in Marlin/_Statusscreen.h on the status screen.
-#define CUSTOM_STATUS_SCREEN_IMAGE
->>>>>>> 6a8645b merge axis to my DEV
 
 // @section machine
 
@@ -744,6 +715,7 @@
 //#define Z4_DRIVER_TYPE A4988
 //#define I_DRIVER_TYPE  A4988
 //#define J_DRIVER_TYPE  A4988
+//#define K_DRIVER_TYPE  A4988
 //#define E0_DRIVER_TYPE A4988
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
