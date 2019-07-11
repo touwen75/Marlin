@@ -129,9 +129,9 @@ uint8_t Planner::delay_before_delivering;       // This counter delays delivery 
 
 planner_settings_t Planner::settings;           // Initialized by settings.load()
 
-uint32_t Planner::max_acceleration_steps_per_s2[XYZE_N]; // (steps/s^2) Derived from mm_per_s2
+uint32_t Planner::max_acceleration_steps_per_s2[NUM_AXIS_N]; // (steps/s^2) Derived from mm_per_s2
 
-float Planner::steps_to_mm[XYZE_N];           // (mm) Millimeters per step
+float Planner::steps_to_mm[NUM_AXIS_N];           // (mm) Millimeters per step
 
 #if DISABLED(CLASSIC_JERK)
   float Planner::junction_deviation_mm;       // (mm) M205 J
@@ -1967,7 +1967,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
         #elif CORE_IS_YZ
           sq(delta_mm.x) + sq(delta_mm.head.y) + sq(delta_mm.head.z)
         #else
-          sq(delta_mm.x) + sq(delta_mm.y) + sq(delta_mm.z)
+          sq(delta_mm.x) + sq(delta_mm.y) + sq(delta_mm.z) // TODO: Add support for NON_E_AXES > 3
         #endif
       );
 
@@ -2065,11 +2065,11 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     if (block->steps.x) ENABLE_AXIS_X();
     if (block->steps.y) ENABLE_AXIS_Y();
     #if NON_E_AXES > 3
-      if (block->steps[I_AXIS]) enable_I();
+      if (block->steps.i) enable_I();
       #if NON_E_AXES > 4
-        if (block->steps[J_AXIS]) enable_J();
+        if (block->steps.j) enable_J();
         #if NON_E_AXES > 5
-          if (block->steps[K_AXIS]) enable_K();
+          if (block->steps.k) enable_K();
         #endif
       #endif
     #endif
@@ -2953,6 +2953,15 @@ void Planner::set_machine_position_mm(const float &a, const float &b, const floa
   position.set(LROUND(a * settings.axis_steps_per_mm[A_AXIS]),
                LROUND(b * settings.axis_steps_per_mm[B_AXIS]),
                LROUND(c * settings.axis_steps_per_mm[C_AXIS]),
+               #if NON_E_AXES > 3
+                 LROUND(i * settings.axis_steps_per_mm[I_AXIS]),
+                 #if NON_E_AXES > 4
+                   LROUND(j * settings.axis_steps_per_mm[J_AXIS]),
+                   #if NON_E_AXES > 5
+                     LROUND(k * settings.axis_steps_per_mm[K_AXIS]),
+                   #endif
+                 #endif
+               #endif
                LROUND(e * settings.axis_steps_per_mm[E_AXIS_N(active_extruder)]));
   if (has_blocks_queued()) {
     //previous_nominal_speed_sqr = 0.0; // Reset planner junction speeds. Assume start from rest.
