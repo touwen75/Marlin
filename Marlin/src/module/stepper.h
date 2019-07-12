@@ -150,33 +150,30 @@
 #else
   #define ISR_Z_STEPPER_CYCLES       0UL
 #endif
-//#if NON_E_AXES > 3
+#if NON_E_AXES > 3 // TODO Try commenting out
   #if HAS_I_STEP
-    #define ISR_START_I_STEPPER_CYCLES ISR_START_STEPPER_CYCLES
     #define ISR_I_STEPPER_CYCLES       ISR_STEPPER_CYCLES
   #else
     #define ISR_START_I_STEPPER_CYCLES 0UL
     #define ISR_I_STEPPER_CYCLES       0UL
   #endif
-//  #if NON_E_AXES > 4
+  #if NON_E_AXES > 4 // TODO Try commenting out
     #if HAS_J_STEP
-      #define ISR_START_J_STEPPER_CYCLES ISR_START_STEPPER_CYCLES
       #define ISR_J_STEPPER_CYCLES       ISR_STEPPER_CYCLES
     #else
       #define ISR_START_J_STEPPER_CYCLES 0UL
       #define ISR_J_STEPPER_CYCLES       0UL
     #endif
-//    #if NON_E_AXES > 5
+    #if NON_E_AXES > 5 // TODO Try commenting out
       #if HAS_K_STEP
-        #define ISR_START_K_STEPPER_CYCLES ISR_START_STEPPER_CYCLES
         #define ISR_K_STEPPER_CYCLES       ISR_STEPPER_CYCLES
       #else
         #define ISR_START_K_STEPPER_CYCLES 0UL
         #define ISR_K_STEPPER_CYCLES       0UL
       #endif
-//    #endif
-//  #endif
-//#endif
+    #endif // TODO Try commenting out
+  #endif // TODO Try commenting out
+#endif // TODO Try commenting out
 
 // E is always interpolated, even for mixing extruders
 #define ISR_E_STEPPER_CYCLES         ISR_STEPPER_CYCLES

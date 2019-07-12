@@ -1237,7 +1237,7 @@ void Planner::recalculate() {
 void Planner::check_axes_activity() {
 
   #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_E)
-    xyze_bool_t axis_active = { false };
+    xyze_bool_t axis_active = { false }; // TEST NON_E_AXES > 3
   #endif
 
   #if FAN_COUNT > 0
