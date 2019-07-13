@@ -590,14 +590,9 @@
  * details can be tuned in Configuration_adv.h
  */
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 #define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
 #define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
 #define THERMAL_PROTECTION_CHAMBER // Enable thermal protection for the heated chamber
-=======
-//#define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
-//#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
->>>>>>> 6a8645b merge axis to my DEV
 
 //===========================================================================
 //============================= Mechanical Settings =========================
@@ -626,15 +621,15 @@
 #define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
-#define USE_IMIN_PLUG
-#define USE_JMIN_PLUG
+//#define USE_IMIN_PLUG
+//#define USE_JMIN_PLUG
 //#define USE_KMIN_PLUG
 //#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
 //#define USE_IMAX_PLUG
-//#define USE_JMIN_PLUG
-//#define USE_KMIN_PLUG
+//#define USE_JMAX_PLUG
+//#define USE_KMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
 #define ENDSTOPPULLUPS
