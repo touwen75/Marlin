@@ -417,15 +417,23 @@ void menu_motion() {
     GCODES_ITEM(MSG_AUTO_HOME_Y, PSTR("G28 Y"));
     GCODES_ITEM(MSG_AUTO_HOME_Z, PSTR("G28 Z"));
     #if NON_E_AXES > 3
+<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
       GCODES_ITEM(MSG_AUTO_HOME_I, PSTR("G28 I"));
       #if NON_E_AXES > 4
         GCODES_ITEM(MSG_AUTO_HOME_J, PSTR("G28 J"));
         #if NON_E_AXES > 5
           GCODES_ITEM(MSG_AUTO_HOME_K, PSTR("G28 K"));
+=======
+        MENU_ITEM(gcode, MSG_AUTO_HOME_I, PSTR("G28 I"));
+        #if NON_E_AXES > 4
+          MENU_ITEM(gcode, MSG_AUTO_HOME_J, PSTR("G28 J"));
+          #if NON_E_AXES > 5
+            MENU_ITEM(gcode, MSG_AUTO_HOME_K, PSTR("G28 K"));
+          #endif
+>>>>>>> 1d110ef Updates
         #endif
       #endif
     #endif
-  #endif
 
   //
   // Auto Z-Align

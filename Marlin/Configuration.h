@@ -68,6 +68,24 @@
 // config/examples/SCARA and customize for your machine.
 //
 
+<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
+=======
+//select machine model by the differences
+#define MODULE_50 false
+//#define MODULE_20
+#define DEV_PARAMETERS true
+
+
+
+#ifdef MODULE_50
+  #define VERSION "2.0.0 /50" 
+#endif
+
+#ifdef MODULE_20
+  #define VERSION "2.0.0 /20" 
+#endif
+
+>>>>>>> 1d110ef Updates
 // @section info
 
 // Author info of this build printed to the host during boot and M115
