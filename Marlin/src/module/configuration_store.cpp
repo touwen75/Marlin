@@ -2431,14 +2431,20 @@ void MarlinSettings::reset() {
     #ifndef DEFAULT_ZJERK
       #define DEFAULT_ZJERK 0
     #endif
-    #ifndef DEFAULT_IJERK
-      #define DEFAULT_IJERK 0
-    #endif
-    #ifndef DEFAULT_JJERK
-      #define DEFAULT_JJERK 0
-    #endif
-    #ifndef DEFAULT_KJERK
-      #define DEFAULT_KJERK 0
+    #if NON_E_AXES > 3
+      #ifndef DEFAULT_IJERK
+        #define DEFAULT_IJERK 0
+      #endif
+      #if NON_E_AXES > 4
+        #ifndef DEFAULT_JJERK
+          #define DEFAULT_JJERK 0
+        #endif
+        #if NON_E_AXES > 5
+          #ifndef DEFAULT_KJERK
+            #define DEFAULT_KJERK 0
+          #endif
+        #endif
+      #endif
     #endif
     planner.max_jerk.set(DEFAULT_XJERK, DEFAULT_YJERK, DEFAULT_ZJERK
     #if NON_E_AXES > 3
