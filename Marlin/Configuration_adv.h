@@ -107,7 +107,7 @@
 #if TEMP_SENSOR_CHAMBER
   #define CHAMBER_MINTEMP             5
   #define CHAMBER_MAXTEMP            60
-  #define TEMP_CHAMBER_HYSTERESIS     1   // (°C) Temperature proximity considered "close enough" to the target
+  #define TEMP_CHAMBER_HYSTERESIS     1   // (Â°C) Temperature proximity considered "close enough" to the target
   //#define CHAMBER_LIMIT_SWITCHING
   //#define HEATER_CHAMBER_PIN       44   // Chamber heater on/off pin
   //#define HEATER_CHAMBER_INVERTING false
@@ -712,7 +712,7 @@
  * and hotend offsets.
  *
  * Note: HOTEND_OFFSET and CALIBRATION_OBJECT_CENTER must be set to within
- *       ±5mm of true values for G425 to succeed.
+ *       Â±5mm of true values for G425 to succeed.
  */
 //#define CALIBRATION_GCODE
 #if ENABLED(CALIBRATION_GCODE)
@@ -918,7 +918,7 @@
    */
   //#define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
-    //#define POWER_LOSS_PIN         44 // Pin to detect power loss (optional)
+    //#define POWER_LOSS_PIN         44 // Pin to detect power loss
     //#define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
     //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
     //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
@@ -1075,7 +1075,7 @@
   //#define USE_SMALL_INFOFONT
 
   // Enable this option and reduce the value to optimize screen updates.
-  // The normal delay is 10µs. Use the lowest value that still gives a reliable display.
+  // The normal delay is 10Âµs. Use the lowest value that still gives a reliable display.
   //#define DOGM_SPI_DELAY_US 5
 
   // Swap the CW/CCW indicators in the graphics overlay
@@ -1160,7 +1160,7 @@
   #if ENABLED(DOUBLECLICK_FOR_Z_BABYSTEPPING)
     #define DOUBLECLICK_MAX_INTERVAL 1250   // Maximum interval between clicks, in milliseconds.
                                             // Note: Extra time may be added to mitigate controller latency.
-    #define BABYSTEP_ALWAYS_AVAILABLE     // Allow babystepping at all times (not just during movement).
+    //#define BABYSTEP_ALWAYS_AVAILABLE     // Allow babystepping at all times (not just during movement).
     //#define MOVE_Z_WHEN_IDLE              // Jump to the move Z menu on doubleclick when printer is idle.
     #if ENABLED(MOVE_Z_WHEN_IDLE)
       #define MOVE_Z_IDLE_MULTIPLICATOR 1   // Multiply 1mm by this factor for the move step size.
@@ -1264,7 +1264,7 @@
 
 /**
  * Minimum delay after setting the stepper DIR (in ns)
- *     0 : No delay (Expect at least 10µS since one Stepper ISR must transpire)
+ *     0 : No delay (Expect at least 10ÂµS since one Stepper ISR must transpire)
  *    20 : Minimum for TMC2xxx drivers
  *   200 : Minimum for A4988 drivers
  *   400 : Minimum for A5984 drivers
@@ -1278,7 +1278,7 @@
 //#define MINIMUM_STEPPER_DIR_DELAY 650
 
 /**
- * Minimum stepper driver pulse width (in µs)
+ * Minimum stepper driver pulse width (in Âµs)
  *   0 : Smallest possible width the MCU can produce, compatible with TMC2xxx drivers
  *   0 : Minimum 500ns for LV8729, adjusted in stepper.h
  *   1 : Minimum for A4988 and A5984 stepper drivers
@@ -2376,7 +2376,7 @@
   //#define MAX7219_GCODE          // Add the M7219 G-code to control the LED matrix
   #define MAX7219_INIT_TEST    2   // Do a test pattern at initialization (Set to 2 for spiral)
   #define MAX7219_NUMBER_UNITS 1   // Number of Max7219 units in chain.
-  #define MAX7219_ROTATE       0   // Rotate the display clockwise (in multiples of +/- 90°)
+  #define MAX7219_ROTATE       0   // Rotate the display clockwise (in multiples of +/- 90Â°)
                                    // connector at:  right=0   bottom=-90  top=90  left=180
   //#define MAX7219_REVERSE_ORDER  // The individual LED matrix units may be in reversed order
 

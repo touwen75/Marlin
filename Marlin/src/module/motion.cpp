@@ -432,6 +432,109 @@ void do_blocking_move_to(const float rx, const float ry, const float rz, const f
 
   planner.synchronize();
 }
+
+#if ENABLED(E_AXIS HOMING)
+void do_blocking_move_to_e(const float rx, const float ry, const float rz, const float re, const float &fr_mm_s/*=0.0*/) {
+  if (DEBUGGING(LEVELING)) DEBUG_XYZ(">>> do_blocking_move_to", rx, ry, rz, re);
+
+  const float z_feedrate  = fr_mm_s ? fr_mm_s : homing_feedrate(Z_AXIS),
+              xy_feedrate = fr_mm_s ? fr_mm_s : XY_PROBE_FEEDRATE_MM_S,
+              e_feedrate = fr_mm_s ? fr_mm_s : homing_feedrate(E_AXIS);
+/**
+  #if ENABLED(DELTA)
+
+    if (!position_is_reachable(rx, ry)) return;
+
+    REMEMBER(fr, feedrate_mm_s, xy_feedrate);
+
+    set_destination_from_current();          // sync destination at the start
+
+    if (DEBUGGING(LEVELING)) DEBUG_POS("set_destination_from_current", destination);
+
+    // when in the danger zone
+    if (current_position[Z_AXIS] > delta_clip_start_height) {
+      if (rz > delta_clip_start_height) {   // staying in the danger zone
+        destination[X_AXIS] = rx;           // move directly (uninterpolated)
+        destination[Y_AXIS] = ry;
+        destination[Z_AXIS] = rz;
+        prepare_uninterpolated_move_to_destination(); // set_current_from_destination()
+        if (DEBUGGING(LEVELING)) DEBUG_POS("danger zone move", current_position);
+        return;
+      }
+      destination[Z_AXIS] = delta_clip_start_height;
+      prepare_uninterpolated_move_to_destination(); // set_current_from_destination()
+      if (DEBUGGING(LEVELING)) DEBUG_POS("zone border move", current_position);
+    }
+
+    if (rz > current_position[Z_AXIS]) {    // raising?
+      destination[Z_AXIS] = rz;
+      prepare_uninterpolated_move_to_destination(z_feedrate);   // set_current_from_destination()
+      if (DEBUGGING(LEVELING)) DEBUG_POS("z raise move", current_position);
+    }
+
+    destination[X_AXIS] = rx;
+    destination[Y_AXIS] = ry;
+    prepare_move_to_destination();         // set_current_from_destination()
+    if (DEBUGGING(LEVELING)) DEBUG_POS("xy move", current_position);
+
+    if (rz < current_position[Z_AXIS]) {    // lowering?
+      destination[Z_AXIS] = rz;
+      prepare_uninterpolated_move_to_destination(z_feedrate);   // set_current_from_destination()
+      if (DEBUGGING(LEVELING)) DEBUG_POS("z lower move", current_position);
+    }
+
+  #elif IS_SCARA
+
+    if (!position_is_reachable(rx, ry)) return;
+
+    set_destination_from_current();
+
+    // If Z needs to raise, do it before moving XY
+    if (destination[Z_AXIS] < rz) {
+      destination[Z_AXIS] = rz;
+      prepare_uninterpolated_move_to_destination(z_feedrate);
+    }
+
+    destination[X_AXIS] = rx;
+    destination[Y_AXIS] = ry;
+    prepare_uninterpolated_move_to_destination(xy_feedrate);
+
+    // If Z needs to lower, do it after moving XY
+    if (destination[Z_AXIS] > rz) {
+      destination[Z_AXIS] = rz;
+      prepare_uninterpolated_move_to_destination(z_feedrate);
+    }
+
+  #else
+ */
+    // If Z needs to raise, do it before moving XY
+    if (current_position[Z_AXIS] < rz) {
+      current_position[Z_AXIS] = rz;
+      line_to_current_position(z_feedrate);
+    }
+
+    current_position[X_AXIS] = rx;
+    current_position[Y_AXIS] = ry;
+    line_to_current_position(xy_feedrate);
+
+    // If Z needs to lower, do it after moving XY
+    if (current_position[Z_AXIS] > rz) {
+      current_position[Z_AXIS] = rz;
+      line_to_current_position(z_feedrate);
+    }
+    // move E after all other axes
+    current_position[E_AXIS] = re;
+    line_to_current_position(e_feedrate);
+
+/**
+  #endif // destination[Z_AXIS] < rz
+ */
+  if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("<<< do_blocking_move_to");
+
+  planner.synchronize();
+}
+#endif // E_AXIS_HOMING
+
 void do_blocking_move_to_x(const float &rx, const float &fr_mm_s/*=0.0*/) {
   do_blocking_move_to(rx, current_position[Y_AXIS], current_position[Z_AXIS], fr_mm_s);
 }
@@ -440,6 +543,9 @@ void do_blocking_move_to_z(const float &rz, const float &fr_mm_s/*=0.0*/) {
 }
 void do_blocking_move_to_xy(const float &rx, const float &ry, const float &fr_mm_s/*=0.0*/) {
   do_blocking_move_to(rx, ry, current_position[Z_AXIS], fr_mm_s);
+}
+void do_blocking_move_to_e(const float &re, const float &fr_mm_s/*=0.0*/) {
+  do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], re, fr_mm_s);
 }
 
 //

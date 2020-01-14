@@ -2760,8 +2760,9 @@ void Planner::set_machine_position_mm(const float &a, const float &b, const floa
     //ZERO(previous_speed);
     buffer_sync_block();
   }
-  else
+  else {
     stepper.set_position(position[A_AXIS], position[B_AXIS], position[C_AXIS], position[E_AXIS]);
+  }
 }
 
 void Planner::set_position_mm(const float &rx, const float &ry, const float &rz, const float &e) {

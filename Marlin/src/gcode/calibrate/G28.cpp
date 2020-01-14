@@ -439,10 +439,10 @@ void GcodeSuite::G28(const bool always_home_all) {
    
     if (backoff_z) do_blocking_move_to_z(current_position[Z_AXIS] - backoff_z);
     if (backoff_x || backoff_y) do_blocking_move_to_xy(current_position[X_AXIS] - backoff_x, current_position[Y_AXIS] - backoff_y);
-// TODO: Test if backof_e is needs to be tested and if do_blocking_move_to_xy() is the correct funcion  
-//    #if ENABLED(E_AXIS_HOMING)
-//      if (backoff_e) do_blocking_move_to_xy(current_position[X_AXIS] - backoff_x, current_position[Y_AXIS] - backoff_y, current_position[E_AXIS] - backoff_e);
-//    #endif
+    #if ENABLED(E_AXIS_HOMING)
+      if (backoff_e) do_blocking_move_to_e(current_position[E_AXIS] - backoff_e);
+    #endif
+    // TODO: Test if backof_e works and if it is required
   #endif
   endstops.not_homing();
 
