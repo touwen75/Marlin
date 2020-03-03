@@ -1236,7 +1236,7 @@ void Planner::recalculate() {
  */
 void Planner::check_axes_activity() {
 
-  #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_E)
+  #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_I, DISABLE_J, DISABLE_K, DISABLE_E)
     xyze_bool_t axis_active = { false }; // TEST NON_E_AXES > 3
   #endif
 
@@ -1273,17 +1273,7 @@ void Planner::check_axes_activity() {
       #endif
     #endif
 
-    #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_E
-      #if NON_E_AXES > 3
-        , DISABLE_I
-        #if NON_E_AXES > 4
-          , DISABLE_J
-          #if NON_E_AXES > 5
-            , DISABLE_K
-          #endif
-        #endif
-      #endif
-      )
+    #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_I, DISABLE_J, DISABLE_K, DISABLE_E)
       for (uint8_t b = block_buffer_tail; b != block_buffer_head; b = next_block_index(b)) {
         block_t *block = &block_buffer[b];
         LOOP_NUM_AXIS(i) if (block->steps[i]) axis_active[i] = true;
@@ -1938,22 +1928,22 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     e_move_accumulator += delta_mm.e;
   #endif
 
-  if (block->steps.a < MIN_STEPS_PER_SEGMENT && block->steps.b < MIN_STEPS_PER_SEGMENT && block->steps.c < MIN_STEPS_PER_SEGMENT 
-    #if NON_E_AXES > 3
-      && block->steps.i < MIN_STEPS_PER_SEGMENT
-      #if NON_E_AXES > 4
-        && block->steps.j < MIN_STEPS_PER_SEGMENT
-        #if NON_E_AXES > 5
-          && block->steps.k < MIN_STEPS_PER_SEGMENT
-        #endif
-      #endif
-    #endif
-  ) {
+  if (block->steps.a < MIN_STEPS_PER_SEGMENT && block->steps.b < MIN_STEPS_PER_SEGMENT && block->steps.c < MIN_STEPS_PER_SEGMENT ) {
     block->millimeters = (0
       #if EXTRUDERS
         + ABS(delta_mm.e)
       #endif
     );
+    #if NON_E_AXES > 3
+      if(ABS(delta_mm.i) > block->millimeters) block->millimeters = ABS(delta_mm.i);
+      #if NON_E_AXES > 4
+        if(ABS(delta_mm.j) > block->millimeters) block->millimeters = ABS(delta_mm.j);
+        #if NON_E_AXES > 5
+          if(ABS(delta_mm.k) > block->millimeters) block->millimeters = ABS(delta_mm.k);
+            block->millimeters = ABS(delta_mm.k);
+        #endif
+     #endif
+   #endif
   }
   else {
     if (millimeters)
@@ -1967,9 +1957,19 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
         #elif CORE_IS_YZ
           sq(delta_mm.x) + sq(delta_mm.head.y) + sq(delta_mm.head.z)
         #else
-          sq(delta_mm.x) + sq(delta_mm.y) + sq(delta_mm.z) // TODO: Add support for NON_E_AXES > 3
+          sq(delta_mm.x) + sq(delta_mm.y) + sq(delta_mm.z) // TODO: Test NON_E_AXES > 3
         #endif
       );
+    // TODO: Test NON_E_AXES > 3
+    #if NON_E_AXES > 3
+        if(ABS(delta_mm.i) > block->millimeters) block->millimeters = ABS(delta_mm.i);
+        #if NON_E_AXES > 4
+          if(ABS(delta_mm.j) > block->millimeters) block->millimeters = ABS(delta_mm.j);
+          #if NON_E_AXES > 5
+            if(ABS(delta_mm.k) > block->millimeters) block->millimeters = ABS(delta_mm.k);
+          #endif
+        #endif
+      #endif
 
     /**
      * At this point at least one of the axes has more steps than
@@ -2065,11 +2065,11 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     if (block->steps.x) ENABLE_AXIS_X();
     if (block->steps.y) ENABLE_AXIS_Y();
     #if NON_E_AXES > 3
-      if (block->steps.i) enable_I();
+      if (block->steps.i) ENABLE_AXIS_I();
       #if NON_E_AXES > 4
-        if (block->steps.j) enable_J();
+        if (block->steps.j) ENABLE_AXIS_J();
         #if NON_E_AXES > 5
-          if (block->steps.k) enable_K();
+          if (block->steps.k) ENABLE_AXIS_K();
         #endif
       #endif
     #endif

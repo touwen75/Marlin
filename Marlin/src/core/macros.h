@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#define NUM_AXIS (NON_E_AXES + 1)
 #define ABCE 4
 #define XYZE 4
 #define ABC  3
@@ -45,9 +46,9 @@
 #define _XDIAG_  102
 #define _YDIAG_  202
 #define _ZDIAG_  302
-#define _IDIAG_  402
-#define _JDIAG_  502
-#define _KDIAG_  602
+#define _IDIAG_  502
+#define _JDIAG_  602
+#define _KDIAG_  702
 #define _E0DIAG_ 400
 #define _E1DIAG_ 401
 #define _E2DIAG_ 402

@@ -368,9 +368,9 @@ void GcodeSuite::G28() {
 
     if (z_homing_height && (doX || doY
       #if NON_E_AXES > 3
-        || hoI
+        || doI
         #if NON_E_AXES > 4
-          || hoJ
+          || doJ
           #if NON_E_AXES > 5
             ||  doK
           #endif
@@ -556,7 +556,22 @@ void GcodeSuite::G28() {
     #if HAS_CURRENT_HOME(Y2)
       stepperY2.rms_current(tmc_save_current_Y2);
     #endif
-  #endif
+    #if NON_E_AXES > 3
+      #if HAS_CURRENT_HOME(I)
+        stepperI.rms_current(tmc_save_current_I);
+      #endif
+      #if NON_E_AXES > 4
+        #if HAS_CURRENT_HOME(J)
+          stepperJ.rms_current(tmc_save_current_J);
+        #endif
+        #if NON_E_AXES > 5
+          #if HAS_CURRENT_HOME(K)
+            stepperK.rms_current(tmc_save_current_K);
+          #endif
+        #endif
+      #endif
+    #endif
+  #endif // HAS_HOMING_CURRENT
 
   ui.refresh();
 

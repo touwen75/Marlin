@@ -307,11 +307,11 @@ void print_xyz(const float &x, const float &y, const float &z,
 inline void print_xyz(const xyz_pos_t &xyz, PGM_P const prefix=nullptr, PGM_P const suffix=nullptr) {
   print_xyz(xyz.x, xyz.y, xyz.z, 
   #if NON_E_AXES > 3 
-    const float xyz.i,
+    xyz.i,
     #if NON_E_AXES > 4 
-      const float xyz.j,
+      xyz.j,
       #if NON_E_AXES > 5 
-        const float xyz.k,
+        xyz.k,
       #endif
     #endif
   #endif

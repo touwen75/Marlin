@@ -108,6 +108,36 @@ static void _lcd_move_xyz(PGM_P const name, const AxisEnum axis) {
           #if ENABLED(MAX_SOFTWARE_ENDSTOP_Z)
             max = soft_endstop.max.z;
           #endif
+        #if NON_E_AXES > 3 // TOTO: Test for NON_E_AXES > 3
+          break;
+          case I_AXIS:
+            #if ENABLED(MIN_SOFTWARE_ENDSTOP_I)
+              min = soft_endstop.min.i;
+            #endif
+            #if ENABLED(MAX_SOFTWARE_ENDSTOP_I)
+              max = soft_endstop.max.i;
+            #endif
+          #if NON_E_AXES > 4
+            break;
+            case J_AXIS:
+              #if ENABLED(MIN_SOFTWARE_ENDSTOP_J)
+                min = soft_endstop.min.j;
+              #endif
+              #if ENABLED(MAX_SOFTWARE_ENDSTOP_J)
+                max = soft_endstop.max.j;
+              #endif
+            #if NON_E_AXES > 5
+              break;
+              case K_AXIS:
+                #if ENABLED(MIN_SOFTWARE_ENDSTOP_K)
+                  min = soft_endstop.min.k;
+                #endif
+                #if ENABLED(MAX_SOFTWARE_ENDSTOP_K)
+                  max = soft_endstop.max.k;
+                #endif
+            #endif
+          #endif
+        #endif
         default: break;
       }
     #endif // HAS_SOFTWARE_ENDSTOPS
@@ -311,12 +341,12 @@ void menu_move() {
     #if NON_E_AXES > 3
       SUBMENU(MSG_MOVE_I, []{ _menu_move_distance(I_AXIS, lcd_move_i); });
       #if NON_E_AXES > 4
-      SUBMENU(MSG_MOVE_J, []{ _menu_move_distance(J_AXIS, lcd_move_j); });
+        SUBMENU(MSG_MOVE_J, []{ _menu_move_distance(J_AXIS, lcd_move_j); });
         #if NON_E_AXES > 5
           SUBMENU(MSG_MOVE_K, []{ _menu_move_distance(K_AXIS, lcd_move_k); });
+        #endif
       #endif
     #endif
-  #endif
 
   }
   else
@@ -417,23 +447,15 @@ void menu_motion() {
     GCODES_ITEM(MSG_AUTO_HOME_Y, PSTR("G28 Y"));
     GCODES_ITEM(MSG_AUTO_HOME_Z, PSTR("G28 Z"));
     #if NON_E_AXES > 3
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
       GCODES_ITEM(MSG_AUTO_HOME_I, PSTR("G28 I"));
       #if NON_E_AXES > 4
         GCODES_ITEM(MSG_AUTO_HOME_J, PSTR("G28 J"));
         #if NON_E_AXES > 5
           GCODES_ITEM(MSG_AUTO_HOME_K, PSTR("G28 K"));
-=======
-        MENU_ITEM(gcode, MSG_AUTO_HOME_I, PSTR("G28 I"));
-        #if NON_E_AXES > 4
-          MENU_ITEM(gcode, MSG_AUTO_HOME_J, PSTR("G28 J"));
-          #if NON_E_AXES > 5
-            MENU_ITEM(gcode, MSG_AUTO_HOME_K, PSTR("G28 K"));
-          #endif
->>>>>>> 1d110ef Updates
         #endif
       #endif
     #endif
+  #endif
 
   //
   // Auto Z-Align

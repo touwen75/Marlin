@@ -29,13 +29,13 @@
 #include <stdint.h>
 
 enum EndstopEnum : char {
-  X_MIN,  Y_MIN,  Z_MIN,  Z_MIN_PROBE,  I_MIN,  J_MIN,  J_MIN
-  X_MAX,  Y_MAX,  Z_MAX,  I_MAX,  J_MAX,  K_MAX
+  X_MIN,  Y_MIN,  Z_MIN,  Z_MIN_PROBE,  I_MIN,  J_MIN,  K_MIN,
+  X_MAX,  Y_MAX,  Z_MAX,  I_MAX,  J_MAX,  K_MAX,
   X2_MIN, X2_MAX,
   Y2_MIN, Y2_MAX,
   Z2_MIN, Z2_MAX,
   Z3_MIN, Z3_MAX,
-  Z4_MIN, Z4_MAX,
+  Z4_MIN, Z4_MAX
 };
 
 class Endstops {
@@ -63,6 +63,7 @@ class Endstops {
       #if ENABLED(Z_MULTI_ENDSTOPS) && NUM_Z_STEPPER_DRIVERS >= 4
         static float z4_endstop_adj;
       #endif
+    #endif
 
   private:
     static bool enabled, enabled_globally;

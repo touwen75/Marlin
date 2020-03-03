@@ -274,6 +274,34 @@ enum StealthIndex : uint8_t { STEALTH_AXIS_XY, STEALTH_AXIS_Z, STEALTH_AXIS_E };
       TMC_UART_DEFINE(SW, Z4, Z);
     #endif
   #endif
+#if NON_E_AXES > 3
+  #if AXIS_HAS_UART(I)
+    #ifdef I_HARDWARE_SERIAL
+      TMC_UART_DEFINE(HW, I, I);
+    #else
+      TMC_UART_DEFINE(SW, I, I);
+    #endif
+  #endif
+  #if NON_E_AXES > 4
+    #if AXIS_HAS_UART(J)
+      #ifdef J_HARDWARE_SERIAL
+        TMC_UART_DEFINE(HW, J, J);
+      #else
+        TMC_UART_DEFINE(SW, J, J);
+      #endif
+    #endif
+    #if NON_E_AXES > 5
+      #if AXIS_HAS_UART(K)
+        #ifdef K_HARDWARE_SERIAL
+          TMC_UART_DEFINE(HW, K, K);
+        #else
+          TMC_UART_DEFINE(SW, K, K);
+        #endif
+      #endif
+    #endif // NON_E_AXES > 5
+  #endif  // NON_E_AXES > 4
+#endif  // NON_E_AXES > 3
+
   #if AXIS_HAS_UART(E0)
     #ifdef E0_HARDWARE_SERIAL
       TMC_UART_DEFINE_E(HW, 0);
@@ -679,6 +707,21 @@ void restore_trinamic_drivers() {
   #if AXIS_IS_TMC(Z4)
     stepperZ4.push();
   #endif
+  #if NON_E_AXES > 3
+    #if AXIS_IS_TMC(I)
+      stepperI.push();
+    #endif
+    #if NON_E_AXES > 4
+      #if AXIS_IS_TMC(J)
+        stepperJ.push();
+      #endif
+     #if NON_E_AXES > 5
+       #if AXIS_IS_TMC(K)
+         stepperK.push();
+       #endif
+     #endif
+   #endif
+  #endif
   #if AXIS_IS_TMC(E0)
     stepperE0.push();
   #endif
@@ -750,6 +793,21 @@ void reset_trinamic_drivers() {
   #if AXIS_IS_TMC(Z4)
     TMC_INIT(Z4, STEALTH_AXIS_Z);
   #endif
+  #if NON_E_AXES > 3
+    #if AXIS_IS_TMC(I)
+      TMC_INIT(I, STEALTH_AXIS_I);
+    #endif
+    #if NON_E_AXES > 4
+      #if AXIS_IS_TMC(J)
+        TMC_INIT(J, STEALTH_AXIS_J);
+      #endif
+     #if NON_E_AXES > 5
+       #if AXIS_IS_TMC(K)
+         TMC_INIT(K, STEALTH_AXIS_K);
+       #endif
+     #endif
+   #endif
+  #endif
   #if AXIS_IS_TMC(E0)
     TMC_INIT(E0, STEALTH_AXIS_E);
   #endif
@@ -809,7 +867,28 @@ void reset_trinamic_drivers() {
         stepperZ4.homing_threshold(Z_STALL_SENSITIVITY);
       #endif
     #endif
-  #endif
+    #if NON_E_AXES > 3
+      #if I_SENSORLESS
+        #if AXIS_HAS_STALLGUARD(I)
+          stepperI.homing_threshold(I_STALL_SENSITIVITY);
+        #endif
+      #endif
+      #if NON_E_AXES > 4
+        #if J_SENSORLESS
+          #if AXIS_HAS_STALLGUARD(J)
+            stepperJ.homing_threshold(J_STALL_SENSITIVITY);
+          #endif
+        #endif
+      #endif
+      #if NON_E_AXES > 5
+        #if K_SENSORLESS
+          #if AXIS_HAS_STALLGUARD(K)
+            stepperK.homing_threshold(K_STALL_SENSITIVITY);
+          #endif
+        #endif
+      #endif
+    #endif
+  #endif // USE SENSORLESS
 
   #ifdef TMC_ADV
     TMC_ADV()

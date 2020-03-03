@@ -86,10 +86,6 @@
     typedef void (*menuAction_t)();
 
     // Manual Movement
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
-=======
-    constexpr float manual_feedrate_mm_m[NUM_AXIS] = MANUAL_FEEDRATE;
->>>>>>> bc06e07 updates
     extern float move_menu_scale;
 
     #if ENABLED(ADVANCED_PAUSE_FEATURE)

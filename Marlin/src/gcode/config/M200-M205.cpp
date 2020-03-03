@@ -127,7 +127,15 @@ void GcodeSuite::M205() {
     #define J_PARAM
   #endif
   #if HAS_CLASSIC_JERK
-    #define XYZE_PARAM "XYZIJE"
+    #if NON_E_AXES == 6
+      #define XYZE_PARAM "XYZIJKE"
+    #elif NON_E_AXES == 5
+      #define XYZE_PARAM "XYZIJE"
+    #elif NON_E_AXES == 4
+      #define XYZE_PARAM "XYZIE"
+    #else
+      #define XYZE_PARAM "XYZE"
+    #endif
   #else
     #define XYZE_PARAM
   #endif
@@ -161,11 +169,11 @@ void GcodeSuite::M205() {
       #endif
     }
     #if NON_E_AXES > 3
-      if (parser.seen('I')) planner.max_jerk(I_AXIS, parser.value_linear_units());
+      if (parser.seen('I')) planner.set_max_jerk(I_AXIS, parser.value_linear_units());
       #if NON_E_AXES > 4
-        if (parser.seen('J')) planner.max_jerk(J_AXIS, parser.value_linear_units());
+        if (parser.seen('J')) planner.set_max_jerk(J_AXIS, parser.value_linear_units());
         #if NON_E_AXES > 5
-          if (parser.seen('K')) planner.max_jerk(K_AXIS, parser.value_linear_units());
+          if (parser.seen('K')) planner.set_max_jerk(K_AXIS, parser.value_linear_units());
         #endif
       #endif
     #endif

@@ -668,9 +668,9 @@ class Planner {
       return buffer_segment(abce.a, abce.b, abce.c
         #if NON_E_AXES > 3
           , abce.i
-          #if NON_E_AXES > 3
+          #if NON_E_AXES > 4
             , abce.j
-            #if NON_E_AXES > 3
+            #if NON_E_AXES > 5
               , abce.k
             #endif
           #endif
@@ -757,7 +757,17 @@ class Planner {
         #endif
       #endif
       , const float &e);
-    FORCE_INLINE static void set_position_mm(const xyze_pos_t &cart) { set_position_mm(cart.x, cart.y, cart.z, cart.e); }
+    FORCE_INLINE static void set_position_mm(const xyze_pos_t &cart) { set_position_mm(cart.x, cart.y, cart.z
+      #if NON_E_AXES > 3
+        , cart.i
+        #if NON_E_AXES > 4
+          , cart.j
+          #if NON_E_AXES > 5
+            , cart.k
+          #endif
+        #endif
+      #endif    
+    , cart.e); }
     static void set_e_position_mm(const float &e);
 
     /**
@@ -783,7 +793,7 @@ class Planner {
         #if NON_E_AXES > 4
           , abce.j
           #if NON_E_AXES > 5
-		    , abce.k
+            , abce.k
           #endif
         #endif
       #endif

@@ -596,8 +596,15 @@
     #endif
   #endif
 #endif
-
-#define HOMING_BUMP_DIVISOR ARRAY_N(NON_E_AXES, 2, 2, 4, 4, 4, 4) // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#if NON_E_AXES == 6
+  #define HOMING_BUMP_DIVISOR { 2, 2, 4, 4, 4, 4 } // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#elif NON_E_AXES == 5
+  #define HOMING_BUMP_DIVISOR { 2, 2, 4, 4, 4 } // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#elif NON_E_AXES == 4
+  #define HOMING_BUMP_DIVISOR { 2, 2, 4, 4 } // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#else
+  #define HOMING_BUMP_DIVISOR { 2, 2, 4 } // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#endif
 
 //#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
 //#define HOMING_BACKOFF_MM { 2, 2, 2 }  // (mm) Move away from the endstops after homing
@@ -732,9 +739,15 @@
 #endif
 
 // @section motion
-
-#define AXIS_RELATIVE_MODES ARRAY_N(NUM_AXIS, false, false, false, false, false, false, false)
-
+#if NON_E_AXES == 6
+  #define AXIS_RELATIVE_MODES { false, false, false, false, false, false, false }
+#elif NON_E_AXES == 5
+  #define AXIS_RELATIVE_MODES { false, false, false, false, false, false }
+#elif NON_E_AXES == 4
+  #define AXIS_RELATIVE_MODES { false, false, false, false, false }
+#else
+  #define AXIS_RELATIVE_MODES { false, false, false, false }
+#endif
 // Add a Duplicate option for well-separated conjoined nozzles
 //#define MULTI_NOZZLE_DUPLICATION
 
@@ -776,23 +789,8 @@
 
 //#define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 // Minimum time that a segment needs to take if the buffer is emptied
 #define DEFAULT_MINSEGMENTTIME        20000   // (ms)
-=======
-// @section lcd
-
-#if ENABLED(ULTIPANEL)
-  #define MANUAL_FEEDRATE {50*60, 50*60, 4*60, 50*60, 50*60, 10*60} // Feedrates for manual moves along X, Y, Z, E from panel
-  #define MANUAL_E_MOVES_RELATIVE // Show LCD extruder moves as relative rather than absolute positions
-  #define ULTIPANEL_FEEDMULTIPLY  // Comment to disable setting feedrate multiplier via encoder
-#endif
-
-// @section extras
-
-// minimum time in microseconds that a movement needs to take if the buffer is emptied.
-#define DEFAULT_MINSEGMENTTIME        20000
->>>>>>> bc06e07 updates
 
 // If defined the movements slow down when the look ahead buffer is only half full
 #define SLOWDOWN
@@ -1419,7 +1417,7 @@
       //#define TOUCH_UI_UTF8_SUPERSCRIPTS  // ¹ ² ³
       //#define TOUCH_UI_UTF8_COPYRIGHT     // © ®
       //#define TOUCH_UI_UTF8_GERMANIC      // ß
-      //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ �? Ø Þ æ ð ø þ
+      //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ Ð Ø Þ æ ð ø þ
       //#define TOUCH_UI_UTF8_PUNCTUATION   // « » ¿ ¡
       //#define TOUCH_UI_UTF8_CURRENCY      // ¢ £ ¤ ¥
       //#define TOUCH_UI_UTF8_ORDINALS      // º ª
@@ -2492,7 +2490,7 @@
     #define I_STALLCURRENT   1500
     #define I_MAX_VOLTAGE     127
     #define I_CHAIN_POS        -1
-    #define I_SLEW_RATE         0
+    #define I_SLEW_RATE         1
   #endif
   
   #if AXIS_DRIVER_TYPE_J(L6470)
@@ -2501,7 +2499,7 @@
     #define J_STALLCURRENT   1500
     #define J_MAX_VOLTAGE     127
     #define J_CHAIN_POS        -1
-    #define J_SLEW_RATE         0
+    #define J_SLEW_RATE         1
   #endif
   
   #if AXIS_DRIVER_TYPE_K(L6470)
@@ -2510,7 +2508,7 @@
     #define K_STALLCURRENT   1500
     #define K_MAX_VOLTAGE     127
     #define K_CHAIN_POS        -1
-    #define K_SLEW_RATE         0
+    #define K_SLEW_RATE         1
   #endif  
 
   #if AXIS_IS_L64XX(E0)
@@ -2871,7 +2869,7 @@
 //#define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
 
 // Enable and set a (default) feedrate for all G0 moves
-#define G0_FEEDRATE 3000 // (mm/m)
+//#define G0_FEEDRATE 3000 // (mm/m)
 #ifdef G0_FEEDRATE
   //#define VARIABLE_G0_FEEDRATE // The G0 feedrate is set by F in G0 motion mode
 #endif

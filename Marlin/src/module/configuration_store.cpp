@@ -42,7 +42,7 @@
 
 // Check the integrity of data offsets.
 // Can be disabled for production build.
-#define DEBUG_EEPROM_READWRITE
+//#define DEBUG_EEPROM_READWRITE
 
 #include "configuration_store.h"
 
@@ -1419,7 +1419,7 @@ void MarlinSettings::postprocess() {
         // Get only the number of E stepper parameters previously stored
         // Any steppers added later are set to their defaults
         uint32_t tmp1[NON_E_AXES + esteppers];
-        float tmp2[XYZ + esteppers];
+        float tmp2[NON_E_AXES + esteppers];
         feedRate_t tmp3[NON_E_AXES + esteppers];
         EEPROM_READ(tmp1);                         // max_acceleration_mm_per_s2
         EEPROM_READ(planner.settings.min_segment_time_us);
@@ -3365,7 +3365,7 @@ void MarlinSettings::reset() {
        */
       CONFIG_ECHO_HEADING("Stepper driver current:");
 
-      #if AXIS_IS_TMC(X) || AXIS_IS_TMC(Y) || AXIS_IS_TMC(Z)
+      #if AXIS_IS_TMC(X) || AXIS_IS_TMC(Y) || AXIS_IS_TMC(Z) || AXIS_IS_TMC(I) || AXIS_IS_TMC(J) || AXIS_IS_TMC(K)
         say_M906(forReplay);
         #if AXIS_IS_TMC(X)
           SERIAL_ECHOPAIR_P(SP_X_STR, stepperX.getMilliamps());
@@ -3375,6 +3375,15 @@ void MarlinSettings::reset() {
         #endif
         #if AXIS_IS_TMC(Z)
           SERIAL_ECHOPAIR_P(SP_Z_STR, stepperZ.getMilliamps());
+        #endif
+        #if NON_E_AXES > 3 && AXIS_IS_TMC(I)
+          SERIAL_ECHOPAIR_P(SP_I_STR, stepperZ.getMilliamps());
+        #endif
+        #if NON_E_AXES > 4 && AXIS_IS_TMC(J)
+          SERIAL_ECHOPAIR_P(SP_J_STR, stepperZ.getMilliamps());
+        #endif
+        #if NON_E_AXES > 5 && AXIS_IS_TMC(K)
+          SERIAL_ECHOPAIR_P(SP_K_STR, stepperZ.getMilliamps());
         #endif
         SERIAL_EOL();
       #endif
@@ -3591,12 +3600,30 @@ void MarlinSettings::reset() {
         #else
           constexpr bool chop_z = false;
         #endif
+        #if AXIS_HAS_STEALTHCHOP(I)
+          const bool chop_i = stepperI.get_stealthChop_status();
+        #else
+          constexpr bool chop_i = false;
+        #endif
+        #if AXIS_HAS_STEALTHCHOP(J)
+          const bool chop_j = stepperJ.get_stealthChop_status();
+        #else
+          constexpr bool chop_j = false;
+        #endif
+        #if AXIS_HAS_STEALTHCHOP(K)
+          const bool chop_k = stepperK.get_stealthChop_status();
+        #else
+          constexpr bool chop_k = false;
+        #endif
 
-        if (chop_x || chop_y || chop_z) {
+        if (chop_x || chop_y || chop_z || chop_i || chop_j || chop_k) {
           say_M569(forReplay);
           if (chop_x) SERIAL_ECHO_P(SP_X_STR);
           if (chop_y) SERIAL_ECHO_P(SP_Y_STR);
           if (chop_z) SERIAL_ECHO_P(SP_Z_STR);
+          if (chop_i) SERIAL_ECHO_P(SP_I_STR);
+          if (chop_j) SERIAL_ECHO_P(SP_J_STR);
+          if (chop_k) SERIAL_ECHO_P(SP_K_STR);
           SERIAL_EOL();
         }
 
@@ -3712,7 +3739,7 @@ void MarlinSettings::reset() {
           PSTR("  M425 F"), backlash.get_correction()
         , SP_X_STR, LINEAR_UNIT(backlash.distance_mm.x)
         , SP_Y_STR, LINEAR_UNIT(backlash.distance_mm.y)
-        , SP_Z_STR, LINEAR_UNIT(backlash.distance_mm.z)
+        , SP_Z_STR, LINEAR_UNIT(backlash.distance_mm.z) // TODO: Add Support fot NON_E_AXES > 3
         #ifdef BACKLASH_SMOOTHING_MM
           , PSTR(" S"), LINEAR_UNIT(backlash.smoothing_mm)
         #endif

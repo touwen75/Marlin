@@ -2215,6 +2215,21 @@ void Stepper::init() {
       Z4_DIR_INIT();
     #endif
   #endif
+  #if NON_E_AXES > 3
+    #if HAS_I_DIR
+      I_DIR_INIT();
+    #endif
+    #if NON_E_AXES > 4
+      #if HAS_J_DIR
+        J_DIR_INIT();
+      #endif
+      #if NON_E_AXES > 5
+        #if HAS_K_DIR
+          K_DIR_INIT();
+        #endif
+      #endif
+    #endif
+  #endif
   #if HAS_E0_DIR
     E0_DIR_INIT();
   #endif
@@ -2271,6 +2286,24 @@ void Stepper::init() {
     #if NUM_Z_STEPPER_DRIVERS >= 4 && HAS_Z4_ENABLE
       Z4_ENABLE_INIT();
       if (!Z_ENABLE_ON) Z4_ENABLE_WRITE(HIGH);
+    #endif
+  #endif
+  #if NON_E_AXES > 3
+    #if HAS_I_ENABLE
+      I_ENABLE_INIT();
+      if (!I_ENABLE_ON) I_ENABLE_WRITE(HIGH);
+    #endif
+    #if NON_E_AXES > 4
+      #if HAS_J_ENABLE
+        J_ENABLE_INIT();
+        if (!J_ENABLE_ON) J_ENABLE_WRITE(HIGH);
+      #endif
+      #if NON_E_AXES > 5
+        #if HAS_K_ENABLE
+          K_ENABLE_INIT();
+          if (!K_ENABLE_ON) K_ENABLE_WRITE(HIGH);
+        #endif
+      #endif
     #endif
   #endif
   #if HAS_E0_ENABLE
@@ -2349,16 +2382,21 @@ void Stepper::init() {
     #endif
     AXIS_INIT(Z, Z);
   #endif
-  #if HAS_I_STEP
-    AXIS_INIT(I, I);
+  #if NON_E_AXES > 3
+    #if HAS_I_STEP
+      AXIS_INIT(I, I);
+    #endif
+    #if NON_E_AXES > 4
+      #if HAS_J_STEP
+        AXIS_INIT(J, J);
+      #endif
+      #if NON_E_AXES > 5
+        #if HAS_K_STEP
+          AXIS_INIT(K, K);
+        #endif
+      #endif
+    #endif
   #endif
-  #if HAS_J_STEP
-    AXIS_INIT(J, J);
-  #endif
-  #if HAS_K_STEP
-    AXIS_INIT(K, K);
-  #endif
-  
   #if E_STEPPERS > 0 && HAS_E0_STEP
     E_AXIS_INIT(0);
   #endif
@@ -2450,7 +2488,7 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
     // default non-h-bot planning
     count_position.set(a, b, c
     #if NON_E_AXES > 3
-    , i
+      , i
       #if NON_E_AXES > 4
         , j
         #if NON_E_AXES > 5
@@ -2483,10 +2521,31 @@ int32_t Stepper::position(const AxisEnum axis) {
 }
 
 // Set the current position in steps
-void Stepper::set_position(const int32_t &a, const int32_t &b, const int32_t &c, const int32_t &e) {
+//TODO: Test for NON_E_AXES > 3
+void Stepper::set_position(const int32_t &a, const int32_t &b, const int32_t &c
+  #if NON_E_AXES > 3
+    , const int32_t &i
+    #if NON_E_AXES > 4
+      , const int32_t &j
+      #if NON_E_AXES > 5
+        , const int32_t &k
+      #endif
+    #endif
+  #endif
+  , const int32_t &e) {
   planner.synchronize();
   const bool was_enabled = suspend();
-  _set_position(a, b, c, e);
+  _set_position(a, b, c
+  #if _NON_E_AXES > 3
+    , i
+    #if _NON_E_AXES > 4
+      , j
+      #if _NON_E_AXES > 5
+        , k
+      #endif
+    #endif
+  #endif
+  , e);
   if (was_enabled) wake_up();
 }
 

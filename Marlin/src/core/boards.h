@@ -155,7 +155,6 @@
 // Sanguinololu and Derivatives - ATmega644P, ATmega1284P
 //
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 #define BOARD_SANGUINOLOLU_11         1500  // Sanguinololu < 1.2
 #define BOARD_SANGUINOLOLU_12         1501  // Sanguinololu 1.2 and above
 #define BOARD_MELZI                   1502  // Melzi
@@ -166,19 +165,6 @@
 #define BOARD_STB_11                  1507  // STB V1.1
 #define BOARD_AZTEEG_X1               1508  // Azteeg X1
 #define BOARD_ANET_10                 1509  // Anet 1.0 (Melzi clone)
-=======
-#define BOARD_SANGUINOLOLU_11   6     // Sanguinololu < 1.2
-#define BOARD_SANGUINOLOLU_12   62    // Sanguinololu 1.2 and above
-#define BOARD_MELZI             63    // Melzi
-#define BOARD_MELZI_MAKR3D      66    // Melzi with ATmega1284 (MaKr3d version)
-#define BOARD_MELZI_CREALITY    89    // Melzi Creality3D board (for CR-10 etc)
-#define BOARD_MELZI_MALYAN      92    // Melzi Malyan M150 board
-#define BOARD_MELZI_TRONXY      505   // Tronxy X5S
-#define BOARD_STB_11            64    // STB V1.1
-#define BOARD_AZTEEG_X1         65    // Azteeg X1
-#define BOARD_ANET_10           69    // Anet 1.0 (Melzi clone)
-#define BOARD_DERANDERE_PB_1    691   // Repurposed Anet 1.0 (Melzi clone)
->>>>>>> 0258cc9 Added experimental support for up to 6 non-extruder axes.
 
 //
 // Other ATmega644P, ATmega644, ATmega1284P

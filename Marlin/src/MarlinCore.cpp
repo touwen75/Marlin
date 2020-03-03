@@ -192,14 +192,23 @@ const char NUL_STR[] PROGMEM = "",
            SP_X_STR[] PROGMEM = " X",
            SP_Y_STR[] PROGMEM = " Y",
            SP_Z_STR[] PROGMEM = " Z",
+           SP_I_STR[] PROGMEM = " I",
+           SP_J_STR[] PROGMEM = " J",
+           SP_K_STR[] PROGMEM = " K",
            SP_E_STR[] PROGMEM = " E",
               X_LBL[] PROGMEM =  "X:",
               Y_LBL[] PROGMEM =  "Y:",
               Z_LBL[] PROGMEM =  "Z:",
+              I_LBL[] PROGMEM =  "I:",
+              J_LBL[] PROGMEM =  "J:",
+              K_LBL[] PROGMEM =  "K:",
               E_LBL[] PROGMEM =  "E:",
            SP_X_LBL[] PROGMEM = " X:",
            SP_Y_LBL[] PROGMEM = " Y:",
            SP_Z_LBL[] PROGMEM = " Z:",
+           SP_I_LBL[] PROGMEM = " I:",
+           SP_J_LBL[] PROGMEM = " J:",
+           SP_K_LBL[] PROGMEM = " K:",
            SP_E_LBL[] PROGMEM = " E:";
 
 bool Running = true;
@@ -308,6 +317,17 @@ void enable_all_steppers() {
   ENABLE_AXIS_X();
   ENABLE_AXIS_Y();
   ENABLE_AXIS_Z();
+  #if NON_E_AXES > 3
+    // Marlin six axis support: 2019 - 2020 DerAndere
+    ENABLE_AXIS_I();
+    #if NON_E_AXES > 4
+      ENABLE_AXIS_J();
+      #if NON_E_AXES > 5
+        ENABLE_AXIS_K();
+      #endif
+    #endif
+  #endif
+  
   enable_e_steppers();
 }
 
@@ -327,6 +347,15 @@ void disable_all_steppers() {
   DISABLE_AXIS_X();
   DISABLE_AXIS_Y();
   DISABLE_AXIS_Z();
+  #if NON_E_AXES > 3
+    DISABLE_AXIS_I();
+    #if NON_E_AXES > 4
+      DISABLE_AXIS_J();
+      #if NON_E_AXES > 5
+        DISABLE_AXIS_K();
+      #endif
+    #endif
+  #endif
   disable_e_steppers();
 }
 
@@ -522,6 +551,21 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
         #endif
         #if ENABLED(DISABLE_INACTIVE_Z)
           DISABLE_AXIS_Z();
+        #endif
+        #if NON_E_AXES > 3
+          #if ENABLED(DISABLE_INACTIVE_I)
+            DISABLE_AXIS_I();
+          #endif
+          #if NON_E_AXES > 4
+            #if ENABLED(DISABLE_INACTIVE_J)
+              DISABLE_AXIS_J();
+            #endif
+            #if NON_E_AXES > 5
+              #if ENABLED(DISABLE_INACTIVE_K)
+                DISABLE_AXIS_K();
+              #endif
+            #endif
+          #endif
         #endif
         #if ENABLED(DISABLE_INACTIVE_E)
           disable_e_steppers();
@@ -963,7 +1007,7 @@ void setup() {
   if (mcu & 32) SERIAL_ECHOLNPGM(STR_SOFTWARE_RESET);
   HAL_clear_reset_source();
 
-  serialprintPGM(GET_TEXT(MSG_MARLIN));
+  serialprintPGM(GET_TEXT(MSG_MARLIN)); // TODO: Test
   SERIAL_CHAR(' ');
   SERIAL_ECHOLNPGM(SHORT_BUILD_VERSION);
   SERIAL_EOL();

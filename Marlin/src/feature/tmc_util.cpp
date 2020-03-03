@@ -421,6 +421,57 @@
       }
       #endif
 
+      #if NON_E_AXES > 3
+        #if AXIS_IS_TMC(I)
+          {
+            bool result = false;
+            #if AXIS_IS_TMC(I)
+              if (monitor_tmc_driver(stepperI, need_update_error_counters, need_debug_reporting)) result = true;
+            #endif
+            if (result) {
+            #if AXIS_IS_TMC(I)
+              step_current_down(stepperI);
+            #endif
+          }
+        }
+        #endif
+
+        #if NON_E_AXES > 4
+          #if AXIS_IS_TMC(J)
+            {
+              bool result = false;
+              #if AXIS_IS_TMC(J)
+                if (monitor_tmc_driver(stepperJ, need_update_error_counters, need_debug_reporting)) result = true;
+              #endif
+              if (result) {
+              #if AXIS_IS_TMC(J)
+                step_current_down(stepperJ);
+              #endif
+            }
+          }
+          #endif
+
+          #if NON_E_AXES > 5
+            #if AXIS_IS_TMC(K)
+              {
+                bool result = false;
+                #if AXIS_IS_TMC(K)
+                  if (monitor_tmc_driver(stepperK, need_update_error_counters, need_debug_reporting)) result = true;
+                #endif
+                if (result) {
+                #if AXIS_IS_TMC(K)
+                  step_current_down(stepperK);
+                #endif
+                #if AXIS_IS_TMC(K)
+                  step_current_down(stepperK);
+                #endif
+              }
+            }
+            #endif
+          #endif // NON_E_AXES > 5
+        #endif // NON_E_AXES > 4
+      #endif // NON_E_AXES > 3
+
       #if AXIS_IS_TMC(E0)
         (void)monitor_tmc_driver(stepperE0, need_update_error_counters, need_debug_reporting);
       #endif
@@ -744,7 +795,17 @@
     }
   }
 
-  static void tmc_debug_loop(const TMC_debug_enum i, const bool print_x, const bool print_y, const bool print_z, const bool print_e) {
+  static void tmc_debug_loop(const TMC_debug_enum i, const bool print_x, const bool print_y, const bool print_z
+    #if NON_E_AXES > 3
+     , const bool print_i
+      #if NON_E_AXES > 4
+        , const bool print_j
+        #if NON_E_AXES > 5
+          , const bool print_k
+        #endif
+      #endif
+    #endif
+    , const bool print_e) {
     if (print_x) {
       #if AXIS_IS_TMC(X)
         tmc_status(stepperX, i);
@@ -778,6 +839,28 @@
       #endif
     }
 
+    #if NON_E_AXES > 3
+      if (print_i) {
+        #if AXIS_IS_TMC(I)
+          tmc_status(stepperI, i);
+        #endif
+      }
+      #if NON_E_AXES > 4
+        if (print_j) {
+          #if AXIS_IS_TMC(J)
+            tmc_status(stepperJ, i);
+          #endif
+        }
+        #if NON_E_AXES > 5
+          if (print_k) {
+            #if AXIS_IS_TMC(K)
+              tmc_status(stepperK, i);
+            #endif
+          }
+        #endif
+      #endif
+    #endif
+
     if (print_e) {
       #if AXIS_IS_TMC(E0)
         tmc_status(stepperE0, i);
@@ -808,7 +891,17 @@
     SERIAL_EOL();
   }
 
-  static void drv_status_loop(const TMC_drv_status_enum i, const bool print_x, const bool print_y, const bool print_z, const bool print_e) {
+  static void drv_status_loop(const TMC_drv_status_enum i, const bool print_x, const bool print_y, const bool print_z
+    #if NON_E_AXES > 3
+      , const bool print_i
+      #if NON_E_AXES > 4
+        , const bool print_j
+        #if NON_E_AXES > 5
+          , const bool print_k
+        #endif
+      #endif
+    #endif
+    , const bool print_e) {
     if (print_x) {
       #if AXIS_IS_TMC(X)
         tmc_parse_drv_status(stepperX, i);
@@ -841,6 +934,28 @@
         tmc_parse_drv_status(stepperZ4, i);
       #endif
     }
+
+    #if NON_E_AXES > 3
+      if (print_i) {
+        #if AXIS_IS_TMC(I)
+          tmc_parse_drv_status(stepperI, i);
+        #endif
+      }
+      #if NON_E_AXES > 4
+        if (print_j) {
+          #if AXIS_IS_TMC(J)
+            tmc_parse_drv_status(stepperJ, i);
+          #endif
+        }
+        #if NON_E_AXES > 5
+          if (print_k) {
+            #if AXIS_IS_TMC(K)
+              tmc_parse_drv_status(stepperK, i);
+            #endif
+          }
+        #endif
+      #endif
+    #endif
 
     if (print_e) {
       #if AXIS_IS_TMC(E0)
@@ -992,7 +1107,17 @@
     }
   #endif
 
-  static void tmc_get_registers(TMC_get_registers_enum i, const bool print_x, const bool print_y, const bool print_z, const bool print_e) {
+  static void tmc_get_registers(TMC_get_registers_enum i, const bool print_x, const bool print_y, const bool print_z
+    #if NON_E_AXES > 3
+      , const bool print_i
+      #if NON_E_AXES > 4
+        , const bool print_j
+        #if NON_E_AXES > 5
+          , const bool print_k
+        #endif
+      #endif
+    #endif
+    , const bool print_e) {
     if (print_x) {
       #if AXIS_IS_TMC(X)
         tmc_get_registers(stepperX, i);
@@ -1025,6 +1150,29 @@
         tmc_get_registers(stepperZ4, i);
       #endif
     }
+
+    #if NON_E_AXES > 3
+  if (print_i) {
+    #if AXIS_IS_TMC(I)
+      tmc_get_registers(stepperI, i);
+    #endif
+  }
+  #if NON_E_AXES > 4
+    if (print_j) {
+      #if AXIS_IS_TMC(J)
+        tmc_get_registers(stepperJ, i);
+      #endif
+    }
+    #if NON_E_AXES > 5
+      if (print_k) {
+        #if AXIS_IS_TMC(K)
+          tmc_get_registers(stepperK, i);
+        #endif
+      }
+    #endif
+  #endif
+#endif
+
 
     if (print_e) {
       #if AXIS_IS_TMC(E0)
@@ -1142,6 +1290,23 @@
     #if AXIS_HAS_SPI(Z4)
       SET_CS_PIN(Z4);
     #endif
+    #if NON_E_AXES > 3
+      #if AXIS_HAS_SPI(I)
+        SET_CS_PIN(I);
+      #endif
+      #if NON_E_AXES > 4
+        #if AXIS_HAS_SPI(J)
+          SET_CS_PIN(J);
+        #endif
+        #if NON_E_AXES > 5
+          #if AXIS_HAS_SPI(K)
+            SET_CS_PIN(K);
+          #endif
+        #endif
+      #endif
+    #endif
+
+
     #if AXIS_HAS_SPI(E0)
       SET_CS_PIN(E0);
     #endif

@@ -68,24 +68,6 @@
 // config/examples/SCARA and customize for your machine.
 //
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
-=======
-//select machine model by the differences
-#define MODULE_50 
-//#define MODULE_20
-//#define DEV_PARAMETERS 
-
-
-
-#ifdef MODULE_50
-  #define VERSION "2.0.0 /50" 
-#endif
-
-#ifdef MODULE_20
-  #define VERSION "2.0.0 /20" 
-#endif
-
->>>>>>> 1d110ef Updates
 // @section info
 
 // Author info of this build printed to the host during boot and M115
@@ -158,10 +140,15 @@
 // Choose your own or use a service like http://www.uuidgenerator.net/version4
 //#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
-// This defines the number of axes that are not used for extruders (axes that benefit from endstops and homing).
-// This must be set to 3 also if one or more of the positioning axes are driven by multiple stepper motors. Only increase 
-// for robots with additional axes (tools apart from extruders that are driven by stepper motors)
-#define NON_E_AXES 3
+/**
+ * This defines the number of axes that are not used for extruders (axes that
+ * benefit from endstops and homing). Default: 3. Each added axis I[, J[, K]]
+ * requires definition of additional parameters:
+ * {I,J,K}_DEFAULT_MAX_FEEDRATE, {I,J,K}_DEFAULT_MAX_ACCELERATION,
+ * DEFAULT_{I,J,K}JERK, {I,J,K}_STEP_PIN, {I,J,K}_DIR_PIN, {I,J,K}_ENABLE_PIN,
+ * DEFAULT_AXIS_STEPS_PER_UNIT, {I,J,K}_(MIN||MAX)_PIN, USE_{I,J,K}(MIN||MAX)_PLUG
+ */
+#define NON_E_AXES 4
 
 // @section extruder
 
@@ -430,7 +417,7 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 998
+#define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -581,15 +568,15 @@
  *
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
-//#define PREVENT_COLD_EXTRUSION
-//#define EXTRUDE_MINTEMP 170
+#define PREVENT_COLD_EXTRUSION
+#define EXTRUDE_MINTEMP 170
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
-//#define PREVENT_LENGTHY_EXTRUDE
-//#define EXTRUDE_MAXLENGTH 200
+#define PREVENT_LENGTHY_EXTRUDE
+#define EXTRUDE_MAXLENGTH 200
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
@@ -639,7 +626,7 @@
 #define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
-//#define USE_IMIN_PLUG
+#define USE_IMIN_PLUG
 //#define USE_JMIN_PLUG
 //#define USE_KMIN_PLUG
 //#define USE_XMAX_PLUG
@@ -740,7 +727,7 @@
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
-#define ENDSTOP_INTERRUPTS_FEATURE
+//#define ENDSTOP_INTERRUPTS_FEATURE
 
 /**
  * Endstop Noise Threshold
@@ -781,22 +768,14 @@
  * Override with M92
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 400, 400}  
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 500}  
 
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 250, 250, 8, 250 }
-=======
-#else
-#ifdef MODULE_50
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 31.49, 52.49, 52.49, 477.87, 477.87, 1000} //e axis in ML  
-  #define DEFAULT_MAX_FEEDRATE          { 250, 250, 250, 12, 12, 250 }  //X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2[, E3[, E4[, E5]]]]]
-  #define DEFAULT_MAX_ACCELERATION      { 500, 500, 500, 9, 9, 500 }
->>>>>>> a28303e Update Configuration.h
+#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5,  25 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -809,7 +788,7 @@
  * Override with M201
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 10000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -824,9 +803,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          250    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  10    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   250    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
@@ -859,7 +838,7 @@
   #endif
 #endif
 
-#define DEFAULT_EJERK    1.0  // May be used by Linear Advance
+#define DEFAULT_EJERK    5.0  // May be used by Linear Advance
 
 /**
  * Junction Deviation Factor
@@ -880,7 +859,7 @@
  *
  * See https://github.com/synthetos/TinyG/wiki/Jerk-Controlled-Motion-Explained
  */
-#define S_CURVE_ACCELERATION
+//#define S_CURVE_ACCELERATION
 
 //===========================================================================
 //============================= Z Probe Options =============================
@@ -1130,6 +1109,7 @@
     #endif
   #endif
 #endif
+
 // Warn on display about possibly reduced accuracy
 //#define DISABLE_REDUCED_ACCURACY_WARNING
 
@@ -1142,7 +1122,7 @@
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #define INVERT_X_DIR false
-#define INVERT_Y_DIR false
+#define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
 #if NON_E_AXES > 3
   #define INVERT_I_DIR false
@@ -1194,8 +1174,8 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 780
-#define Y_BED_SIZE 600
+#define X_BED_SIZE 200
+#define Y_BED_SIZE 200
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1490,23 +1470,11 @@
 #define HOMING_FEEDRATE_XY (50*60)
 #define HOMING_FEEDRATE_Z  (4*60)
 #if NON_E_AXES > 3
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
   #define HOMING_FEEDRATE_I (4*60)
-=======
-  #define HOMING_FEEDRATE_I (2*60)
->>>>>>> a28303e Update Configuration.h
   #if NON_E_AXES > 4
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
     #define HOMING_FEEDRATE_J (4*60)
-=======
-    #define HOMING_FEEDRATE_J (2*60)
->>>>>>> a28303e Update Configuration.h
     #if NON_E_AXES > 5
-<<<<<<< Upstream, based on MarlinFirmware/bugfix-2.0.x
       #define HOMING_FEEDRATE_K (4*60)
-=======
-      #define HOMING_FEEDRATE_K (2*60)
->>>>>>> a28303e Update Configuration.h
     #endif
   #endif
 #endif
@@ -1887,7 +1855,7 @@
 // If you have a speaker that can produce tones, enable it here.
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
-#define SPEAKER
+//#define SPEAKER
 
 //
 // The duration and frequency for the UI feedback sound.
@@ -2050,7 +2018,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 //
 // ReprapWorld Graphical LCD
