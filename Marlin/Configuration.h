@@ -144,8 +144,7 @@
  * This defines the number of axes that are not used for extruders (axes that
  * benefit from endstops and homing). Default: 3. Each added axis I[, J[, K]]
  * requires definition of additional parameters:
- * {I,J,K}_DEFAULT_MAX_FEEDRATE, {I,J,K}_DEFAULT_MAX_ACCELERATION,
- * DEFAULT_{I,J,K}JERK, {I,J,K}_STEP_PIN, {I,J,K}_DIR_PIN, {I,J,K}_ENABLE_PIN,
+ * {I,J,K}_STEP_PIN, {I,J,K}_DIR_PIN, {I,J,K}_ENABLE_PIN,
  * DEFAULT_AXIS_STEPS_PER_UNIT, {I,J,K}_(MIN||MAX)_PIN, USE_{I,J,K}(MIN||MAX)_PLUG
  */
 #define NON_E_AXES 4
@@ -768,18 +767,41 @@
  * Override with M92
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 500}  
-
+#if NON_E_AXES == 6
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 4000, 4000, 500}
+#elif NON_E_AXES == 5
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 4000, 500}
+#elif NON_E_AXES == 4
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 500}
+#else
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500}
+#endif
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5,  25 }
+#if NON_E_AXES == 6
+  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5, 5, 5, 25 }
+#if NON_E_AXES == 5
+  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5, 5, 25 }
+#if NON_E_AXES == 4
+  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5, 25 }
+#else
+  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 50 } // ...or, set your own edit limits
+  #if NON_E_AXES == 6
+    #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 10, 10, 10, 50 } // ...or, set your own edit limits
+  #elif NON_E_AXES == 5
+    #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 10, 10, 50 } // ...or, set your own edit limits
+  #elif NON_E_AXES == 4
+    #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 10, 50 } // ...or, set your own edit limits
+  #else
+    #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 50 } // ...or, set your own edit limits
+  #endif
 #endif
 
 /**
@@ -788,11 +810,27 @@
  * Override with M201
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 10000 }
+#if NON_E_AXES == 6
+  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 100, 100, 10000 }
+#elif NON_E_AXES == 5
+  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 100, 10000 }
+#elif NON_E_AXES == 4
+  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 10000 }
+#else
+  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+#endif
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 20000 } // ...or, set your own edit limits
+  #if NON_E_AXES == 6
+    #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 200, 200, 200, 20000 } // ...or, set your own edit limits
+  #elif NON_E_AXES == 5
+    #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 200, 200, 20000 } // ...or, set your own edit limits
+  #elif NON_E_AXES == 4
+    #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 200, 20000 } // ...or, set your own edit limits
+  #else
+    #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 20000 } // ...or, set your own edit limits
+  #endif
 #endif
 
 /**
@@ -834,7 +872,14 @@
 
   //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
   #if ENABLED(LIMITED_JERK_EDITING)
-    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
+    #if NON_E_AXES == 6
+      #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 0.6, 0.6, 0.6, 10 } // ...or, set your own edit limits
+    #elif NON_E_AXES == 5
+      #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 0.6, 0.6, 10 } // ...or, set your own edit limits
+    #elif NON_E_AXES == 4
+      #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 0.6, 10 } // ...or, set your own edit limits
+    #else
+      #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
   #endif
 #endif
 

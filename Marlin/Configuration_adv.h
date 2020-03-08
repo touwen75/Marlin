@@ -758,7 +758,7 @@
 #if NON_E_AXES > 3
   #define INVERT_I_STEP_PIN false
   #if NON_E_AXES > 4
-    #define INVERT_K_STEP_PIN false
+    #define INVERT_J_STEP_PIN false
     #if NON_E_AXES > 5
       #define INVERT_K_STEP_PIN false
     #endif
@@ -967,7 +967,14 @@
 // @section lcd
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
-  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
+  #if NON_E_AXES == 6
+    #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 4*60, 4*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, I, J, K, E from panel
+  #elif NON_E_AXES == 6
+    #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 4*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, I, J, E from panel
+  #elif NON_E_AXES == 6
+    #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, I, E from panel
+  #else
+    #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
   #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
   #if ENABLED(ULTIPANEL)
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
