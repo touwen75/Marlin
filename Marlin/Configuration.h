@@ -68,8 +68,15 @@
 // config/examples/SCARA and customize for your machine.
 //
 
-<<<<<<< Upstream, based on ca49b594f2c94345d9f723e907ac59783bb9a0a1
-=======
+//===========================================================================
+//========================= ASYNC_SECONDARY_AXES ============================
+//===========================================================================
+// For a CNC machine with NON_E_AXES > 3 where only primary axes XYZ are
+// coordinated. Optional additional axes I(, J(, K)) are uncoordinated
+// (asynchronous). Disable for coordinated movement of all axes.
+//
+//#define ASYNC_SECONDARY_AXES
+
 //===========================================================================
 //=========================== FOAMCUTTER_XY_IJ ==============================
 //===========================================================================
@@ -78,7 +85,6 @@
 //
 //#define FOAMCUTTER_XY_IJ
 
->>>>>>> 619786a correct history
 // @section info
 
 // Author info of this build printed to the host during boot and M115
@@ -152,11 +158,12 @@
 
 /**
  * This defines the number of axes that are not used for extruders (axes that
- * benefit from endstops and homing). Non-cartesian kinematics are currently
- * not supported. Can be used for cartesian machines where additional axes
- * I, J, K do not affect the positioning of the main tool. NON_E_AXES > 3
- * requires definition of {I, J, K}_STEP_PIN, {I, J, K}_ENABLE_PIN,
- * {I, J, K}_DIR_PIN, {I, J, K}_STOP_PIN, USE_{I, J, K}[MIN || MAX]_PLUG.
+ * benefit from endstops and homing). NON_E_AXES > 3 requires definition of
+ * {I, J, K}_STEP_PIN, {I, J, K}_ENABLE_PIN, {I, J, K}_DIR_PIN,
+ * {I, J, K}_STOP_PIN, USE_{I, J, K}[MIN || MAX]_PLUG and definition of the
+ * respective parameters of DEFAULT_AXIS_STEPS_PER_UNIT, DEFAULT_MAX_FEEDRATE,
+ * DEFAULT_MAX_ACCELERATION, AXIS_RELATIVE_MODES, MICROSTEP_MODES and
+ * MANUAL_FEEDRATE.
  */
 #define NON_E_AXES 3
 
@@ -762,14 +769,14 @@
 /**
  * Default Axis Steps Per Unit (steps/mm)
  * Override with M92
- *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
+ *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
- *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
+ *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
 #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
 

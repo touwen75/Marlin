@@ -633,15 +633,7 @@
 
 // @section motion
 
-#if NON_E_AXES == 6
-  #define AXIS_RELATIVE_MODES { false, false, false, false, false, false, false }
-#elif NON_E_AXES == 5
-  #define AXIS_RELATIVE_MODES { false, false, false, false, false, false }
-#elif NON_E_AXES == 4
-  #define AXIS_RELATIVE_MODES { false, false, false, false, false }
-#else
-  #define AXIS_RELATIVE_MODES { false, false, false, false }
-#endif
+#define AXIS_RELATIVE_MODES { false, false, false, false }
 
 // Add a Duplicate option for well-separated conjoined nozzles
 //#define MULTI_NOZZLE_DUPLICATION
@@ -862,7 +854,7 @@
 // @section lcd
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
-  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, [I, [J, [K, ]]] E from panel
   #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
   #if ENABLED(ULTIPANEL)
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -1255,7 +1247,7 @@
       //#define TOUCH_UI_UTF8_SUPERSCRIPTS  // ¹ ² ³
       //#define TOUCH_UI_UTF8_COPYRIGHT     // © ®
       //#define TOUCH_UI_UTF8_GERMANIC      // ß
-      //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ �? Ø Þ æ ð ø þ
+      //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ Ð Ø Þ æ ð ø þ
       //#define TOUCH_UI_UTF8_PUNCTUATION   // « » ¿ ¡
       //#define TOUCH_UI_UTF8_CURRENCY      // ¢ £ ¤ ¥
       //#define TOUCH_UI_UTF8_ORDINALS      // º ª

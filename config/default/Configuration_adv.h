@@ -518,7 +518,18 @@
 #define X_HOME_BUMP_MM 5
 #define Y_HOME_BUMP_MM 5
 #define Z_HOME_BUMP_MM 2
-#define HOMING_BUMP_DIVISOR { 2, 2, 4 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#if NON_E_AXES > 3
+  #define I_HOME_BUMP_MM 2
+  #if NON_E_AXES > 4
+    #define J_HOME_BUMP_MM 2
+    #if NON_E_AXES > 5
+      #define K_HOME_BUMP_MM 2
+    #endif
+  #endif
+#endif
+
+#define HOMING_BUMP_DIVISOR ARRAY_N(NON_E_AXES, 2, 2, 4, 4, 4, 4) // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+
 //#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
 //#define HOMING_BACKOFF_MM { 2, 2, 2 }  // (mm) Move away from the endstops after homing
 
@@ -631,6 +642,15 @@
 #define INVERT_X_STEP_PIN false
 #define INVERT_Y_STEP_PIN false
 #define INVERT_Z_STEP_PIN false
+#if NON_E_AXES > 3
+  #define INVERT_I_STEP_PIN false
+  #if NON_E_AXES > 4
+    #define INVERT_J_STEP_PIN false
+    #if NON_E_AXES > 5
+      #define INVERT_K_STEP_PIN false
+    #endif
+  #endif
+#endif
 #define INVERT_E_STEP_PIN false
 
 // Default stepper release if idle. Set to 0 to deactivate.
@@ -640,6 +660,15 @@
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set to false if the nozzle will fall down on your printed part when print has finished.
+#if NON_E_AXES > 3
+  #define DISABLE_INACTIVE_I true
+  #if NON_E_AXES > 4
+    #define DISABLE_INACTIVE_J true
+    #if NON_E_AXES > 5
+      #define DISABLE_INACTIVE_K true
+    #endif
+  #endif
+#endif
 #define DISABLE_INACTIVE_E true
 
 #define DEFAULT_MINIMUMFEEDRATE       0.0     // minimum feedrate
@@ -825,7 +854,7 @@
 // @section lcd
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
-  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, [I, [J, [K, ]]] E from panel
   #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
   #if ENABLED(ULTIPANEL)
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -2123,6 +2152,30 @@
     #define Z3_MAX_VOLTAGE     127
     #define Z3_CHAIN_POS         0
   #endif
+
+  #if AXIS_DRIVER_TYPE_I(L6470)
+    #define I_MICROSTEPS      128
+    #define I_OVERCURRENT    2000
+    #define I_STALLCURRENT   1500
+    #define I_MAX_VOLTAGE     127
+    #define I_CHAIN_POS         0
+  #endif
+  
+  #if AXIS_DRIVER_TYPE_J(L6470)
+    #define J_MICROSTEPS      128
+    #define J_OVERCURRENT    2000
+    #define J_STALLCURRENT   1500
+    #define J_MAX_VOLTAGE     127
+    #define J_CHAIN_POS         0
+  #endif
+  
+  #if AXIS_DRIVER_TYPE_K(L6470)
+    #define K_MICROSTEPS      128
+    #define K_OVERCURRENT    2000
+    #define K_STALLCURRENT   1500
+    #define K_MAX_VOLTAGE     127
+    #define K_CHAIN_POS         0
+  #endif  
 
   #if AXIS_DRIVER_TYPE_E0(L6470)
     #define E0_MICROSTEPS      128
