@@ -1175,7 +1175,7 @@ void Planner::recalculate() {
  */
 void Planner::check_axes_activity() {
 
-  #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_E)
+  #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_I, DISABLE_J, DISABLE_K, DISABLE_E)
     uint8_t axis_active[NUM_AXIS] = { 0 };
   #endif
 
@@ -1860,7 +1860,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     #endif
   ) {
     #if NON_E_AXES > 3
-	  block->millimeters = ABS(delta_mm[I_AXIS]);
+      block->millimeters = ABS(delta_mm[I_AXIS]);
       #if NON_E_AXES > 4
         block->millimeters = ABS(delta_mm[J_AXIS]);
         #if NON_E_AXES > 5
@@ -1914,15 +1914,21 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
               #endif
             #endif
           #endif
-          
+
+        #elif defined(FOAMCUTTER_XY_IJ)
+          // largest distance from either X/Y or I/J plane
+          sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) > sq(delta_mm[I_AXIS]) + sq(delta_mm[J_AXIS])
+            ? sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS])
+            : sq(delta_mm[I_AXIS]) + sq(delta_mm[J_AXIS]);
+
         #else
           sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) + sq(delta_mm[Z_AXIS]) 
           #if NON_E_AXES > 3
             + sq(delta_mm[I_AXIS])
             #if NON_E_AXES > 4
-            + sq(delta_mm[J_AXIS])
+              + sq(delta_mm[J_AXIS])
               #if NON_E_AXES > 5
-              + sq(delta_mm[K_AXIS])
+                + sq(delta_mm[K_AXIS])
               #endif
             #endif
           #endif
@@ -2585,7 +2591,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
     uint8_t limited = 0;
     #if BOTH(JUNCTION_DEVIATION, LIN_ADVANCE)
-      LOOP_XYZ(i)
+      LOOP_NON_E(i)
     #else
       LOOP_NUM_AXIS(i)
     #endif
@@ -2622,7 +2628,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
       // Now limit the jerk in all axes.
       const float smaller_speed_factor = vmax_junction / previous_nominal_speed;
       #if BOTH(JUNCTION_DEVIATION, LIN_ADVANCE)
-        LOOP_XYZ(axis)
+        LOOP_NON_E(axis)
       #else
         LOOP_NUM_AXIS(axis)
       #endif

@@ -68,6 +68,17 @@
 // config/examples/SCARA and customize for your machine.
 //
 
+<<<<<<< Upstream, based on ca49b594f2c94345d9f723e907ac59783bb9a0a1
+=======
+//===========================================================================
+//=========================== FOAMCUTTER_XY_IJ ==============================
+//===========================================================================
+// For a hot wire cutter where the hight of the two wire ends are controlled by
+// axes I, J (parallel axes in z direction).
+//
+//#define FOAMCUTTER_XY_IJ
+
+>>>>>>> 619786a correct history
 // @section info
 
 // Author info of this build printed to the host during boot and M115
