@@ -77,6 +77,14 @@
 //
 //#define ASYNC_SECONDARY_AXES
 
+//===========================================================================
+//=========================== FOAMCUTTER_XY_IJ ==============================
+//===========================================================================
+// For a hot wire cutter where the hight of the two wire ends are controlled by
+// axes I, J (parallel axes in z direction).
+//
+//#define FOAMCUTTER_XY_IJ
+
 // @section info
 
 // Author info of this build printed to the host during boot and M115
