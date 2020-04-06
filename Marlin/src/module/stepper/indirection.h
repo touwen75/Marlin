@@ -201,7 +201,7 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
   #define Z4_DIR_WRITE(STATE) NOOP
 #endif
 
-// X Stepper
+// I Stepper
 #if NON_E_AXES > 3
 #ifndef I_ENABLE_INIT
   #define I_ENABLE_INIT() SET_OUTPUT(I_ENABLE_PIN)
@@ -219,7 +219,7 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
 #endif
 #define I_STEP_READ() bool(READ(I_STEP_PIN))
 
-// X Stepper
+// J Stepper
 #if NON_E_AXES > 4
 #ifndef J_ENABLE_INIT
   #define J_ENABLE_INIT() SET_OUTPUT(J_ENABLE_PIN)
@@ -237,7 +237,7 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
 #endif
 #define J_STEP_READ() bool(READ(J_STEP_PIN))
 
-// X Stepper
+// K Stepper
 #if NON_E_AXES > 5
 #ifndef K_ENABLE_INIT
   #define K_ENABLE_INIT() SET_OUTPUT(K_ENABLE_PIN)
@@ -818,7 +818,6 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
     #define DISABLE_STEPPER_K() NOOP
   #endif
 #endif
-
 
 #ifndef ENABLE_STEPPER_E0
   #if HAS_E0_ENABLE

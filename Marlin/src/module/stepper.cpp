@@ -475,17 +475,17 @@ void Stepper::set_directions() {
     SET_STEP_DIR(Z); // C
   #endif
 
-#if HAS_I_DIR
-  SET_STEP_DIR(I); // I
-#endif
+  #if HAS_I_DIR
+    SET_STEP_DIR(I); // I
+  #endif
 
-#if HAS_J_DIR
-  SET_STEP_DIR(J); // J
-#endif
+  #if HAS_J_DIR
+    SET_STEP_DIR(J); // J
+  #endif
 
-#if HAS_K_DIR
-  SET_STEP_DIR(K); // K
-#endif
+  #if HAS_K_DIR
+    SET_STEP_DIR(K); // K
+  #endif
 
 
   #if DISABLED(LIN_ADVANCE)
@@ -1904,6 +1904,16 @@ uint32_t Stepper::block_phase_isr() {
         #define Z_MOVE_TEST !!current_block->steps.c
       #endif
 
+      #if NON_E_AXES > 3
+        #define I_MOVE_TEST !!current_block->steps.i
+        #if NON_E_AXES > 4
+          #define J_MOVE_TEST !!current_block->steps.j
+          #if NON_E_AXES > 5
+            #define K_MOVE_TEST !!current_block->steps.k
+          #endif
+        #endif
+      #endif
+
       uint8_t axis_bits = 0;
       if (X_MOVE_TEST) SBI(axis_bits, A_AXIS);
       if (Y_MOVE_TEST) SBI(axis_bits, B_AXIS);
@@ -2536,11 +2546,11 @@ void Stepper::set_position(const int32_t &a, const int32_t &b, const int32_t &c
   planner.synchronize();
   const bool was_enabled = suspend();
   _set_position(a, b, c
-  #if _NON_E_AXES > 3
+  #if NON_E_AXES > 3
     , i
-    #if _NON_E_AXES > 4
+    #if NON_E_AXES > 4
       , j
-      #if _NON_E_AXES > 5
+      #if NON_E_AXES > 5
         , k
       #endif
     #endif
@@ -2808,9 +2818,9 @@ void Stepper::report_positions() {
           Z_DIR_WRITE(INVERT_Z_DIR ^ z_direction);
           #if NON_E_AXES > 3
             I_DIR_WRITE(INVERT_I_DIR ^ z_direction);
-            #if NON_E_AXES > 3
+            #if NON_E_AXES > 4
               J_DIR_WRITE(INVERT_J_DIR ^ z_direction);
-              #if NON_E_AXES > 3
+              #if NON_E_AXES > 5
                 K_DIR_WRITE(INVERT_K_DIR ^ z_direction);
               #endif
             #endif
@@ -3249,6 +3259,15 @@ void Stepper::report_positions() {
       #endif
       #if HAS_E7_MICROSTEPS
         case 10: WRITE(E7_MS1_PIN, ms1); break;
+      #endif
+      #if HAS_I_MICROSTEPS
+        case 11: WRITE(I_MS1_PIN, ms1); break
+      #endif
+      #if HAS_J_MICROSTEPS
+        case 12: WRITE(J_MS1_PIN, ms1); break
+      #endif
+      #if HAS_K_MICROSTEPS
+        case 13: WRITE(K_MS1_PIN, ms1); break
       #endif
     }
     if (ms2 >= 0) switch (driver) {

@@ -762,6 +762,25 @@ void reset_trinamic_drivers() {
       false
     #endif
     ,
+    #if ENABLED(STEALTHCHOP_I)
+      true
+    #else
+      false
+    #endif
+    ,
+    #if ENABLED(STEALTHCHOP_J)
+      true
+    #else
+      false
+    #endif
+    ,
+    #if ENABLED(STEALTHCHOP_K)
+      true
+    #else
+      false
+    #endif
+    ,
+
     #if ENABLED(STEALTHCHOP_E)
       true
     #else

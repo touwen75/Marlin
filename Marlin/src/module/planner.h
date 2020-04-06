@@ -766,7 +766,7 @@ class Planner {
             , cart.k
           #endif
         #endif
-      #endif    
+      #endif
     , cart.e); }
     static void set_e_position_mm(const float &e);
 
@@ -810,6 +810,15 @@ class Planner {
         get_axis_position_mm(A_AXIS),
         get_axis_position_mm(B_AXIS),
         get_axis_position_mm(C_AXIS),
+        #if NON_E_AXES > 3
+          get_axis_position_mm(I_AXIS),
+          #if NON_E_AXES > 4
+            get_axis_position_mm(J_AXIS),
+            #if NON_E_AXES > 5
+              get_axis_position_mm(K_AXIS),
+            #endif
+          #endif
+        #endif
         get_axis_position_mm(E_AXIS)
       };
       return out;

@@ -1928,12 +1928,22 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     e_move_accumulator += delta_mm.e;
   #endif
 
-  if (block->steps.a < MIN_STEPS_PER_SEGMENT && block->steps.b < MIN_STEPS_PER_SEGMENT && block->steps.c < MIN_STEPS_PER_SEGMENT ) {
-    block->millimeters = (0
+  if (block->steps.a < MIN_STEPS_PER_SEGMENT && block->steps.b < MIN_STEPS_PER_SEGMENT && block->steps.c < MIN_STEPS_PER_SEGMENT
+    #if NON_E_AXES > 3
+      && block->steps.i < MIN_STEPS_PER_SEGMENT
+      #if NON_E_AXES > 4
+        && block->steps.j < MIN_STEPS_PER_SEGMENT
+        #if NON_E_AXES > 5
+          && block->steps.k < MIN_STEPS_PER_SEGMENT
+        #endif
+      #endif
+    #endif
+  ) {    block->millimeters = (0
       #if EXTRUDERS
         + ABS(delta_mm.e)
       #endif
     );
+/**
     #if NON_E_AXES > 3
       if(ABS(delta_mm.i) > block->millimeters) block->millimeters = ABS(delta_mm.i);
       #if NON_E_AXES > 4
@@ -1943,7 +1953,8 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
             block->millimeters = ABS(delta_mm.k);
         #endif
      #endif
-   #endif
+   #endif // TODO (DerAndere): Test for NON_E_AXES > 3
+ */
   }
   else {
     if (millimeters)
@@ -1952,24 +1963,59 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
       block->millimeters = SQRT(
         #if CORE_IS_XY
           sq(delta_mm.head.x) + sq(delta_mm.head.y) + sq(delta_mm.z)
+          #if NON_E_AXES > 3
+            + sq(delta_mm[I_AXIS])
+            #if NON_E_AXES > 4
+            + sq(delta_mm[J_AXIS])
+              #if NON_E_AXES > 5
+              + sq(delta_mm[K_AXIS])
+              #endif
+            #endif
+          #endif
+
         #elif CORE_IS_XZ
           sq(delta_mm.head.x) + sq(delta_mm.y) + sq(delta_mm.head.z)
+          #if NON_E_AXES > 3
+            + sq(delta_mm[I_AXIS])
+            #if NON_E_AXES > 4
+            + sq(delta_mm[J_AXIS])
+              #if NON_E_AXES > 5
+              + sq(delta_mm[K_AXIS])
+              #endif
+            #endif
+          #endif
+
         #elif CORE_IS_YZ
           sq(delta_mm.x) + sq(delta_mm.head.y) + sq(delta_mm.head.z)
-        #else
-          sq(delta_mm.x) + sq(delta_mm.y) + sq(delta_mm.z) // TODO: Test NON_E_AXES > 3
-        #endif
-      );
-    // TODO: Test NON_E_AXES > 3
-    #if NON_E_AXES > 3
-        if(ABS(delta_mm.i) > block->millimeters) block->millimeters = ABS(delta_mm.i);
-        #if NON_E_AXES > 4
-          if(ABS(delta_mm.j) > block->millimeters) block->millimeters = ABS(delta_mm.j);
-          #if NON_E_AXES > 5
-            if(ABS(delta_mm.k) > block->millimeters) block->millimeters = ABS(delta_mm.k);
+          #if NON_E_AXES > 3
+            + sq(delta_mm[I_AXIS])
+            #if NON_E_AXES > 4
+            + sq(delta_mm[J_AXIS])
+              #if NON_E_AXES > 5
+              + sq(delta_mm[K_AXIS])
+              #endif
+            #endif
           #endif
-        #endif
-      #endif
+
+       #elif defined(ASYNC_SECONDARY_AXES)
+         // XYZ vector magnitude. If one of the secondary axes IJK moves further
+         // than the XYZ vector magnitude, take the largest single-axis move, instead.
+         sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) + sq(delta_mm[Z_AXIS]) > _MAX(sq(delta_mm[I_AXIS]), sq(delta_mm[J_AXIS]), sq(delta_mm[K_AXIS]))
+           ? sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) + sq(delta_mm[Z_AXIS])
+           : _MAX(sq(delta_mm[I_AXIS]), sq(delta_mm[J_AXIS]), sq(delta_mm[K_AXIS]));
+
+        #else
+          sq(delta_mm.x) + sq(delta_mm.y) + sq(delta_mm.z)
+          #if NON_E_AXES > 3
+            + sq(delta_mm.i)
+            #if NON_E_AXES > 4
+              + sq(delta_mm.j)
+              #if NON_E_AXES > 5
+                + sq(delta_mm.k)
+              #endif
+            #endif
+          #endif
+      );
 
     /**
      * At this point at least one of the axes has more steps than
@@ -2036,8 +2082,9 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
           #endif
         #endif
       #endif
-    )
+    ) {
       powerManager.power_on();
+    }
   #endif
 
   // Enable active axes
@@ -2173,7 +2220,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
   float speed_factor = 1.0f; // factor <1 decreases speed
 
   // Linear axes first with less logic
-  LOOP_XYZ(i) {
+  LOOP_NON_E(i) {
     current_speed[i] = delta_mm[i] * inverse_secs;
     const feedRate_t cs = ABS(current_speed[i]),
                  max_fr = settings.max_feedrate_mm_s[i];
@@ -2542,7 +2589,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
     uint8_t limited = 0;
     #if HAS_LINEAR_E_JERK
-      LOOP_XYZ(i)
+      LOOP_NON_E(i) // TODO (DerAndere): Test for NON_E_AXES > 3. Should it be LOOP_XYZ(i) ?
     #else
       LOOP_NUM_AXIS(i)
     #endif
@@ -2580,7 +2627,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
       // Now limit the jerk in all axes.
       const float smaller_speed_factor = vmax_junction / previous_nominal_speed;
       #if HAS_LINEAR_E_JERK
-        LOOP_XYZ(axis)
+        LOOP_NON_E(axis) // TODO (DerAndere): Test for NON_E_AXES > 3. Should it be LOOP_XYZ(i) ?
       #else
         LOOP_NUM_AXIS(axis)
       #endif
@@ -2809,6 +2856,33 @@ bool Planner::buffer_segment(const float &a, const float &b, const float &c
     SERIAL_ECHOPAIR(" (", position.z);
     SERIAL_ECHOPAIR("->", target.z);
     SERIAL_CHAR(')');
+    #if NON_E_AXES > 3
+      SERIAL_ECHOPAIR(" (", position.i);
+      SERIAL_ECHOPAIR("->", target.i);
+      SERIAL_CHAR(')');
+      SERIAL_ECHOPAIR_P(SP_I_LBL, i);
+      SERIAL_ECHOPAIR(" (", position.i);
+      SERIAL_ECHOPAIR("->", target.i);
+      SERIAL_CHAR(')');
+      #if NON_E_AXES > 4
+        SERIAL_ECHOPAIR(" (", position.j);
+        SERIAL_ECHOPAIR("->", target.j);
+        SERIAL_CHAR(')');
+        SERIAL_ECHOPAIR_P(SP_J_LBL, j);
+        SERIAL_ECHOPAIR(" (", position.j);
+        SERIAL_ECHOPAIR("->", target.j);
+        SERIAL_CHAR(')');
+        #if NON_E_AXES > 5
+          SERIAL_ECHOPAIR(" (", position.k);
+          SERIAL_ECHOPAIR("->", target.k);
+          SERIAL_CHAR(')');
+          SERIAL_ECHOPAIR_P(SP_K_LBL, k);
+          SERIAL_ECHOPAIR(" (", position.k);
+          SERIAL_ECHOPAIR("->", target.k);
+          SERIAL_CHAR(')');
+        #endif
+      #endif
+    #endif
     SERIAL_ECHOPAIR_P(SP_E_LBL, e);
     SERIAL_ECHOPAIR(" (", position.e);
     SERIAL_ECHOPAIR("->", target.e);
@@ -2993,7 +3067,7 @@ void Planner::set_position_mm(const float &rx, const float &ry, const float &rz
         #endif
       #endif
     #endif
-    , e }; //TODO: Add support for NON_E_AXES >3
+    , e };
   #if HAS_POSITION_MODIFIERS
   {
     apply_modifiers(machine

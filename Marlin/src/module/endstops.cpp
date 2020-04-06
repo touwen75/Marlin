@@ -486,30 +486,15 @@ void Endstops::event_handler() {
     SERIAL_EOL();
 
     #if HAS_SPI_LCD
-    ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrI, chrJ, chrP);
-    /* 
-      ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c
-      #if NON_E_AXES > 3
-        %c
-        #if NON_E_AXES > 4
-          %c
-          #if NON_E_AXES > 5
-            %c
-          #endif
-        #endif
+      #if NON_E_AXES == 6
+        ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrI, chrJ, chrK, chrP);
+      #elif NON_E_AXES == 5
+        ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrI, chrJ, chrP);
+      #elif NON_E_AXES == 4
+        ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrI, chrP);
+      #else
+        ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrP);
       #endif
-      "), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ
-      #if NON_E_AXES > 3
-        , chrI
-        #if NON_E_AXES > 4
-          , chrJ
-          #if NON_E_AXES > 5
-            , chrK
-          #endif
-        #endif
-      #endif 
-      , chrP);
-    */
     #endif
 
     #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)
@@ -681,16 +666,15 @@ void Endstops::update() {
   #else
     #define Z_AXIS_HEAD Z_AXIS
   #endif
-
-#if NON_E_AXES > 3
-  #define I_AXIS_HEAD I_AXIS
-  #if NON_E_AXES > 4
-    #define J_AXIS_HEAD J_AXIS
-    #if NON_E_AXES > 5
-      #define K_AXIS_HEAD K_AXIS
+  #if NON_E_AXES > 3
+    #define I_AXIS_HEAD I_AXIS
+    #if NON_E_AXES > 4
+      #define J_AXIS_HEAD J_AXIS
+      #if NON_E_AXES > 5
+        #define K_AXIS_HEAD K_AXIS
+      #endif
     #endif
   #endif
-#endif
 
   /**
    * Check and update endstops

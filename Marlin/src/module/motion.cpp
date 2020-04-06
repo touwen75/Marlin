@@ -99,7 +99,18 @@ bool relative_mode; // = false;
  *   Used by 'line_to_current_position' to do a move after changing it.
  *   Used by 'sync_plan_position' to update 'planner.position'.
  */
-xyze_pos_t current_position = { X_HOME_POS, Y_HOME_POS, Z_HOME_POS };
+xyze_pos_t current_position = { X_HOME_POS, Y_HOME_POS, Z_HOME_POS
+  #if NON_E_AXES > 3
+    , I_HOME_POS 
+    #if NON_E_AXES > 4
+      , J_HOME_POS
+      #if NON_E_AXES > 5
+        , K_HOME_POS
+      #endif
+    #endif
+  #endif
+  , 0
+};
 
 /**
  * Cartesian Destination
@@ -226,7 +237,17 @@ inline void report_more_positions() {
 // Report the logical position for a given machine position
 inline void report_logical_position(const xyze_pos_t &rpos) {
   const xyze_pos_t lpos = rpos.asLogical();
-  SERIAL_ECHOPAIR_P(X_LBL, lpos.x, SP_Y_LBL, lpos.y, SP_Z_LBL, lpos.z, SP_E_LBL, lpos.e);
+  SERIAL_ECHOPAIR_P(X_LBL, lpos.x, SP_Y_LBL, lpos.y, SP_Z_LBL, lpos.z
+  #if NON_E_AXES > 3
+    , SP_I_LBL, lpos.i
+    #if NON_E_AXES > 4
+      , SP_J_LBL, lpos.j
+      #if NON_E_AXES > 5
+        , SP_K_LBL, lpos.k
+      #endif
+    #endif
+  #endif
+  , SP_E_LBL, lpos.e);
   report_more_positions();
 }
 
@@ -234,7 +255,19 @@ inline void report_logical_position(const xyze_pos_t &rpos) {
 // Forward kinematics and un-leveling are applied.
 void report_real_position() {
   get_cartesian_from_steppers();
-  xyze_pos_t npos = cartes;
+  xyze_pos_t npos;
+  npos.x = cartes.x;
+  npos.y = cartes.y;
+  npos.z = cartes.z;
+  #if NON_E_AXES > 3
+    npos.i = planner.get_axis_position_mm(I_AXIS);
+    #if NON_E_AXES > 4
+      npos.j = planner.get_axis_position_mm(J_AXIS);
+      #if NON_E_AXES > 5
+        npos.k = planner.get_axis_position_mm(K_AXIS);
+      #endif
+    #endif
+  #endif
   npos.e = planner.get_axis_position_mm(E_AXIS);
 
   #if HAS_POSITION_MODIFIERS
@@ -313,7 +346,19 @@ void get_cartesian_from_steppers() {
  */
 void set_current_from_steppers_for_axis(const AxisEnum axis) {
   get_cartesian_from_steppers();
-  xyze_pos_t pos = cartes;
+  xyze_pos_t pos;
+  pos.x = cartes.x;
+  pos.y = cartes.y;
+  pos.z = cartes.z;
+  #if NON_E_AXES > 3 // TODO (DerAndere): Test for NON_E_AXES > 3.
+    pos.i = planner.get_axis_position_mm(I_AXIS);
+    #if NON_E_AXES > 4
+      pos.j = planner.get_axis_position_mm(J_AXIS);
+      #if NON_E_AXES > 5
+        pos.k = planner.get_axis_position_mm(K_AXIS);
+      #endif
+    #endif
+  #endif
   pos.e = planner.get_axis_position_mm(E_AXIS);
 
   #if HAS_POSITION_MODIFIERS
@@ -549,8 +594,28 @@ void restore_feedrate_and_scaling() {
 
   // Software Endstops are based on the configured limits.
   axis_limits_t soft_endstop = {
-    ARRAY_N(NON_E_AXES, X_MIN_POS, Y_MIN_POS, Z_MIN_POS, I_MIN_POS, J_MIN_POS, K_MIN_POS),
-    ARRAY_N(NON_E_AXES, X_MAX_BED, Y_MAX_BED, Z_MAX_POS, I_MAX_POS, J_MAX_POS, K_MAX_POS)
+    { X_MIN_POS, Y_MIN_POS, Z_MIN_POS
+      #if NON_E_AXES > 3
+        , I_MIN_POS
+        #if NON_E_AXES > 4
+          , J_MIN_POS
+          #if NON_E_AXES > 5
+            , K_MIN_POS
+          #endif
+        #endif
+      #endif
+    },
+    { X_MAX_BED, Y_MAX_BED, Z_MAX_POS
+      #if NON_E_AXES > 3
+        , I_MAX_POS
+        #if NON_E_AXES > 4
+          , J_MAX_POS
+          #if NON_E_AXES > 5
+            , K_MAX_POS
+          #endif
+        #endif
+      #endif
+    }
   };
 
   /**

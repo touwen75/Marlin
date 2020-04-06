@@ -470,6 +470,16 @@ void GcodeSuite::G28() {
 
     #endif // Z_HOME_DIR < 0
 
+    #if NON_E_AXES > 3
+      if (doI) homeaxis(I_AXIS);
+      #if NON_E_AXES > 4
+        if (doJ) homeaxis(J_AXIS);
+        #if NON_E_AXES > 5
+          if (doK) homeaxis(K_AXIS);
+        #endif
+      #endif
+    #endif
+      
     sync_plan_position();
 
   #endif // !DELTA (G28)

@@ -215,8 +215,7 @@ void reset_trinamic_drivers();
     #endif
   #endif
 
-  // I Stepper
-
+  // J Stepper
   #if NON_E_AXES > 4
     #if AXIS_IS_TMC(J)
       extern TMC_CLASS(J, J) stepperJ;
@@ -230,6 +229,7 @@ void reset_trinamic_drivers();
       #endif
     #endif
 
+    // K Stepper
     #if NON_E_AXES > 5
       #if AXIS_IS_TMC(K)
         extern TMC_CLASS(K, K) stepperK;

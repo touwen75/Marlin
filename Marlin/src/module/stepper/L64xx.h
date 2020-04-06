@@ -206,7 +206,6 @@
   #define DISABLE_STEPPER_Z4() stepperZ4.free()
 #endif
 
-
   // I Stepper
 #if NON_E_AXES > 3
   #if AXIS_DRIVER_TYPE_I(L6470)
@@ -279,7 +278,7 @@
   #define J_STEP_WRITE(STATE) WRITE(J_STEP_PIN,STATE)
   #define J_STEP_READ READ(J_STEP_PIN)
 
-// J Stepper
+// K Stepper
 #if NON_E_AXES > 5
   #if AXIS_DRIVER_TYPE_K(L6470)
     extern L6470 stepperK;

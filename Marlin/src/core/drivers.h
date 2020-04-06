@@ -196,11 +196,34 @@
 #define _OR_EAH(N,T)    || AXIS_HAS_##T(E##N)
 #define E_AXIS_HAS(T)   (0 _OR_EAH(0,T) _OR_EAH(1,T) _OR_EAH(2,T) _OR_EAH(3,T) _OR_EAH(4,T) _OR_EAH(5,T) _OR_EAH(6,T) _OR_EAH(7,T))
 
+#if NON_E_AXES == 6
+#define ANY_AXIS_HAS(T) (    AXIS_HAS_##T(X)  || AXIS_HAS_##T(X2) \
+                          || AXIS_HAS_##T(Y)  || AXIS_HAS_##T(Y2) \
+                          || AXIS_HAS_##T(Z)  || AXIS_HAS_##T(Z2) \
+                          || AXIS_HAS_##T(Z3) || AXIS_HAS_##T(Z4) \
+                          || AXIS_HAS_##T(I)  || AXIS_HAS_##T(J)  || AXIS_HAS_##T(K) \
+                          || E_AXIS_HAS(T) )
+#elif NON_E_AXES == 5
+#define ANY_AXIS_HAS(T) (    AXIS_HAS_##T(X)  || AXIS_HAS_##T(X2) \
+                          || AXIS_HAS_##T(Y)  || AXIS_HAS_##T(Y2) \
+                          || AXIS_HAS_##T(Z)  || AXIS_HAS_##T(Z2) \
+                          || AXIS_HAS_##T(Z3) || AXIS_HAS_##T(Z4) \
+                          || AXIS_HAS_##T(I)  || AXIS_HAS_##T(J)  \
+                          || E_AXIS_HAS(T) )
+#elif NON_E_AXES == 4
+#define ANY_AXIS_HAS(T) (    AXIS_HAS_##T(X)  || AXIS_HAS_##T(X2) \
+                          || AXIS_HAS_##T(Y)  || AXIS_HAS_##T(Y2) \
+                          || AXIS_HAS_##T(Z)  || AXIS_HAS_##T(Z2) \
+                          || AXIS_HAS_##T(Z3) || AXIS_HAS_##T(Z4) \
+                          || AXIS_HAS_##T(I) \
+                          || E_AXIS_HAS(T) )
+#else
 #define ANY_AXIS_HAS(T) (    AXIS_HAS_##T(X)  || AXIS_HAS_##T(X2) \
                           || AXIS_HAS_##T(Y)  || AXIS_HAS_##T(Y2) \
                           || AXIS_HAS_##T(Z)  || AXIS_HAS_##T(Z2) \
                           || AXIS_HAS_##T(Z3) || AXIS_HAS_##T(Z4) \
                           || E_AXIS_HAS(T) )
+#endif
 
 #define HAS_STEALTHCHOP    ANY_AXIS_HAS(STEALTHCHOP)
 #define HAS_STALLGUARD     ANY_AXIS_HAS(STALLGUARD)

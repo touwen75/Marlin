@@ -46,7 +46,7 @@
 void GcodeSuite::M425() {
   bool noArgs = true;
 
-  LOOP_XYZ(a) {
+  LOOP_NON_E(a) {
     if (parser.seen(XYZ_CHAR(a))) {
       planner.synchronize();
       backlash.distance_mm[a] = parser.has_value() ? parser.value_linear_units() : backlash.get_measurement(AxisEnum(a));
@@ -87,7 +87,7 @@ void GcodeSuite::M425() {
     #if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
       SERIAL_ECHOPGM("  Average measured backlash (mm):");
       if (backlash.has_any_measurement()) {
-        LOOP_XYZ(a) if (backlash.has_measurement(AxisEnum(a))) {
+        LOOP_NON_E(a) if (backlash.has_measurement(AxisEnum(a))) {
           SERIAL_CHAR(' ', XYZ_CHAR(a));
           SERIAL_ECHO(backlash.get_measurement(AxisEnum(a)));
         }

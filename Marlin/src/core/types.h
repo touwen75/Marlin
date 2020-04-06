@@ -223,6 +223,10 @@ struct XYval {
   #if XYZE_N > XYZE
     FI void set(const T (&arr)[XYZE_N])                 { x = arr[0]; y = arr[1]; }
   #endif
+  FI void set(const T (&arr)[NUM_AXIS])                 { x = arr[0]; y = arr[1]; }
+  #if NUM_AXIS_N > NUM_AXIS
+    FI void set(const T (&arr)[NUM_AXIS_N])                 { x = arr[0]; y = arr[1]; }
+  #endif
   FI void reset()                                       { x = y = 0; }
   FI T magnitude()                                const { return (T)sqrtf(x*x + y*y); }
   FI operator T* ()                                     { return pos; }
@@ -331,7 +335,7 @@ struct XYZval {
   FI void set(const T px, const T py, const T pz, const T pi)                              { x = px; y = py; z = pz; i = pi; }
   FI void set(const T px, const T py, const T pz, const T pi, const T pj)                  { x = px; y = py; z = pz; i = pi; j = pj; }
   FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk)      { x = px; y = py; z = pz; i = pi; j = pj; k = pk; }
-  FI void set(const XYval<T> pxy, const T pz)          { x = pxy.x; y = pxy.y; z = pz; i = pi; j = pj; k = pk; }
+  FI void set(const XYval<T> pxy, const T pz)          { x = pxy.x; y = pxy.y; z = pz;}
   FI void set(const XYval<T> pxy, const T pz, const T pi)          { x = pxy.x; y = pxy.y; z = pz; i = pi; }
   FI void set(const XYval<T> pxy, const T pz, const T pi, const T pj)          { x = pxy.x; y = pxy.y; z = pz; i = pi; j = pj; }
   FI void set(const XYval<T> pxy, const T pz, const T pi, const T pj, const T pk)          { x = pxy.x; y = pxy.y; z = pz; i = pi; j = pj; k = pk; }
@@ -448,15 +452,15 @@ struct XYZEval {
   FI void set(const XYval<T> pxy, const T pz, const T pi, const T pj, const T pk, const T pe) { x = pxy.x;  y = pxy.y;  z = pz; i = pi.i; j = pj.j; k = pk.k; e = pe; }
   FI void set(const XYval<T> pxy, const T pi, const T pj, const T pk, const XYval<T> pze)         { x = pxy.x;  y = pxy.y;  z = pze.z; i = pi.i; j = pj.j; k = pk.k; e = pze.e; }
   FI void set(const XYZval<T> pxyz, const T pe)               { x = pxyz.x; y = pxyz.y; z = pxyz.z; i = pxyz.i; j = pxyz.j; k = pxyz.k; e = pe; }
-  FI XYZval<T>          copy()                   const { XYZval<T> o = *this; return o; }
-  FI XYZval<T>           ABS()                   const { return { T(_ABS(x)), T(_ABS(y)), T(_ABS(z)), T(_ABS(i)), T(_ABS(j)), T(_ABS(k)), T(_ABS(e)) }; }
-  FI XYZval<int16_t>   asInt()                         { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(k), int16_t(e) }; }
-  FI XYZval<int16_t>   asInt()                   const { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(k), int16_t(e) }; }
-  FI XYZval<int32_t>  asLong()                         { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(k), int32_t(e) }; }
-  FI XYZval<int32_t>  asLong()                   const { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(k), int32_t(e) }; }
-  FI XYZval<float>   asFloat()                         { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(k),   float(e) }; }
-  FI XYZval<float>   asFloat()                   const { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(k),   float(e) }; }
-  FI XYZval<float> reciprocal()                  const { return {  _RECIP(x),  _RECIP(y),  _RECIP(z),  _RECIP(i),  _RECIP(j),  _RECIP(k),  _RECIP(e) }; }
+  FI XYZEval<T>          copy()                   const { XYZval<T> o = *this; return o; }
+  FI XYZEval<T>           ABS()                   const { return { T(_ABS(x)), T(_ABS(y)), T(_ABS(z)), T(_ABS(i)), T(_ABS(j)), T(_ABS(k)), T(_ABS(e)) }; }
+  FI XYZEval<int16_t>   asInt()                         { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(k), int16_t(e) }; }
+  FI XYZEval<int16_t>   asInt()                   const { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(k), int16_t(e) }; }
+  FI XYZEval<int32_t>  asLong()                         { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(k), int32_t(e) }; }
+  FI XYZEval<int32_t>  asLong()                   const { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(k), int32_t(e) }; }
+  FI XYZEval<float>   asFloat()                         { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(k),   float(e) }; }
+  FI XYZEval<float>   asFloat()                   const { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(k),   float(e) }; }
+  FI XYZEval<float> reciprocal()                  const { return {  _RECIP(x),  _RECIP(y),  _RECIP(z),  _RECIP(i),  _RECIP(j),  _RECIP(k),  _RECIP(e) }; }
   FI XYZEval<float> asLogical()                         const { XYZEval<float> o = asFloat(); toLogical(o); return o; }
   FI XYZEval<float>  asNative()                         const { XYZEval<float> o = asFloat(); toNative(o);  return o; }
   FI operator       XYval<T>&()                               { return *(XYval<T>*)this; }
@@ -544,7 +548,7 @@ struct XYZval {
   FI void set(const T px, const T py, const T pz)      { x = px; y = py; z = pz; }
   FI void set(const T px, const T py, const T pz, const T pi)                              { x = px; y = py; z = pz; i = pi; }
   FI void set(const T px, const T py, const T pz, const T pi, const T pj)                  { x = px; y = py; z = pz; i = pi; j = pj; }
-  FI void set(const XYval<T> pxy, const T pz)          { x = pxy.x; y = pxy.y; z = pz; i = pi; j = pj; }
+  FI void set(const XYval<T> pxy, const T pz)          { x = pxy.x; y = pxy.y; z = pz; }
   FI void set(const XYval<T> pxy, const T pz, const T pi)          { x = pxy.x; y = pxy.y; z = pz; i = pi; }
   FI void set(const XYval<T> pxy, const T pz, const T pi, const T pj)          { x = pxy.x; y = pxy.y; z = pz; i = pi; j = pj; }
   FI void reset()                                      { x = y = z = i = j = 0; }
@@ -658,15 +662,15 @@ struct XYZEval {
   FI void set(const XYval<T> pxy, const T pz, const T pi, const T pj, const T pe) { x = pxy.x;  y = pxy.y;  z = pz; i = pi.i; j = pj.j; e = pe; }
   FI void set(const XYval<T> pxy, const T pi, const T pj, const XYval<T> pze)         { x = pxy.x;  y = pxy.y;  z = pze.z; i = pi.i; j = pj.j; e = pze.e; }
   FI void set(const XYZval<T> pxyz, const T pe)               { x = pxyz.x; y = pxyz.y; z = pxyz.z; i = pxyz.i; j = pxyz.j; e = pe; }
-  FI XYZval<T>          copy()                   const { XYZval<T> o = *this; return o; }
-  FI XYZval<T>           ABS()                   const { return { T(_ABS(x)), T(_ABS(y)), T(_ABS(z)), T(_ABS(i)), T(_ABS(j)), T(_ABS(e)) }; }
-  FI XYZval<int16_t>   asInt()                         { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(e) }; }
-  FI XYZval<int16_t>   asInt()                   const { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(e) }; }
-  FI XYZval<int32_t>  asLong()                         { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(e) }; }
-  FI XYZval<int32_t>  asLong()                   const { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(e) }; }
-  FI XYZval<float>   asFloat()                         { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(e) }; }
-  FI XYZval<float>   asFloat()                   const { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(e) }; }
-  FI XYZval<float> reciprocal()                  const { return {  _RECIP(x),  _RECIP(y),  _RECIP(z),  _RECIP(i),  _RECIP(j),  _RECIP(e) }; }
+  FI XYZEval<T>          copy()                   const { XYZval<T> o = *this; return o; }
+  FI XYZEval<T>           ABS()                   const { return { T(_ABS(x)), T(_ABS(y)), T(_ABS(z)), T(_ABS(i)), T(_ABS(j)), T(_ABS(e)) }; }
+  FI XYZEval<int16_t>   asInt()                         { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(e) }; }
+  FI XYZEval<int16_t>   asInt()                   const { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(j), int16_t(e) }; }
+  FI XYZEval<int32_t>  asLong()                         { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(e) }; }
+  FI XYZEval<int32_t>  asLong()                   const { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(j), int32_t(e) }; }
+  FI XYZEval<float>   asFloat()                         { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(e) }; }
+  FI XYZEval<float>   asFloat()                   const { return {   float(x),   float(y),   float(z),   float(i),   float(j),   float(e) }; }
+  FI XYZEval<float> reciprocal()                  const { return {  _RECIP(x),  _RECIP(y),  _RECIP(z),  _RECIP(i),  _RECIP(j),  _RECIP(e) }; }
   FI XYZEval<float> asLogical()                         const { XYZEval<float> o = asFloat(); toLogical(o); return o; }
   FI XYZEval<float>  asNative()                         const { XYZEval<float> o = asFloat(); toNative(o);  return o; }
   FI operator       XYval<T>&()                               { return *(XYval<T>*)this; }
@@ -862,15 +866,15 @@ struct XYZEval {
   FI void set(const XYval<T> pxy, const T pz, const T pi, const T pj, const T pe) { x = pxy.x;  y = pxy.y;  z = pz; i = pi.i; e = pe; }
   FI void set(const XYval<T> pxy, const T pi, const XYval<T> pze)         { x = pxy.x;  y = pxy.y;  z = pze.z; i = pi.i; e = pze.e; }
   FI void set(const XYZval<T> pxyz, const T pe)               { x = pxyz.x; y = pxyz.y; z = pxyz.z; i = pxyz.i; e = pe; }
-  FI XYZval<T>          copy()                   const { XYZval<T> o = *this; return o; }
-  FI XYZval<T>           ABS()                   const { return { T(_ABS(x)), T(_ABS(y)), T(_ABS(z)), T(_ABS(i)), T(_ABS(e)) }; }
-  FI XYZval<int16_t>   asInt()                         { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(e) }; }
-  FI XYZval<int16_t>   asInt()                   const { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(e) }; }
-  FI XYZval<int32_t>  asLong()                         { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(e) }; }
-  FI XYZval<int32_t>  asLong()                   const { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(e) }; }
-  FI XYZval<float>   asFloat()                         { return {   float(x),   float(y),   float(z),   float(i),   float(e) }; }
-  FI XYZval<float>   asFloat()                   const { return {   float(x),   float(y),   float(z),   float(i),   float(e) }; }
-  FI XYZval<float> reciprocal()                  const { return {  _RECIP(x),  _RECIP(y),  _RECIP(z),  _RECIP(i),  _RECIP(e) }; }
+  FI XYZEval<T>          copy()                   const { XYZval<T> o = *this; return o; }
+  FI XYZEval<T>           ABS()                   const { return { T(_ABS(x)), T(_ABS(y)), T(_ABS(z)), T(_ABS(i)), T(_ABS(e)) }; }
+  FI XYZEval<int16_t>   asInt()                         { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(e) }; }
+  FI XYZEval<int16_t>   asInt()                   const { return { int16_t(x), int16_t(y), int16_t(z), int16_t(i), int16_t(e) }; }
+  FI XYZEval<int32_t>  asLong()                         { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(e) }; }
+  FI XYZEval<int32_t>  asLong()                   const { return { int32_t(x), int32_t(y), int32_t(z), int32_t(i), int32_t(e) }; }
+  FI XYZEval<float>   asFloat()                         { return {   float(x),   float(y),   float(z),   float(i),   float(e) }; }
+  FI XYZEval<float>   asFloat()                   const { return {   float(x),   float(y),   float(z),   float(i),   float(e) }; }
+  FI XYZEval<float> reciprocal()                  const { return {  _RECIP(x),  _RECIP(y),  _RECIP(z),  _RECIP(i),  _RECIP(e) }; }
   FI XYZEval<float> asLogical()                         const { XYZEval<float> o = asFloat(); toLogical(o); return o; }
   FI XYZEval<float>  asNative()                         const { XYZEval<float> o = asFloat(); toNative(o);  return o; }
   FI operator       XYval<T>&()                               { return *(XYval<T>*)this; }
@@ -941,6 +945,13 @@ struct XYZEval {
   FI const XYZEval<T> operator-()                       const { return { -x, -y, -z, -i, -e }; }
 };
 
+#else // NON_E_AXES < 4
+
+//
+// XYZ coordinates, counters, etc.
+//
+template<typename T>
+struct XYZval {
 #else // NON_E_AXES < 4
 
 //

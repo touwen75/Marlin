@@ -62,6 +62,21 @@
 #ifndef Y_BED_SIZE
   #define Y_BED_SIZE Y_MAX_LENGTH
 #endif
+#if NON_E_AXES > 3
+  #ifndef I_SIZE
+    #define I_SIZE I_MAX_LENGTH
+  #endif
+  #if NON_E_AXES > 4
+    #ifndef J_SIZE
+      #define J_SIZE J_MAX_LENGTH
+    #endif
+    #if NON_E_AXES > 5
+      #ifndef K_SIZE
+        #define K_SIZE K_MAX_LENGTH
+      #endif
+    #endif
+  #endif
+#endif
 
 // Require 0,0 bed center for Delta and SCARA
 #if IS_KINEMATIC
@@ -71,12 +86,40 @@
 // Define center values for future use
 #define _X_HALF_BED ((X_BED_SIZE) / 2)
 #define _Y_HALF_BED ((Y_BED_SIZE) / 2)
+#if NON_E_AXES > 3
+  #define _I_HALF_IMAX ((I_SIZE) / 2)
+  #if NON_E_AXES > 4
+    #define _J_HALF_JMAX ((J_SIZE) / 2)
+    #if NON_E_AXES > 5
+      #define _K_HALF_KMAX ((K_SIZE) / 2)
+    #endif
+  #endif
+#endif
+
 #if ENABLED(BED_CENTER_AT_0_0)
   #define X_CENTER 0
   #define Y_CENTER 0
+  #if NON_E_AXES > 3
+    #define I_CENTER 0
+    #if NON_E_AXES > 4
+      #define J_CENTER 0
+      #if NON_E_AXES > 5
+        #define K_CENTER 0
+      #endif
+    #endif
+  #endif
 #else
   #define X_CENTER _X_HALF_BED
   #define Y_CENTER _Y_HALF_BED
+  #if NON_E_AXES > 3
+    #define I_CENTER _I_HALF_IMAX
+    #if NON_E_AXES > 4
+      #define J_CENTER _J_HALF_JMAX
+      #if NON_E_AXES > 5
+        #define K_CENTER _K_HALF_KMAX
+      #endif
+    #endif
+  #endif  
 #endif
 
 // Get the linear boundaries of the bed
@@ -84,6 +127,18 @@
 #define X_MAX_BED (X_MIN_BED + X_BED_SIZE)
 #define Y_MIN_BED (Y_CENTER - _Y_HALF_BED)
 #define Y_MAX_BED (Y_MIN_BED + Y_BED_SIZE)
+#if NON_E_AXES > 3
+  #define I_MINIM (I_CENTER - _I_HALF_IMAX)
+  #define I_MAXIM (I_MINIM + I_SIZE)
+  #if NON_E_AXES > 4
+    #define J_MINIM (J_CENTER - _J_HALF_IMAX)
+    #define J_MAXIM (J_MINIM + J_SIZE)
+    #if NON_E_AXES > 5
+      #define K_MINIM (K_CENTER - _K_HALF_IMAX)
+      #define K_MAXIM (K_MINIM + K_SIZE)
+    #endif
+  #endif
+#endif
 
 /**
  * Dual X Carriage
@@ -1387,7 +1442,7 @@
 #define HAS_E_STEPPER_ENABLE (HAS_E_DRIVER(TMC2660) \
   || ( E0_ENABLE_PIN != X_ENABLE_PIN && E1_ENABLE_PIN != X_ENABLE_PIN   \
     && E0_ENABLE_PIN != Y_ENABLE_PIN && E1_ENABLE_PIN != Y_ENABLE_PIN ) \
-)
+) // TODO: Add support for NON_E_AXES
 
 //
 // Endstops and bed probe
@@ -1416,14 +1471,14 @@
 #define HAS_Z2_MAX (PIN_EXISTS(Z2_MAX))
 #define HAS_Z3_MIN (PIN_EXISTS(Z3_MIN))
 #define HAS_Z3_MAX (PIN_EXISTS(Z3_MAX))
+#define HAS_Z4_MIN (PIN_EXISTS(Z4_MIN))
+#define HAS_Z4_MAX (PIN_EXISTS(Z4_MAX))
 #define HAS_I_MIN (PIN_EXISTS(I_MIN))
 #define HAS_I_MAX (PIN_EXISTS(I_MAX))
 #define HAS_J_MIN (PIN_EXISTS(J_MIN))
 #define HAS_J_MAX (PIN_EXISTS(J_MAX))
 #define HAS_K_MIN (PIN_EXISTS(K_MIN))
 #define HAS_K_MAX (PIN_EXISTS(K_MAX))
-#define HAS_Z4_MIN (PIN_EXISTS(Z4_MIN))
-#define HAS_Z4_MAX (PIN_EXISTS(Z4_MAX))
 #define HAS_Z_MIN_PROBE_PIN (HAS_CUSTOM_PROBE_PIN && PIN_EXISTS(Z_MIN_PROBE))
 
 //
@@ -1544,11 +1599,11 @@
 // Digital control
 #define HAS_STEPPER_RESET     (PIN_EXISTS(STEPPER_RESET))
 #define HAS_DIGIPOTSS         (PIN_EXISTS(DIGIPOTSS))
-#define HAS_MOTOR_CURRENT_PWM ANY_PIN(MOTOR_CURRENT_PWM_X, MOTOR_CURRENT_PWM_Y, MOTOR_CURRENT_PWM_XY, MOTOR_CURRENT_PWM_Z, MOTOR_CURRENT_PWM_E)
+#define HAS_MOTOR_CURRENT_PWM ANY_PIN(MOTOR_CURRENT_PWM_X, MOTOR_CURRENT_PWM_Y, MOTOR_CURRENT_PWM_XY, MOTOR_CURRENT_PWM_Z, MOTOR_CURRENT_PWM_I, MOTOR_CURRENT_PWM_J, MOTOR_CURRENT_PWM_K, MOTOR_CURRENT_PWM_E)
 
 #define HAS_SOME_Z_MICROSTEPS (HAS_Z_MICROSTEPS || HAS_Z2_MICROSTEPS || HAS_Z3_MICROSTEPS || HAS_Z4_MICROSTEPS)
 #define HAS_SOME_E_MICROSTEPS (HAS_E0_MICROSTEPS || HAS_E1_MICROSTEPS || HAS_E2_MICROSTEPS || HAS_E3_MICROSTEPS || HAS_E4_MICROSTEPS || HAS_E5_MICROSTEPS || HAS_E6_MICROSTEPS || HAS_E7_MICROSTEPS)
-#define HAS_MICROSTEPS (HAS_X_MICROSTEPS || HAS_X2_MICROSTEPS || HAS_Y_MICROSTEPS || HAS_Y2_MICROSTEPS || HAS_SOME_Z_MICROSTEPS || HAS_SOME_E_MICROSTEPS)
+#define HAS_MICROSTEPS (HAS_X_MICROSTEPS || HAS_X2_MICROSTEPS || HAS_Y_MICROSTEPS || HAS_Y2_MICROSTEPS || HAS_SOME_Z_MICROSTEPS || HAS_I_MICROSTEPS || HAS_J_MICROSTEPS|| HAS_K_MICROSTEPS|| HAS_SOME_E_MICROSTEPS)
 
 #if HAS_MICROSTEPS
 

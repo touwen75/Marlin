@@ -123,11 +123,27 @@
 #endif
 
 #pragma pack(push, 1) // No padding between variables
-
-typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
-typedef struct { uint32_t X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_hybrid_threshold_t;
-typedef struct {  int16_t X, Y, Z, X2;                                     } tmc_sgt_t;
-typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_stealth_enabled_t;
+#if NON_E_AXES == 6
+  typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, K, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
+  typedef struct { uint32_t X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, K, E0, E1, E2, E3, E4, E5; } tmc_hybrid_threshold_t;
+  typedef struct {  int16_t X, Y, Z, X2;                                     } tmc_sgt_t; // TODO: Add support for NON_E_AXES > 3
+  typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, K, E0, E1, E2, E3, E4, E5; } tmc_stealth_enabled_t;
+#elif NON_E_AXES == 5
+  typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
+  typedef struct { uint32_t X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, E0, E1, E2, E3, E4, E5; } tmc_hybrid_threshold_t;
+  typedef struct {  int16_t X, Y, Z, X2;                                     } tmc_sgt_t;// TODO: Add support for NON_E_AXES > 3
+  typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, E0, E1, E2, E3, E4, E5; } tmc_stealth_enabled_t;
+#elif NON_E_AXES == 4
+  typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, I, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
+  typedef struct { uint32_t X, Y, Z, X2, Y2, Z2, Z3, Z4, I, E0, E1, E2, E3, E4, E5; } tmc_hybrid_threshold_t;
+  typedef struct {  int16_t X, Y, Z, X2;                                     } tmc_sgt_t; // TODO: Add support for NON_E_AXES > 3
+  typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, I, E0, E1, E2, E3, E4, E5; } tmc_stealth_enabled_t;
+#else
+  typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
+  typedef struct { uint32_t X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_hybrid_threshold_t;
+  typedef struct {  int16_t X, Y, Z, X2;                                     } tmc_sgt_t; // TODO: Add support for NON_E_AXES > 3
+  typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_stealth_enabled_t;
+#endif
 
 // Limit an index to an array size
 #define ALIM(I,ARR) _MIN(I, COUNT(ARR) - 1)
@@ -137,7 +153,7 @@ static const uint32_t   _DMA[] PROGMEM = DEFAULT_MAX_ACCELERATION;
 static const float     _DASU[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT;
 static const feedRate_t _DMF[] PROGMEM = DEFAULT_MAX_FEEDRATE;
 
-extern const char SP_X_STR[], SP_Y_STR[], SP_Z_STR[], SP_E_STR[];
+extern const char SP_X_STR[], SP_Y_STR[], SP_Z_STR[], SP_I_STR[], SP_J_STR[], SP_K_STR[], SP_E_STR[];
 
 /**
  * Current EEPROM Layout
@@ -983,9 +999,19 @@ void MarlinSettings::postprocess() {
     {
       _FIELD_TEST(tmc_stepper_current);
 
-      tmc_stepper_current_t tmc_stepper_current = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      tmc_stepper_current_t tmc_stepper_current = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        #if NON_E_AXES > 3
+          , 0
+          #if NON_E_AXES > 4
+            , 0
+            #if NON_E_AXES > 5
+              , 0
+            #endif
+          #endif
+        #endif
+        };
 
-      #if HAS_TRINAMIC_CONFIG
+      #if HAS_TRINAMIC
         #if AXIS_IS_TMC(X)
           tmc_stepper_current.X = stepperX.getMilliamps();
         #endif
@@ -1061,7 +1087,17 @@ void MarlinSettings::postprocess() {
       _FIELD_TEST(tmc_hybrid_threshold);
 
       #if ENABLED(HYBRID_THRESHOLD)
-       tmc_hybrid_threshold_t tmc_hybrid_threshold = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        tmc_hybrid_threshold_t tmc_hybrid_threshold = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 
+          #if NON_E_AXES > 3
+            , 0
+            #if NON_E_AXES > 4
+              , 0
+              #if NON_E_AXES > 5
+                , 0
+              #endif 
+            #endif
+          #endif
+        };
         #if AXIS_HAS_STEALTHCHOP(X)
           tmc_hybrid_threshold.X = stepperX.get_pwm_thrs();
         #endif
@@ -1130,6 +1166,15 @@ void MarlinSettings::postprocess() {
         const tmc_hybrid_threshold_t tmc_hybrid_threshold = {
           .X  = 100, .Y  = 100, .Z  =   3,
           .X2 = 100, .Y2 = 100, .Z2 =   3, .Z3 =   3, .Z4 = 3,
+          #if NON_E_AXES > 3
+            .I  = 3,
+            #if NON_E_AXES > 4
+              .J  = 3,
+              #if NON_E_AXES > 5
+                .K  = 3,
+              #endif
+            #endif
+          #endif    
           .E0 =  30, .E1 =  30, .E2 =  30,
           .E3 =  30, .E4 =  30, .E5 =  30
         };
@@ -1157,7 +1202,7 @@ void MarlinSettings::postprocess() {
         #endif
       #endif
       EEPROM_WRITE(tmc_sgt);
-    }
+    } // TODO (DerAndere): Add support for NON_E_AXES > 3
 
     //
     // TMC stepping mode
@@ -1165,7 +1210,17 @@ void MarlinSettings::postprocess() {
     {
       _FIELD_TEST(tmc_stealth_enabled);
 
-      tmc_stealth_enabled_t tmc_stealth_enabled = { false, false, false, false, false, false, false, false, false, false, false, false, false };
+      tmc_stealth_enabled_t tmc_stealth_enabled = { false, false, false, false, false, false, false, false, false, false, false, false, false 
+        #if NON_E_AXES > 3
+          , false
+            #if NON_E_AXES > 4
+              , false
+              #if NON_E_AXES > 5
+                , false
+              #endif
+            #endif
+          #endif
+      };
 
       #if HAS_STEALTHCHOP
         #if AXIS_HAS_STEALTHCHOP(X)
@@ -1191,6 +1246,21 @@ void MarlinSettings::postprocess() {
         #endif
         #if AXIS_HAS_STEALTHCHOP(Z4)
           tmc_stealth_enabled.Z4 = stepperZ4.get_stealthChop_status();
+        #endif
+        #if NON_E_AXES > 3
+          #if AXIS_HAS_STEALTHCHOP(I)
+            tmc_stealth_enabled.I = stepperI.get_stealthChop_status();
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_HAS_STEALTHCHOP(J)
+              tmc_stealth_enabled.J = stepperJ.get_stealthChop_status();
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_HAS_STEALTHCHOP(K)
+                tmc_stealth_enabled.K = stepperK.get_stealthChop_status();
+              #endif
+            #endif
+          #endif
         #endif
         #if MAX_EXTRUDERS
           #if AXIS_HAS_STEALTHCHOP(E0)
@@ -1887,6 +1957,15 @@ void MarlinSettings::postprocess() {
             #if AXIS_IS_TMC(Z4)
               SET_CURR(Z4);
             #endif
+            #if AXIS_IS_TMC(I)
+              SET_CURR(I);
+            #endif
+            #if AXIS_IS_TMC(J)
+              SET_CURR(J);
+            #endif
+            #if AXIS_IS_TMC(K)
+              SET_CURR(K);
+            #endif
             #if AXIS_IS_TMC(E0)
               SET_CURR(E0);
             #endif
@@ -1946,6 +2025,15 @@ void MarlinSettings::postprocess() {
             #endif
             #if AXIS_HAS_STEALTHCHOP(Z4)
               stepperZ4.set_pwm_thrs(tmc_hybrid_threshold.Z4);
+            #endif
+            #if AXIS_HAS_STEALTHCHOP(I)
+              stepperI.set_pwm_thrs(tmc_hybrid_threshold.I);
+            #endif
+            #if AXIS_HAS_STEALTHCHOP(J)
+              stepperJ.set_pwm_thrs(tmc_hybrid_threshold.J);
+            #endif
+            #if AXIS_HAS_STEALTHCHOP(K)
+              stepperK.set_pwm_thrs(tmc_hybrid_threshold.K);
             #endif
             #if AXIS_HAS_STEALTHCHOP(E0)
               stepperE0.set_pwm_thrs(tmc_hybrid_threshold.E0);
@@ -2022,6 +2110,27 @@ void MarlinSettings::postprocess() {
             #endif
           }
         #endif
+        #if NON_E_AXES > 3
+          #ifdef I_STALL_SENSITIVITY
+            #if AXIS_HAS_STALLGUARD(I)
+              stepperI.homing_threshold(tmc_sgt.I);
+            #endif
+          #endif    
+          #if NON_E_AXES > 4
+            #ifdef J_STALL_SENSITIVITY
+              #if AXIS_HAS_STALLGUARD(J)
+                stepperJ.homing_threshold(tmc_sgt.J);
+              #endif
+            #endif
+            #if NON_E_AXES > 5
+              #ifdef K_STALL_SENSITIVITY
+                #if AXIS_HAS_STALLGUARD(K)
+                  stepperK.homing_threshold(tmc_sgt.K);
+                #endif
+              #endif
+            #endif // NON_E_AXES > 5
+          #endif // NON_E_AXES > 4
+        #endif // NON_E_AXES > 3
       }
 
       // TMC stepping mode
@@ -2058,6 +2167,15 @@ void MarlinSettings::postprocess() {
             #endif
             #if AXIS_HAS_STEALTHCHOP(Z4)
               SET_STEPPING_MODE(Z4);
+            #endif
+            #if AXIS_HAS_STEALTHCHOP(I)
+              SET_STEPPING_MODE(I);
+            #endif
+            #if AXIS_HAS_STEALTHCHOP(J)
+              SET_STEPPING_MODE(J);
+            #endif
+            #if AXIS_HAS_STEALTHCHOP(K)
+              SET_STEPPING_MODE(K);
             #endif
             #if AXIS_HAS_STEALTHCHOP(E0)
               SET_STEPPING_MODE(E0);
@@ -3032,21 +3150,21 @@ void MarlinSettings::reset() {
             PSTR("  M206 X"), LINEAR_UNIT(home_offset.x)
           , SP_Y_STR, LINEAR_UNIT(home_offset.y)
           , SP_Z_STR
-          #if NON_E_AXES > 3
-            , SP_I_STR, LINEAR_UNIT(home_offset.i)
-            #if NON_E_AXES > 4
-              , SP_J_STR, LINEAR_UNIT(home_offset.j)
-              #if NON_E_AXES > 5
-                , SP_K_STR, LINEAR_UNIT(home_offset.k)
-              #endif
-            #endif
-          #endif
-
         #else
           PSTR("  M206 Z")
         #endif
         , LINEAR_UNIT(home_offset.z)
-      );
+        #if NON_E_AXES > 3
+          , SP_I_STR, LINEAR_UNIT(home_offset.i)
+          #if NON_E_AXES > 4
+            , SP_J_STR, LINEAR_UNIT(home_offset.j)
+            #if NON_E_AXES > 5
+              , SP_K_STR, LINEAR_UNIT(home_offset.k)
+            #endif
+          #endif
+        #endif
+        );
+
     #endif
 
     #if HAS_HOTEND_OFFSET
@@ -3413,6 +3531,25 @@ void MarlinSettings::reset() {
         SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.getMilliamps());
       #endif
 
+      #if NON_E_AXES > 3
+        #if AXIS_IS_TMC(I)
+          say_M906(forReplay);
+          SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.getMilliamps());
+        #endif
+        #if NON_E_AXES > 4
+          #if AXIS_IS_TMC(J)
+            say_M906(forReplay);
+            SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.getMilliamps());
+          #endif
+          #if NON_E_AXES > 5
+            say_M906(forReplay);
+            #if AXIS_IS_TMC(K)
+              SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.getMilliamps());
+            #endif
+          #endif
+        #endif
+      #endif
+
       #if AXIS_IS_TMC(E0)
         say_M906(forReplay);
         SERIAL_ECHOLNPAIR(" T0 E", stepperE0.getMilliamps());
@@ -3493,6 +3630,19 @@ void MarlinSettings::reset() {
         #if AXIS_HAS_STEALTHCHOP(Z4)
           say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.get_pwm_thrs());
+        #endif
+
+        #if AXIS_HAS_STEALTHCHOP(I)
+          say_M913(forReplay);
+          SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.get_pwm_thrs());
+        #endif
+        #if AXIS_HAS_STEALTHCHOP(J)
+          say_M913(forReplay);
+          SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.get_pwm_thrs());
+        #endif
+        #if AXIS_HAS_STEALTHCHOP(K)
+          say_M913(forReplay);
+          SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.get_pwm_thrs());
         #endif
 
         #if AXIS_HAS_STEALTHCHOP(E0)
@@ -3577,6 +3727,21 @@ void MarlinSettings::reset() {
           say_M914();
           SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.homing_threshold());
         #endif
+
+        #if I_SENSORLESS
+          CONFIG_ECHO_START();
+          say_M914();
+          SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.homing_threshold());
+        #endif
+
+        #if J_SENSORLESS
+          SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.homing_threshold());
+        #endif
+
+        #if K_SENSORLESS
+          SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.homing_threshold());
+        #endif
+
 
       #endif // USE_SENSORLESS
 
@@ -3739,7 +3904,16 @@ void MarlinSettings::reset() {
           PSTR("  M425 F"), backlash.get_correction()
         , SP_X_STR, LINEAR_UNIT(backlash.distance_mm.x)
         , SP_Y_STR, LINEAR_UNIT(backlash.distance_mm.y)
-        , SP_Z_STR, LINEAR_UNIT(backlash.distance_mm.z) // TODO: Add Support fot NON_E_AXES > 3
+        , SP_Z_STR, LINEAR_UNIT(backlash.distance_mm.z)
+        #if NON_E_AXES > 3
+          , SP_I_STR, LINEAR_UNIT(backlash.distance_mm.i)
+          #if NON_E_AXES > 4
+            , SP_J_STR, LINEAR_UNIT(backlash.distance_mm.j)
+            #if NON_E_AXES > 5
+              , SP_K_STR, LINEAR_UNIT(backlash.distance_mm.k)
+            #endif
+          #endif
+        #endif
         #ifdef BACKLASH_SMOOTHING_MM
           , PSTR(" S"), LINEAR_UNIT(backlash.smoothing_mm)
         #endif
