@@ -1354,7 +1354,7 @@
       //#define TOUCH_UI_UTF8_SUPERSCRIPTS  // ¹ ² ³
       //#define TOUCH_UI_UTF8_COPYRIGHT     // © ®
       //#define TOUCH_UI_UTF8_GERMANIC      // ß
-      //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ Ð Ø Þ æ ð ø þ
+      //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ �? Ø Þ æ ð ø þ
       //#define TOUCH_UI_UTF8_PUNCTUATION   // « » ¿ ¡
       //#define TOUCH_UI_UTF8_CURRENCY      // ¢ £ ¤ ¥
       //#define TOUCH_UI_UTF8_ORDINALS      // º ª
@@ -2610,13 +2610,6 @@
 #define SPINDLE_FEATURE
 //#define LASER_FEATURE
 #if EITHER(SPINDLE_FEATURE, LASER_FEATURE)
-<<<<<<< Upstream, based on origin/PR_fix_e_homing
-  #define SPINDLE_LASER_ACTIVE_HIGH     true    // Set to "true" if the on/off function is active HIGH
-  #define SPINDLE_LASER_PWM             true    // Set to "true" if your controller supports setting the speed/power
-  #define SPINDLE_LASER_PWM_INVERT      false   // Set to "true" if the speed/power goes up when you want it to go slower
-  #define SPINDLE_LASER_POWERUP_DELAY   1       // (ms) Delay to allow the spindle/laser to come up to speed/power
-  #define SPINDLE_LASER_POWERDOWN_DELAY 1       // (ms) Delay to allow the spindle to stop
-=======
   #define SPINDLE_LASER_ACTIVE_HIGH     false  // Set to "true" if the on/off function is active HIGH
   #define SPINDLE_LASER_PWM             true   // Set to "true" if your controller supports setting the speed/power
   #define SPINDLE_LASER_PWM_INVERT      true   // Set to "true" if the speed/power goes up when you want it to go slower
@@ -2636,7 +2629,6 @@
    * Best use with SuperPID router controller where for example S0 = 5,000 RPM and S255 = 30,000 RPM
    */
   //#define CUTTER_POWER_RELATIVE              // Set speed proportional to [SPEED_POWER_MIN...SPEED_POWER_MAX] instead of directly
->>>>>>> df8b7df Various Laser / Spindle improvements (#15335)
 
   #if ENABLED(SPINDLE_FEATURE)
     #define SPINDLE_CHANGE_DIR               // Enable if your spindle controller can change spindle direction
@@ -2653,19 +2645,12 @@
      *
      * Set these required parameters for your controller
      */
-<<<<<<< Upstream, based on origin/PR_fix_e_homing
-    #define SPEED_POWER_SLOPE    118.4
-    #define SPEED_POWER_INTERCEPT  0
-    #define SPEED_POWER_MIN     500
-    #define SPEED_POWER_MAX    12000    // SuperPID router controller 0 - 30,000 RPM
-=======
     #define SPEED_POWER_SLOPE           118.4  // SPEED_POWER_SLOPE = SPEED_POWER_MAX / 255
     #define SPEED_POWER_INTERCEPT         0
     #define SPEED_POWER_MIN            5000
     #define SPEED_POWER_MAX           30000    // SuperPID router controller 0 - 30,000 RPM
     #define SPEED_POWER_STARTUP       25000    // The default value for speed power when M3 is called without arguments
 
->>>>>>> df8b7df Various Laser / Spindle improvements (#15335)
   #else
 
     #define SPEED_POWER_SLOPE             0.3922 // SPEED_POWER_SLOPE = SPEED_POWER_MAX / 255
