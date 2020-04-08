@@ -168,7 +168,7 @@
 #define NON_E_AXES 3
 #if NON_E_AXES > 3
   /**
-   * Axis codes for additional axes:
+   * This defines the Axis codes for additional axes.
    * "A" for rotational axis parallel to X
    * "B" for rotational axis parallel to Y
    * "C" for rotational axis parallel to Z
@@ -178,6 +178,8 @@
    * "I" for generic 4th axis
    * "J" for generic 5th axis
    * "K" for generic 6th axis
+   * Regardless of the settings, internal axis references are
+   * AXIS4: I, AXIS5: J, AXIS6: K.
    */
   #if ENABLED(FOAMCUTTER_XYUV)
     #define AXIS4_NAME "U"
