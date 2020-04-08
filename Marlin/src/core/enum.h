@@ -35,7 +35,7 @@ enum AxisEnum : unsigned char {
   B_AXIS    = 1,
   Z_AXIS    = 2,
   C_AXIS    = 2,
-#if NON_E_AXES > 5
+#if NON_E_AXES == 6
   I_AXIS    = 3,
   J_AXIS    = 4,
   K_AXIS    = 5,
@@ -49,7 +49,7 @@ enum AxisEnum : unsigned char {
   E3_AXIS   = 9,
   E4_AXIS   = 10,
   E5_AXIS   = 11,
-#elif NON_E_AXES > 4
+#elif NON_E_AXES == 5
   I_AXIS    = 3,
   J_AXIS    = 4,
   E_AXIS    = 5,
@@ -62,7 +62,7 @@ enum AxisEnum : unsigned char {
   E3_AXIS   = 8,
   E4_AXIS   = 9,
   E5_AXIS   = 10,
-#elif NON_E_AXES > 3
+#elif NON_E_AXES == 4
   I_AXIS    = 3,
   E_AXIS    = 4,
   X_HEAD    = 5,
