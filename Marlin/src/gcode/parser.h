@@ -207,11 +207,11 @@ public:
   static inline bool seen_axis() {
     return SEEN_TEST('X') || SEEN_TEST('Y') || SEEN_TEST('Z')
       #if NON_E_AXES > 3
-        || SEEN_TEST('I')
+        || SEEN_TEST(AXIS4_NAME)
         #if NON_E_AXES > 4
-          || SEEN_TEST('J')
+          || SEEN_TEST(AXIS5_NAME)
           #if NON_E_AXES > 5
-            || SEEN_TEST('K')
+            || SEEN_TEST(AXIS6_NAME)
           #endif
         #endif
       #endif

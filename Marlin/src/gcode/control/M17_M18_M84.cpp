@@ -33,16 +33,26 @@
  * M17: Enable stepper motors
  */
 void GcodeSuite::M17() {
-  if (parser.seen("XYZIJKE")) {
+  if (parser.seen("XYZE"
+    #if NON_E_AXES > 3
+      AXIS4_NAME
+      #if NON_E_AXES > 4
+        AXIS5_NAME
+        #if NON_E_AXES > 5
+          AXIS6_NAME
+        #endif
+      #endif
+    #endif
+  )) {
     if (parser.seen('X')) enable_X();
     if (parser.seen('Y')) enable_Y();
     if (parser.seen('Z')) enable_Z();
     #if NON_E_AXES > 3
-      if (parser.seen('I')) enable_I();
+      if (parser.seen(AXIS4_NAME)) enable_I();
       #if NON_E_AXES > 4
-        if (parser.seen('J')) enable_J();
+        if (parser.seen(AXIS4_NAME)) enable_J();
         #if NON_E_AXES > 5
-          if (parser.seen('K')) enable_K();
+          if (parser.seen(AXIS4_NAME)) enable_K();
         #endif
       #endif
     #endif
@@ -64,17 +74,27 @@ void GcodeSuite::M18_M84() {
     stepper_inactive_time = parser.value_millis_from_seconds();
   }
   else {
-    if (parser.seen("XYZIJKE")) {
+    if (parser.seen("XYZE"
+    #if NON_E_AXES > 3
+      AXIS4_NAME
+      #if NON_E_AXES > 4
+        AXIS5_NAME
+        #if NON_E_AXES > 5
+          AXIS6_NAME
+        #endif
+      #endif
+    #endif
+    )) {
       planner.synchronize();
       if (parser.seen('X')) disable_X();
       if (parser.seen('Y')) disable_Y();
       if (parser.seen('Z')) disable_Z();
       #if NON_E_AXES > 3
-        if (parser.seen('I')) disable_I();
+        if (parser.seen(AXIS4_NAME)) disable_I();
         #if NON_E_AXES > 4
-          if (parser.seen('J')) disable_J();
+          if (parser.seen(AXIS5_NAME)) disable_J();
           #if NON_E_AXES > 5
-            if (parser.seen('K')) disable_K();
+            if (parser.seen(AXIS6_NAME)) disable_K();
           #endif
         #endif
       #endif

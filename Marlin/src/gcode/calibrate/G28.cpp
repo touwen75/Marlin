@@ -272,11 +272,11 @@ void GcodeSuite::G28(const bool always_home_all) {
 
     const bool homeX = parser.seen('X'), homeY = parser.seen('Y'), homeZ = parser.seen('Z'),
                #if NON_E_AXES > 3
-                 homeI = always_home_all || parser.seen('I'),
+                 homeI = always_home_all || parser.seen(AXIS4_NAME),
                  #if NON_E_AXES > 4
-                   homeJ = always_home_all || parser.seen('J'),
+                   homeJ = always_home_all || parser.seen(AXIS5_NAME),
                    #if NON_E_AXES > 5
-                     homeK = always_home_all || parser.seen('K'),
+                     homeK = always_home_all || parser.seen(AXIS6_NAME),
                    #endif
                  #endif
                #endif

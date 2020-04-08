@@ -346,7 +346,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 1: M0_M1(); break;                                   // M1: Conditional stop - Wait for user button press on LCD
       #endif
 
-      #if ENABLED(FOAMCUTTER_XY_IJ)
+      #if ENABLED(FOAMCUTTER_XYUV)
         #if (HAS_CUTTER || (FAN_COUNT > 0))
           case 3: M106(); break;                                  // M106: Fan On > Turn on hot wire
           case 5: M107(); break;                                  // M107: Fan Off > Turn off hot wire

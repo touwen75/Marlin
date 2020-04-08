@@ -201,11 +201,11 @@ void GCodeParser::parse(char *p) {
         if (motion_mode_codenum != 5) return;
       case 'X': case 'Y': case 'Z': case 'E':
         #if NON_E_AXES > 3
-          case 'I':
+          case AXIS4_NAME:
           #if NON_E_AXES > 4
-            case 'J':
+            case AXIS5_NAME:
             #if NON_E_AXES > 5
-              case 'K':
+              case AXIS6_NAME:
             #endif
           #endif
         #endif

@@ -196,12 +196,60 @@
 #define MSG_Z2_MAX                          "z2_max"
 #define MSG_Z3_MIN                          "z3_min"
 #define MSG_Z3_MAX                          "z3_max"
-#define MSG_I_MIN                           "i_min"
-#define MSG_I_MAX                           "i_max"
-#define MSG_J_MIN                           "j_min"
-#define MSG_J_MAX                           "j_max"
-#define MSG_K_MIN                           "k_min"
-#define MSG_K_MAX                           "k_max"
+#if NON_E_AXES > 3
+  #if AXIS4_NAME "A"
+    #define MSG_I_MIN                           "a_min"
+    #define MSG_I_MAX                           "a_max"
+  #elif AXIS4_NAME "B"
+    #define MSG_I_MIN                           "b_min"
+    #define MSG_I_MAX                           "b_max"
+  #elif AXIS4_NAME "C"
+    #define MSG_I_MIN                           "c_min"
+    #define MSG_I_MAX                           "c_max"
+  #elif AXIS4_NAME "U"
+    #define MSG_I_MIN                           "u_min"
+    #define MSG_I_MAX                           "u_max"
+  #elif AXIS4_NAME "V"
+    #define MSG_I_MIN                           "v_min"
+    #define MSG_I_MAX                           "v_max"
+  #elif AXIS4_NAME "W"
+    #define MSG_I_MIN                           "v_min"
+    #define MSG_I_MAX                           "v_max"
+  #else
+    #define MSG_I_MIN                           "i_min"
+    #define MSG_I_MAX                           "i_max"
+  #endif
+  #if NON_E_AXES > 4
+    #if AXIS5_NAME "B"
+      #define MSG_J_MIN                           "b_min"
+      #define MSG_J_MAX                           "b_max"
+    #elif AXIS5_NAME "C"
+      #define MSG_J_MIN                           "c_min"
+      #define MSG_J_MAX                           "c_max"
+    #elif AXIS5_NAME "V"
+      #define MSG_J_MIN                           "v_min"
+      #define MSG_J_MAX                           "v_max"
+    #elif AXIS5_NAME "W"
+      #define MSG_J_MIN                           "w_min"
+      #define MSG_J_MAX                           "w_max"
+    #else
+      #define MSG_J_MIN                           "j_min"
+      #define MSG_J_MAX                           "j_max"
+    #endif
+    #if NON_E_AXES > 5
+      #if AXIS_6_NAME "C"
+        #define MSG_K_MIN                           "c_min"
+        #define MSG_K_MAX                           "c_max"
+      #elif AXIS_6_NAME "W"
+        #define MSG_K_MIN                           "w_min"
+        #define MSG_K_MAX                           "w_max"
+      #else
+        #define MSG_K_MIN                           "k_min"
+        #define MSG_K_MAX                           "k_max"
+      #endif
+    #endif
+  #endif
+#endif
 #define MSG_Z_PROBE                         "z_probe"
 #define MSG_FILAMENT_RUNOUT_SENSOR          "filament"
 #define MSG_PROBE_Z_OFFSET                  "Probe Z Offset"
@@ -330,10 +378,15 @@
 #define MSG_Y "Y"
 #define MSG_Z "Z"
 #define MSG_E "E"
-#define MSG_I "I"
-#define MSG_J "J"
-#define MSG_K "K"
-
+#if NON_E_AXES > 3
+  #define MSG_I AXIS4_NAME
+  #if NON_E_AXES > 4
+    #define MSG_J AXIS5_NAME
+    #if NON_E_AXES > 5
+      #define MSG_K AXIS6_NAME
+    #endif
+  #endif
+#endif
 #if IS_KINEMATIC
   #define MSG_A "A"
   #define MSG_B "B"

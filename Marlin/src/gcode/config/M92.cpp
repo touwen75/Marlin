@@ -74,14 +74,15 @@ void GcodeSuite::M92() {
 
   // No arguments? Show M92 report.
   if (!parser.seen(
-    #if NON_E_AXES == 6 
-      "XYZIJKE"
-    #elif NON_E_AXES == 5 
-      "XYZIJE"
-    #elif NON_E_AXES == 4 
-      "XYZIE"
-    #else 
-      "XYZE"
+    "XYZE"
+    #if NON_E_AXES > 3
+      AXIS4_NAME
+      #if NON_E_AXES > 4
+        AXIS5_NAME
+        #if NON_E_AXES > 5
+          AXIS6_NAME
+        #endif
+      #endif
     #endif
     #if ENABLED(MAGIC_NUMBERS_GCODE)
       "HL"

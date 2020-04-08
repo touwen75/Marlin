@@ -2482,13 +2482,13 @@ void Stepper::report_positions() {
   SERIAL_ECHO(zpos);
 
   #if NON_E_AXES > 3
-    SERIAL_ECHOPGM(" I:");
+    SERIAL_ECHOPGM(" " AXIS4_NAME ":");
     SERIAL_ECHO(ipos);
     #if NON_E_AXES > 4
-      SERIAL_ECHOPGM(" J:");
+      SERIAL_ECHOPGM(" " AXIS5_NAME ":");
       SERIAL_ECHO(jpos);
       #if NON_E_AXES > 5
-        SERIAL_ECHOPGM(" K:");
+        SERIAL_ECHOPGM(" " AXIS6_NAME ":");
         SERIAL_ECHO(kpos);
       #endif
     #endif

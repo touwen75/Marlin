@@ -57,7 +57,7 @@
 #endif
 
 #define X_LABEL_POS      3
-#if ENABLED(FOAMCUTTER_XY_IJ)
+#if ENABLED(FOAMCUTTER_XYUV)
   #define X_VALUE_POS     3
   #define XYZ_SPACING     33
 #else
@@ -300,7 +300,7 @@ FORCE_INLINE void _draw_heater_status(const heater_ind_t heater, const bool blin
 // Homed and known, display constantly.
 //
 
-#if ENABLED(FOAMCUTTER_XY_IJ)
+#if ENABLED(FOAMCUTTER_XYUV)
   void _draw_axis_value(const AxisEnum axis, const char *value, const bool blink) {
     const uint8_t offs = (XYZ_SPACING) * axis;
     if (axis <2) {
@@ -308,7 +308,7 @@ FORCE_INLINE void _draw_heater_status(const heater_ind_t heater, const bool blin
       lcd_moveto(X_VALUE_POS + offs, XYZ_BASELINE);
     }
     else {
-      lcd_put_wchar(X_LABEL_POS + offs - (XYZ_SPACING), XYZ_BASELINE, 'I' + (axis-3)); // skipping Z for foam cutter
+      lcd_put_wchar(X_LABEL_POS + offs - (XYZ_SPACING), XYZ_BASELINE, AXIS4_NAME + (axis-3)); // skipping Z for foam cutter
       lcd_moveto(X_VALUE_POS + offs - (XYZ_SPACING), XYZ_BASELINE);
     }
     if (blink)
@@ -644,7 +644,7 @@ void MarlinUI::draw_status_screen() {
 
       #endif
 
-      #if ENABLED(FOAMCUTTER_XY_IJ)
+      #if ENABLED(FOAMCUTTER_XYUV)
         _draw_axis_value(I_AXIS, istring, blink);
         _draw_axis_value(J_AXIS, jstring, blink);
       #else

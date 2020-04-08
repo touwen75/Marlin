@@ -377,9 +377,15 @@
     #endif
   #endif
 #endif
-
 #ifndef DISABLE_INACTIVE_E
   #define DISABLE_INACTIVE_E DISABLE_E
+#endif
+
+/**
+ * Default to three non-extruder axes if NON_E_AXES is missing
+ */
+#ifndef NON_E_AXES
+  #define NON_E_AXES 3
 #endif
 
 /**

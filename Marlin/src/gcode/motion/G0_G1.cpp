@@ -57,11 +57,11 @@ void GcodeSuite::G0_G1(
         | (parser.seen('Y') ? _BV(Y_AXIS) : 0)
         | (parser.seen('Z') ? _BV(Z_AXIS) : 0)
         #if NON_E_AXES > 3
-          | (parser.seen('I') ? _BV(I_AXIS) : 0)
+          | (parser.seen(AXIS4_NAME) ? _BV(I_AXIS) : 0)
           #if NON_E_AXES > 4
-            | (parser.seen('J') ? _BV(J_AXIS) : 0)
+            | (parser.seen(AXIS5_NAME) ? _BV(J_AXIS) : 0)
             #if NON_E_AXES > 5
-              | (parser.seen('K') ? _BV(K_AXIS) : 0)
+              | (parser.seen(AXIS6_NAME) ? _BV(K_AXIS) : 0)
             #endif
           #endif
         #endif

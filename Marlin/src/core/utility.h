@@ -25,11 +25,11 @@
 
 constexpr char axis_codes[NUM_AXIS] = { 'X', 'Y', 'Z'
   #if NON_E_AXES > 3
-    , 'I'
+    , AXIS4_NAME
     #if NON_E_AXES > 4
-      , 'J'
+      , AXIS5_NAME
       #if NON_E_AXES > 5
-        , 'K'
+        , AXIS6_NAME
       #endif
     #endif
   #endif

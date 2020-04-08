@@ -78,12 +78,12 @@
 //#define ASYNC_SECONDARY_AXES
 
 //===========================================================================
-//=========================== FOAMCUTTER_XY_IJ ==============================
+//=========================== FOAMCUTTER_XYUV ==============================
 //===========================================================================
-// For a hot wire cutter with parallel horizontal axes X, I where the hights
-// of the two wire ends are controlled by parallel axes Y, J.
+// For a hot wire cutter with parallel horizontal axes X, U where the hights
+// of the two wire ends are controlled by parallel axes Y, V.
 //
-//#define FOAMCUTTER_XY_IJ
+//#define FOAMCUTTER_XYUV
 
 // @section info
 
@@ -168,6 +168,35 @@
  * MICROSTEP_MODES and MANUAL_FEEDRATE.
  */
 #define NON_E_AXES 4
+#if NON_E_AXES > 3
+  /**
+   * Axis codes for additional axes:
+   * "A" for rotational axis parallel to X
+   * "B" for rotational axis parallel to Y
+   * "C" for rotational axis parallel to Z
+   * "U" for secondary linear axis parallel to X
+   * "V" for secondary linear axis parallel to Y
+   * "W" for secondary linear axis parallel to Z
+   * "I" for generic 4th axis
+   * "J" for generic 5th axis
+   * "K" for generic 6th axis
+   */
+  #if ENABLED(FOAMCUTTER_XYUV)
+    #define AXIS4_NAME "U"
+  #else
+    #define AXIS4_NAME "I"
+  #endif
+  #if NON_E_AXES > 4
+    #if ENABLED(FOAMCUTTER_XYUV)
+      #define AXIS5_NAME "V"
+    #else
+      #define AXIS5_NAME "J"
+    #endif
+    #if NON_E_AXES > 5
+      #define AXIS6_NAME "K"
+    #endif
+  #endif
+#endif
 
 // @section extruder
 
