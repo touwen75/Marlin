@@ -336,13 +336,8 @@
  * Controller Fan
  * To cool down the stepper drivers and MOSFETs.
  *
-<<<<<<< Upstream, based on origin/PR_fix_e_homing
- * The fan will turn on automatically whenever any stepper is enabled
- * and turn off after a set period after all steppers are turned off.
-=======
  * The fan turns on automatically whenever any driver is enabled and turns
  * off (or reduces to idle speed) shortly after drivers are turned off.
->>>>>>> d6badb7 Clean up whitespace
  */
 //#define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)

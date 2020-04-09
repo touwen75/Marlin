@@ -89,7 +89,9 @@
 #define _Y_HALF_BED ((Y_BED_SIZE) / 2)
 #define X_CENTER TERN(BED_CENTER_AT_0_0, 0, _X_HALF_BED)
 #define Y_CENTER TERN(BED_CENTER_AT_0_0, 0, _Y_HALF_BED)
-
+#if ENABLED(E_AXIS_HOMING)
+  #define E_CENTER ((E_MIN_POS + E_MAX_POS) / 2)
+#endif
 // Get the linear boundaries of the bed
 #define X_MIN_BED (X_CENTER - _X_HALF_BED)
 #define X_MAX_BED (X_MIN_BED + X_BED_SIZE)
@@ -1258,6 +1260,10 @@
   #if ENABLED(USE_ZMAX_PLUG)
     #define ENDSTOPPULLDOWN_ZMAX
   #endif
+  #if ENABLED(USE_EMAX_PLUG)
+    #define ENDSTOPPULLDOWN_EMAX
+  #endif
+
   #if ENABLED(USE_XMIN_PLUG)
     #define ENDSTOPPULLDOWN_XMIN
   #endif
@@ -1266,6 +1272,9 @@
   #endif
   #if ENABLED(USE_ZMIN_PLUG)
     #define ENDSTOPPULLDOWN_ZMIN
+  #endif
+  #if ENABLED(USE_EMIN_PLUG)
+    #define ENDSTOPPULLDOWN_EMIN
   #endif
 #endif
 
@@ -1430,6 +1439,8 @@
 #define HAS_Y_MAX _HAS_STOP(Y,MAX)
 #define HAS_Z_MIN _HAS_STOP(Z,MIN)
 #define HAS_Z_MAX _HAS_STOP(Z,MAX)
+#define HAS_E_MIN _HAS_STOP(E,MIN)
+#define HAS_E_MAX _HAS_STOP(E,MAX)
 #define HAS_X2_MIN (PIN_EXISTS(X2_MIN))
 #define HAS_X2_MAX (PIN_EXISTS(X2_MAX))
 #define HAS_Y2_MIN (PIN_EXISTS(Y2_MIN))

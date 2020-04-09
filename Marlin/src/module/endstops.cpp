@@ -53,8 +53,11 @@ Endstops endstops;
 // private:
 
 bool Endstops::enabled, Endstops::enabled_globally; // Initialized by settings.load()
-volatile uint8_t Endstops::hit_state;
-
+#if ENABLED(E_AXIS_HOMING)
+  volatile uint16_t Endstops::hit_state;
+#else
+  volatile uint8_t Endstops::hit_state;
+#endif
 Endstops::esbits_t Endstops::live_state = 0;
 
 #if ENDSTOP_NOISE_THRESHOLD
@@ -394,7 +397,11 @@ void Endstops::resync() {
 #endif
 
 void Endstops::event_handler() {
+#if ENABLED(E_AXIS_HOMING)
+  static uint16_t prev_hit_state;//=0	
+#else
   static uint8_t prev_hit_state; // = 0
+#endif
   if (hit_state == prev_hit_state) return;
   prev_hit_state = hit_state;
   if (hit_state) {
@@ -444,8 +451,11 @@ void Endstops::event_handler() {
     SERIAL_EOL();
 
     #if HAS_SPI_LCD
-      ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c "), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrP, chrE);
-    #endif
+      #if ENABLED(E_AXIS_HOMING)
+        ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS),chrX, chrY, chrZ, chrE, chrP);
+      #else
+       ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrP);
+      #endif    #endif
 
     #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)
       if (planner.abort_on_endstop_hit) {
@@ -666,7 +676,6 @@ void Endstops::update() {
       #endif
     #endif
   #endif
-
   #if HAS_Z_MIN && !Z_SPI_SENSORLESS
     UPDATE_ENDSTOP_BIT(Z, MIN);
     #if ENABLED(Z_MULTI_ENDSTOPS)
@@ -921,7 +930,7 @@ void Endstops::update() {
       #endif
     }
   }
-
+  #if ENABLED(E_AXIS_HOMING)
   if (stepper.axis_is_moving(E_AXIS)) {
     if (stepper.motor_direction(E_AXIS)) { // -direction
 
@@ -936,6 +945,7 @@ void Endstops::update() {
       #endif
     }
   }
+  #endif
 } // Endstops::update()
 
 #if ENABLED(SPI_ENDSTOPS)

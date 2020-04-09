@@ -41,7 +41,7 @@ enum EndstopEnum : char {
 
 class Endstops {
   public:
-    #if HAS_EXTRA_ENDSTOPS
+    #if HAS_EXTRA_ENDSTOPS || ENABLED(E_AXIS_HOMING)
       typedef uint16_t esbits_t;
       #if ENABLED(X_DUAL_ENDSTOPS)
         static float x2_endstop_adj;
@@ -65,7 +65,11 @@ class Endstops {
   private:
     static bool enabled, enabled_globally;
     static esbits_t live_state;
-    static volatile uint8_t hit_state;      // Use X_MIN, Y_MIN, Z_MIN and Z_MIN_PROBE as BIT index
+    #if ENABLED(E_AXIS_HOMING)
+      static volatile uint16_t  hit_state;   
+    #else
+      static volatile uint8_t hit_state;      // Use X_MIN, Y_MIN, Z_MIN and Z_MIN_PROBE as BIT index
+    #endif
 
     #if ENDSTOP_NOISE_THRESHOLD
       static esbits_t validated_live_state;

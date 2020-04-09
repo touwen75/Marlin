@@ -315,7 +315,13 @@ void GcodeSuite::G28() {
   #else // NOT DELTA
 
     const bool homeX = parser.seen('X'), homeY = parser.seen('Y'), homeZ = parser.seen('Z'), 
-               home_all = homeX == homeY && homeX == homeZ, // All or None
+              #if ENABLED(E_AXIS_HOMING)
+                 homeE = parser.seen('E'),
+                 home_all = homeX == homeY && homeX == homeZ && homeX == homeE,
+                 doE = home_all || homeE,
+               #else
+                 home_all = homeX == homeY && homeX == homeZ, // All or None
+               #endif
                doX = home_all || homeX, doY = home_all || homeY, doZ = home_all || homeZ;
 
     destination = current_position;
@@ -412,7 +418,22 @@ void GcodeSuite::G28() {
       } // doZ
 
     #endif // Z_HOME_DIR < 0
-
+   #if ENABLED(E_AXIS_HOMING)
+    // Home E
+      if (doE) {
+// TODO: Test E_HOMING is compatible with multiple E-steppers
+//        #if EXTRUDERS > 1 
+//          active_extruder = 1;
+//          homeaxis(E_AXIS);
+//          #if EXTRUDERS > 2
+//            active_extruder = 2;
+//            homeaxis(E_AXIS);
+//            active_extruder = 0;
+//          #endif
+//        #endif
+        homeaxis(E_AXIS);
+      } // doE
+    #endif // ENABLED(E_AXIS_HOMING)
     sync_plan_position();
 
   #endif // !DELTA (G28)
